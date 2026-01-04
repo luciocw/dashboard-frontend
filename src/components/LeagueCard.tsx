@@ -1,17 +1,8 @@
 import { Card } from './ui/Card'
+import { SleeperLeague } from '@/types/sleeper'
 
 interface LeagueCardProps {
-  league: {
-    league_id: string
-    name: string
-    avatar?: string
-    season: string
-    total_rosters: number
-    settings?: {
-      wins?: number
-      losses?: number
-    }
-  }
+  league: SleeperLeague
   onClick?: () => void
 }
 
