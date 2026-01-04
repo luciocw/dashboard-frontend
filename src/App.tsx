@@ -1,20 +1,24 @@
 import { useState, FormEvent } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useSleeperUser, useSleeperLeagues } from './hooks/useSleeperUser'
 import { LeagueCard } from './components/LeagueCard'
+import { LeagueDetails } from './pages/LeagueDetails'
 
-function App() {
+// Componente da Home (O que tinhamos antes)
+function Home() {
   const [inputValue, setInputValue] = useState('')
-  const [username, setUsername] = useState('')
+  const [username, setUsername] = useState('luciocw') // Já deixei seu 
+user como padrão para facilitar
   const [season, setSeason] = useState('2026')
+  const navigate = useNavigate() // O "motorista" que nos leva para outra 
+página
 
   const { data: user, isLoading: loadingUser } = useSleeperUser(username)
   const { data: leagues } = useSleeperLeagues(user?.user_id, season)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (inputValue.trim()) {
-      setUsername(inputValue.trim())
-    }
+    if (inputValue.trim()) setUsername(inputValue.trim())
   }
 
   return (
@@ -23,7 +27,7 @@ function App() {
         <header className="mb-8">
           <h1 className="text-3xl font-bold mb-2">🏈 Dynasty 
 Dashboard</h1>
-          <p className="text-slate-400">v2.0.0 - React Edition</p>
+          <p className="text-slate-400">v2.1.0 - Com Navegação</p>
         </header>
 
         {!user && (
@@ -37,22 +41,18 @@ space-y-4">
               className="w-full px-4 py-2 bg-slate-900 border 
 border-slate-800 rounded-lg"
             />
-            <button
-              type="submit"
-              disabled={loadingUser}
-              className="w-full px-4 py-2 bg-blue-600 rounded-lg"
-            >
-              {loadingUser ? 'Carregando...' : 'Entrar'}
+            <button disabled={loadingUser} className="w-full px-4 py-2 
+bg-blue-600 rounded-lg">
+              Entrar
             </button>
           </form>
         )}
 
         {user && (
           <div>
-            <h2 className="text-2xl mb-4">Bem-vindo, 
-{user.display_name}!</h2>
-            <div className="mb-6">
-               <select
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl">Olá, {user.display_name}!</h2>
+              <select
                 value={season}
                 onChange={(e) => setSeason(e.target.value)}
                 className="px-4 py-2 bg-slate-900 rounded-lg border 
@@ -60,7 +60,6 @@ border-slate-800"
               >
                 <option value="2026">2026</option>
                 <option value="2025">2025</option>
-                <option value="2024">2024</option>
               </select>
             </div>
 
@@ -70,8 +69,10 @@ border-slate-800"
                   <LeagueCard 
                     key={league.league_id} 
                     league={league} 
-                    onClick={() => console.log('Clicou na liga:', 
-league.name)}
+                    // AQUI ESTÁ A MÁGICA: Ao clicar, navega para a página 
+de detalhes
+                    onClick={() => 
+navigate(`/league/${league.league_id}`)}
                   />
                 ))}
               </div>
@@ -80,6 +81,16 @@ league.name)}
         )}
       </div>
     </div>
+  )
+}
+
+// O App principal que gerencia as Rotas
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/league/:id" element={<LeagueDetails />} />
+    </Routes>
   )
 }
 
