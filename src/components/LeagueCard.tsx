@@ -1,69 +1,17 @@
+import { Card } from './ui/Card'
+
 interface LeagueCardProps {
   league: {
     league_id: string
     name: string
     avatar?: string
+    season: string
     total_rosters: number
     settings?: {
       wins?: number
       losses?: number
     }
   }
-  onClick?: () => void
-}
-
-export function LeagueCard({ league, onClick }: LeagueCardProps) {
-  return (
-    <div
-      onClick={onClick}
-      className="bg-slate-900 border border-slate-800 rounded-lg p-6 
-hover:border-blue-500 transition-colors cursor-pointer"
-    >
-      <div className="flex items-start gap-3">
-        {league.avatar ? (
-          <img
-            
-src={`https://sleepercdn.com/avatars/thumbs/${league.avatar}`}
-            alt={league.name}
-            className="w-12 h-12 rounded-lg"
-          />
-        ) : (
-          <div className="w-12 h-12 bg-slate-800 rounded-lg flex 
-items-center justify-center">
-            🏈
-          </div>
-        )}
-        <div className="flex-1">
-          <h3 className="font-semibold text-lg">{league.name}</h3>
-          <p className="text-slate-400 
-text-sm">{league.total_rosters} times</p>
-          {league.settings && (
-            <p className="text-sm mt-1">
-              {league.settings.wins || 0}-{league.settings.losses || 
-0}
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}import { 
-Card } from './ui/Card'
-
-interface League {
-  league_id: string
-  name: string
-  avatar?: string
-  season: string
-  total_rosters: number
-  settings?: {
-    wins?: number
-    losses?: number
-  }
-}
-
-interface LeagueCardProps {
-  league: League
   onClick?: () => void
 }
 
