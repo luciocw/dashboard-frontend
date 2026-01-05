@@ -1,4 +1,4 @@
-# 🏗️ Roadmap Dynasty Dashboard - Atualizado 04/01/2026
+# 🏗️ Roadmap Dynasty Dashboard - Atualizado 54/01/2026
 
 ## **📊 STATUS GERAL DO PROJETO**
 ```
