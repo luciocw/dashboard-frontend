@@ -1,0 +1,244 @@
+{
+  "project": {
+    "name": "Dynasty Dashboard",
+    "version": "2.0.0",
+    "status": "in_development",
+    "description": "Multi-platform fantasy football dashboard for Sleeper leagues"
+  },
+  "infrastructure": {
+    "hosting": "Cloudflare Pages",
+    "edge_compute": "Cloudflare Workers",
+    "database": "Supabase",
+    "payments": "Stripe",
+    "cdn": "Cloudflare CDN (275+ cities)",
+    "analytics": "Cloudflare Web Analytics + Sentry"
+  },
+  "api_sleeper": {
+    "importance": "CRITICAL - Backbone of entire application",
+    "base_url": "https://api.sleeper.app/v1",
+    "rate_limits": {
+      "requests_per_minute": 100,
+      "per": "IP address"
+    },
+    "authentication": "None - Public API",
+    "cache_strategy": {
+      "ttl_hours": 4,
+      "layers": ["Browser localStorage", "Cloudflare Edge", "Server-side"]
+    },
+    "critical_endpoints": [
+      "/user/{username}",
+      "/user/{user_id}/leagues/nfl/{season}",
+      "/league/{league_id}/rosters",
+      "/league/{league_id}/matchups/{week}",
+      "/players/nfl"
+    ],
+    "protection_strategies": [
+      "Client-side caching with TTL",
+      "Cloudflare Edge caching",
+      "Rate limiting per IP",
+      "Request batching",
+      "Circuit breaker pattern"
+    ]
+  },
+  "monetization": {
+    "model": "Freemium",
+    "tiers": {
+      "free": {
+        "price": 0,
+        "leagues_limit": 3,
+        "features": ["Basic stats", "Current matchups", "Standings"]
+      },
+      "pro": {
+        "price_monthly": 4.99,
+        "price_yearly": 49,
+        "leagues_limit": "unlimited",
+        "features": [
+          "All free features",
+          "Trade history",
+          "Trending players",
+          "Export data",
+          "Cross-device sync",
+          "Push notifications",
+          "Priority support"
+        ]
+      }
+    }
+  },
+  "phases": {
+    "phase_0": {
+      "name": "Foundation & Infrastructure",
+      "duration_weeks": "1-2",
+      "tasks": [
+        "Setup GitHub repository",
+        "Configure Cloudflare Pages",
+        "Define tech stack",
+        "Setup CI/CD pipelines"
+      ]
+    },
+    "phase_1": {
+      "name": "Code Modularization",
+      "duration_weeks": "3-4",
+      "tasks": [
+        "Migrate to React",
+        "Setup state management (Zustand)",
+        "Create component library",
+        "Implement feature modules"
+      ]
+    },
+    "phase_2": {
+      "name": "Security",
+      "duration_weeks": "5",
+      "tasks": [
+        "Implement CSP headers",
+        "XSS protection with DOMPurify",
+        "Rate limiting",
+        "Input validation"
+      ]
+    },
+    "phase_3": {
+      "name": "Mobile App",
+      "duration_weeks": "6-8",
+      "tasks": [
+        "Setup React Native + Expo",
+        "Share 70% code with web",
+        "Implement push notifications",
+        "Add biometric auth"
+      ]
+    },
+    "phase_4": {
+      "name": "Deployment",
+      "duration_weeks": "9",
+      "tasks": [
+        "Configure CI/CD",
+        "Setup staging environment",
+        "E2E tests with Playwright",
+        "Production deployment"
+      ]
+    },
+    "phase_5": {
+      "name": "Launch & Growth",
+      "duration_weeks": "10+",
+      "tasks": [
+        "Beta testing (50 users)",
+        "Public launch",
+        "Product Hunt",
+        "Growth hacking"
+      ]
+    }
+  },
+  "implementation": {
+    "phase_a": {
+      "name": "Initial Setup",
+      "duration_days": "1-2",
+      "deliverables": [
+        "GitHub repo configured",
+        "Vite + React running",
+        "Cloudflare Pages connected",
+        "First deploy successful"
+      ]
+    },
+    "phase_b": {
+      "name": "Core Migration",
+      "duration_days": "3-7",
+      "deliverables": [
+        "Sleeper API client",
+        "Cache manager",
+        "React Query hooks",
+        "First components"
+      ]
+    },
+    "phase_c": {
+      "name": "Cloudflare Workers",
+      "duration_days": "8-10",
+      "deliverables": [
+        "API proxy worker",
+        "Edge caching",
+        "Rate limiting"
+      ]
+    },
+    "phase_d": {
+      "name": "Auth & Monetization",
+      "duration_days": "11-14",
+      "deliverables": [
+        "Supabase integration",
+        "Stripe checkout",
+        "Feature flags"
+      ]
+    },
+    "phase_e": {
+      "name": "Deploy & Testing",
+      "duration_days": "15-17",
+      "deliverables": [
+        "CI/CD pipeline",
+        "E2E tests",
+        "Production deploy"
+      ]
+    }
+  },
+  "tech_stack": {
+    "frontend": {
+      "framework": "React 18",
+      "build_tool": "Vite 5",
+      "language": "TypeScript",
+      "state_management": "Zustand",
+      "data_fetching": "TanStack Query v5",
+      "ui_library": "shadcn/ui",
+      "styling": "Tailwind CSS",
+      "routing": "TanStack Router",
+      "forms": "React Hook Form + Zod",
+      "i18n": "i18next"
+    },
+    "mobile": {
+      "framework": "React Native",
+      "platform": "Expo",
+      "navigation": "React Navigation v6",
+      "payments": "RevenueCat",
+      "push": "Expo Notifications"
+    },
+    "backend": {
+      "edge_compute": "Cloudflare Workers",
+      "database": "Supabase (PostgreSQL)",
+      "auth": "Supabase Auth",
+      "storage": "Cloudflare R2"
+    },
+    "testing": {
+      "unit": "Vitest",
+      "e2e": "Playwright",
+      "component": "Testing Library"
+    },
+    "devops": {
+      "ci_cd": "GitHub Actions",
+      "hosting": "Cloudflare Pages",
+      "monitoring": "Sentry",
+      "analytics": "Cloudflare Analytics"
+    }
+  },
+  "timeline": {
+    "total_weeks": "14-16",
+    "milestones": {
+      "week_2": "Initial setup complete",
+      "week_4": "React migration done",
+      "week_8": "Mobile MVP ready",
+      "week_12": "Beta launch",
+      "week_16": "Public launch"
+    }
+  },
+  "costs": {
+    "initial_6_months": {
+      "cloudflare": 0,
+      "supabase": "0-25/month",
+      "stripe_fees": "2.9% + 0.30 per transaction",
+      "apple_developer": "99/year",
+      "google_play": "25 one-time",
+      "domain": "12/year",
+      "total_fixed": "~160 USD",
+      "total_variable": "Depends on transactions"
+    },
+    "break_even": {
+      "users_needed": 100,
+      "monthly_revenue": 499,
+      "monthly_costs": 50,
+      "monthly_profit": 449
+    }
+  }
+}
