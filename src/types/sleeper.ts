@@ -5,31 +5,56 @@ export interface SleeperUser {
   avatar?: string
 }
 
+export interface LeagueSettings {
+  wins?: number
+  losses?: number
+  ties?: number
+  fpts?: number
+  fpts_decimal?: number
+  type?: number
+}
+
 export interface SleeperLeague {
   league_id: string
   name: string
   avatar?: string
   season: string
   total_rosters: number
-  settings?: {
-    type?: number
-    wins?: number
-    losses?: number
-    ties?: number
-  }
+  status: string
+  settings: LeagueSettings
+  roster_positions?: string[]
+}
+
+export interface RosterSettings {
+  wins: number
+  losses: number
+  ties: number
+  fpts: number
+  fpts_decimal?: number
 }
 
 export interface SleeperRoster {
   roster_id: number
   owner_id: string
-  players: string[]
-  starters: string[]
-  reserve?: string[]
-  taxi?: string[]
-  settings: {
-    wins: number
-    losses: number
-    ties: number
-    fpts: number
-  }
+  league_id: string
+  players: string[] | null
+  starters: string[] | null
+  settings: RosterSettings
+}
+
+export interface LeagueData {
+  league: SleeperLeague
+  rosters: SleeperRoster[]
+  users: SleeperUser[]
+}
+
+export interface StandingTeam {
+  id: number
+  name: string
+  avatar?: string
+  wins: number
+  losses: number
+  ties: number
+  fpts: number
+  winRate: number
 }

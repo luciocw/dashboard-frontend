@@ -1,45 +1,43 @@
 import { useQuery } from '@tanstack/react-query'
+import type { SleeperUser, SleeperLeague, LeagueData } from '@/types/sleeper'
 
-// Funções auxiliares de busca (Fetchers)
-const fetchUser = async (username: string) => {
-  const res = await fetch(`https://api.sleeper.app/v1/user/${username}`)
+const API = 'https://api.sleeper.app/v1'
+
+async function fetchUser(username: string): Promise<SleeperUser> {
+  const res = await fetch(`${API}/user/${username}`)
   if (!res.ok) throw new Error('User not found')
   return res.json()
 }
 
-const fetchLeagues = async (userId: string, season: string) => {
-  const res = await 
-fetch(`https://api.sleeper.app/v1/user/${userId}/leagues/nfl/${season}`)
+async function fetchLeagues(userId: string, season: string): Promise<SleeperLeague[]> {
+  const res = await fetch(`${API}/user/${userId}/leagues/nfl/${season}`)
   if (!res.ok) throw new Error('Leagues not found')
   return res.json()
 }
 
-const fetchLeagueDetails = async (leagueId: string) => {
-  // Busca em paralelo: Dados da Liga, Times (Rosters) e Usuários
+async function fetchLeagueDetails(leagueId: string): Promise<LeagueData> {
   const [leagueRes, rostersRes, usersRes] = await Promise.all([
-    fetch(`https://api.sleeper.app/v1/league/${leagueId}`),
-    fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`),
-    fetch(`https://api.sleeper.app/v1/league/${leagueId}/users`)
+    fetch(`${API}/league/${leagueId}`),
+    fetch(`${API}/league/${leagueId}/rosters`),
+    fetch(`${API}/league/${leagueId}/users`),
   ])
-
   if (!leagueRes.ok || !rostersRes.ok || !usersRes.ok) {
     throw new Error('Failed to fetch league details')
   }
-
-  const league = await leagueRes.json()
-  const rosters = await rostersRes.json()
-  const users = await usersRes.json()
-
-  return { league, rosters, users }
+  return {
+    league: await leagueRes.json(),
+    rosters: await rostersRes.json(),
+    users: await usersRes.json(),
+  }
 }
 
-// Hooks Oficiais
 export function useSleeperUser(username: string) {
   return useQuery({
     queryKey: ['user', username],
     queryFn: () => fetchUser(username),
     enabled: !!username,
-    retry: false
+    retry: false,
+    staleTime: 1000 * 60 * 60 * 4,
   })
 }
 
@@ -48,13 +46,15 @@ export function useSleeperLeagues(userId: string | undefined, season: string) {
     queryKey: ['leagues', userId, season],
     queryFn: () => fetchLeagues(userId!, season),
     enabled: !!userId,
+    staleTime: 1000 * 60 * 60 * 4,
   })
 }
 
 export function useLeagueData(leagueId: string | undefined) {
   return useQuery({
-    queryKey: ['league', leagueId],
+    queryKey: ['leagueData', leagueId],
     queryFn: () => fetchLeagueDetails(leagueId!),
     enabled: !!leagueId,
+    staleTime: 1000 * 60 * 60 * 2,
   })
 }
