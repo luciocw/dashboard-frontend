@@ -16,15 +16,11 @@ interface AppState {
   // Season state
   selectedSeason: string
   setSelectedSeason: (season: string) => void
-  
+
   // UI state
   theme: 'dark' | 'light'
   toggleTheme: () => void
-  
-  // Filters
-  searchQuery: string
-  setSearchQuery: (query: string) => void
-  
+
   // Actions
   logout: () => void
 }
@@ -34,29 +30,26 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       // Initial state
       currentUser: null,
-      selectedSeason: '2026',
+      selectedSeason: '2025',
       theme: 'dark',
-      searchQuery: '',
-      
+
       // Actions
       setCurrentUser: (user) => set({ currentUser: user }),
-      
+
       setSelectedSeason: (season) => set({ selectedSeason: season }),
-      
-      toggleTheme: () => set((state) => ({ 
-        theme: state.theme === 'dark' ? 'light' : 'dark' 
+
+      toggleTheme: () => set((state) => ({
+        theme: state.theme === 'dark' ? 'light' : 'dark'
       })),
-      
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      
-      logout: () => set({ 
+
+      logout: () => set({
         currentUser: null,
-        searchQuery: '',
       }),
     }),
     {
       name: 'dynasty-dashboard-storage',
       partialize: (state) => ({
+        currentUser: state.currentUser,
         selectedSeason: state.selectedSeason,
         theme: state.theme,
       }),

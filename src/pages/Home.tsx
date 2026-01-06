@@ -1,45 +1,74 @@
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSleeperUser, useSleeperLeagues } from '@/hooks/useSleeperUser'
+import { useAppStore } from '@/store/useAppStore'
 import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
-import { getCurrentNFLSeason, getAvailableSeasons } from '@/utils/nfl'
+import { Footer } from '@/components/Footer'
+import { getAvailableSeasons } from '@/utils/nfl'
 import type { SleeperLeague } from '@/types/sleeper'
 
-// Calcular stats agregadas das ligas
 function calculateStats(leagues: SleeperLeague[]) {
   const total = leagues.length
   const dynasty = leagues.filter(l => l.settings?.type === 2).length
   const inSeason = leagues.filter(l => l.status === 'in_season').length
   const totalTeams = leagues.reduce((sum, l) => sum + l.total_rosters, 0)
-
   return { total, dynasty, inSeason, totalTeams }
 }
 
 export function Home() {
-  const [inputValue, setInputValue] = useState('')
-  const [username, setUsername] = useState('luciocw')
-  const [season, setSeason] = useState(getCurrentNFLSeason())
   const navigate = useNavigate()
+  
+  // Store (persistido)
+  const currentUser = useAppStore((state) => state.currentUser)
+  const setCurrentUser = useAppStore((state) => state.setCurrentUser)
+  const selectedSeason = useAppStore((state) => state.selectedSeason)
+  const setSelectedSeason = useAppStore((state) => state.setSelectedSeason)
+  const logout = useAppStore((state) => state.logout)
 
-  const { data: user, isLoading: loadingUser, error: userError } = useSleeperUser(username)
-  const { data: leagues, isLoading: loadingLeagues } = useSleeperLeagues(user?.user_id, season)
+  // Local state para input
+  const [inputValue, setInputValue] = useState('')
+  const [searchUsername, setSearchUsername] = useState(currentUser?.username || '')
+
+  // Buscar usuário
+  const { data: user, isLoading: loadingUser, error: userError } = useSleeperUser(searchUsername)
+  const { data: leagues, isLoading: loadingLeagues } = useSleeperLeagues(user?.user_id, selectedSeason)
+
+  // Salvar usuário no store quando carregar
+  useEffect(() => {
+    if (user && user.user_id !== currentUser?.user_id) {
+      setCurrentUser(user)
+    }
+  }, [user, currentUser, setCurrentUser])
+
+  // Se já tem usuário no store, buscar dados dele
+  useEffect(() => {
+    if (currentUser?.username && !searchUsername) {
+      setSearchUsername(currentUser.username)
+    }
+  }, [currentUser, searchUsername])
 
   const availableSeasons = getAvailableSeasons()
   const stats = leagues ? calculateStats(leagues) : null
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (inputValue.trim()) setUsername(inputValue.trim())
+    if (inputValue.trim()) {
+      setSearchUsername(inputValue.trim())
+    }
   }
 
   const handleLogout = () => {
-    setUsername('')
+    setSearchUsername('')
     setInputValue('')
+    logout()
   }
 
+  // Usuário efetivo (do store ou da busca)
+  const effectiveUser = currentUser || user
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       {/* Header */}
       <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -51,11 +80,11 @@ export function Home() {
             </div>
           </div>
           
-          {user && (
+          {effectiveUser && (
             <div className="flex items-center gap-4">
               <select
-                value={season}
-                onChange={(e) => setSeason(e.target.value)}
+                value={selectedSeason}
+                onChange={(e) => setSelectedSeason(e.target.value)}
                 className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-blue-500"
               >
                 {availableSeasons.map(s => (
@@ -64,14 +93,14 @@ export function Home() {
               </select>
               
               <div className="flex items-center gap-2">
-                {user.avatar && (
+                {effectiveUser.avatar && (
                   <img 
-                    src={`https://sleepercdn.com/avatars/thumbs/${user.avatar}`}
+                    src={`https://sleepercdn.com/avatars/thumbs/${effectiveUser.avatar}`}
                     className="w-8 h-8 rounded-full"
                     alt=""
                   />
                 )}
-                <span className="text-sm font-medium">{user.display_name || user.username}</span>
+                <span className="text-sm font-medium hidden sm:inline">{effectiveUser.display_name || effectiveUser.username}</span>
               </div>
 
               <button
@@ -85,9 +114,10 @@ export function Home() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      {/* Main Content */}
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
         {/* Login Form */}
-        {!user && (
+        {!effectiveUser && (
           <div className="max-w-md mx-auto mt-20">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">🏈</div>
@@ -122,31 +152,15 @@ export function Home() {
         )}
 
         {/* Dashboard */}
-        {user && (
+        {effectiveUser && (
           <>
             {/* HUD Stats */}
             {stats && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <StatCard 
-                  label="Total Ligas" 
-                  value={stats.total} 
-                  icon="🏆"
-                />
-                <StatCard 
-                  label="Dynasty" 
-                  value={stats.dynasty} 
-                  icon="👑"
-                />
-                <StatCard 
-                  label="Em Andamento" 
-                  value={stats.inSeason} 
-                  icon="🔥"
-                />
-                <StatCard 
-                  label="Total Times" 
-                  value={stats.totalTeams} 
-                  icon="👥"
-                />
+                <StatCard label="Total Ligas" value={stats.total} icon="🏆" />
+                <StatCard label="Dynasty" value={stats.dynasty} icon="👑" />
+                <StatCard label="Em Andamento" value={stats.inSeason} icon="🔥" />
+                <StatCard label="Total Times" value={stats.totalTeams} icon="👥" />
               </div>
             )}
 
@@ -182,7 +196,7 @@ export function Home() {
             {!loadingLeagues && leagues && leagues.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-5xl mb-4">🤷</div>
-                <p className="text-slate-400">Nenhuma liga encontrada para {season}</p>
+                <p className="text-slate-400">Nenhuma liga encontrada para {selectedSeason}</p>
               </div>
             )}
           </>
@@ -190,11 +204,7 @@ export function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 py-6 text-center text-slate-500 text-sm">
-          Dynasty Dashboard • Feito com ❤️ por Lucio
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
