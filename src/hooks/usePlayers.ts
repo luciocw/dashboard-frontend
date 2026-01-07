@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { API_URL, CACHE_TIMES, POSITION_ORDER } from '@/constants'
 import { ApiError } from '@/utils/errors'
 
 export interface NFLPlayer {
@@ -17,7 +18,7 @@ export interface NFLPlayer {
 export type PlayersMap = Record<string, NFLPlayer>
 
 async function fetchAllPlayers(): Promise<PlayersMap> {
-  const endpoint = 'https://api.sleeper.app/v1/players/nfl'
+  const endpoint = `${API_URL}/players/nfl`
   const res = await fetch(endpoint)
   
   if (!res.ok) {
@@ -31,8 +32,8 @@ export function usePlayers() {
   return useQuery({
     queryKey: ['players'],
     queryFn: fetchAllPlayers,
-    staleTime: 1000 * 60 * 60 * 24,
-    gcTime: 1000 * 60 * 60 * 24 * 7,
+    staleTime: CACHE_TIMES.PLAYERS,
+    gcTime: CACHE_TIMES.PLAYERS_GC,
   })
 }
 
@@ -42,15 +43,13 @@ export function getPlayerInfo(players: PlayersMap | undefined, playerId: string)
 }
 
 export function sortPlayersByPosition(playerIds: string[], players: PlayersMap): string[] {
-  const positionOrder = ['QB', 'RB', 'WR', 'TE', 'K', 'DEF']
-  
   return [...playerIds].sort((a, b) => {
     const playerA = players[a]
     const playerB = players[b]
     if (!playerA || !playerB) return 0
     
-    const posA = positionOrder.indexOf(playerA.position) ?? 99
-    const posB = positionOrder.indexOf(playerB.position) ?? 99
+    const posA = POSITION_ORDER.indexOf(playerA.position) ?? 99
+    const posB = POSITION_ORDER.indexOf(playerB.position) ?? 99
     return posA - posB
   })
 }

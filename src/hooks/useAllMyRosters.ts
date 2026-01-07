@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
+import { API_URL, CACHE_TIMES } from '@/constants'
 import { ApiError } from '@/utils/errors'
 import type { SleeperRoster } from '@/types/sleeper'
-
-const API = 'https://api.sleeper.app/v1'
 
 interface RostersByLeague {
   [leagueId: string]: SleeperRoster | null
@@ -15,7 +14,7 @@ async function fetchAllRosters(
   const results = await Promise.all(
     leagueIds.map(async (leagueId) => {
       try {
-        const endpoint = `${API}/league/${leagueId}/rosters`
+        const endpoint = `${API_URL}/league/${leagueId}/rosters`
         const res = await fetch(endpoint)
         
         if (!res.ok) {
@@ -45,6 +44,6 @@ export function useAllMyRosters(leagueIds: string[], userId: string | undefined)
     queryKey: ['allMyRosters', leagueIds.sort().join(','), userId],
     queryFn: () => fetchAllRosters(leagueIds, userId!),
     enabled: leagueIds.length > 0 && !!userId,
-    staleTime: 1000 * 60 * 60 * 2,
+    staleTime: CACHE_TIMES.ROSTERS,
   })
 }

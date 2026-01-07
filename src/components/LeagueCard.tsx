@@ -1,5 +1,8 @@
 import { memo } from 'react'
 import { Badge } from './ui/Badge'
+import { POSITION_COLORS, DISPLAY_POSITIONS } from '@/constants'
+import { getLeagueTags, formatLineup } from '@/utils/league'
+import { countByPosition, calculateAvgAge } from '@/utils/roster'
 import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
 import type { PlayersMap } from '@/hooks/usePlayers'
 
@@ -8,68 +11,6 @@ interface LeagueCardProps {
   players?: PlayersMap
   myRoster?: SleeperRoster | null
   onClick?: () => void
-}
-
-function getLeagueType(settings: SleeperLeague['settings']): string {
-  switch (settings?.type) {
-    case 0: return 'Redraft'
-    case 1: return 'Keeper'
-    case 2: return 'Dynasty'
-    default: return 'Redraft'
-  }
-}
-
-function getLeagueTags(league: SleeperLeague): { label: string; variant: 'default' | 'success' | 'warning' | 'info' | 'error' }[] {
-  const tags: { label: string; variant: 'default' | 'success' | 'warning' | 'info' | 'error' }[] = []
-  const positions = league.roster_positions || []
-  
-  const type = getLeagueType(league.settings)
-  if (type === 'Dynasty') tags.push({ label: 'DYNASTY', variant: 'success' })
-  else if (type === 'Keeper') tags.push({ label: 'KEEPER', variant: 'warning' })
-  else tags.push({ label: 'REDRAFT', variant: 'default' })
-  
-  tags.push({ label: 'PPR', variant: 'info' })
-  
-  if (positions.includes('SUPER_FLEX')) tags.push({ label: 'SF', variant: 'error' })
-  
-  if (positions.some(p => ['DL', 'LB', 'DB', 'IDP_FLEX'].includes(p))) {
-    tags.push({ label: 'IDP', variant: 'warning' })
-  }
-  
-  tags.push({ label: `${league.total_rosters}T`, variant: 'default' })
-  
-  return tags
-}
-
-function formatLineup(positions: string[]): string[] {
-  const counts: Record<string, number> = {}
-  positions.forEach(pos => {
-    if (pos !== 'BN') {
-      counts[pos] = (counts[pos] || 0) + 1
-    }
-  })
-  return Object.entries(counts).map(([pos, count]) => 
-    count > 1 ? `${count}${pos}` : pos
-  )
-}
-
-function countByPosition(playerIds: string[], players: PlayersMap): Record<string, number> {
-  const counts: Record<string, number> = {}
-  playerIds.forEach(id => {
-    const player = players[id]
-    if (player?.position) {
-      counts[player.position] = (counts[player.position] || 0) + 1
-    }
-  })
-  return counts
-}
-
-function calculateAvgAge(playerIds: string[], players: PlayersMap): number {
-  const ages = playerIds
-    .map(id => players[id]?.age)
-    .filter((age): age is number => typeof age === 'number')
-  if (ages.length === 0) return 0
-  return ages.reduce((sum, age) => sum + age, 0) / ages.length
 }
 
 export const LeagueCard = memo(function LeagueCard({ 
@@ -91,8 +32,6 @@ export const LeagueCard = memo(function LeagueCard({
   
   const positionCounts = players ? countByPosition(allPlayers, players) : {}
   const avgAge = players ? calculateAvgAge(allPlayers, players) : 0
-  
-  const positionsToShow = ['QB', 'RB', 'WR', 'TE']
 
   return (
     <div
@@ -165,15 +104,9 @@ export const LeagueCard = memo(function LeagueCard({
 
       {myRoster && players && (
         <div className="flex gap-3 text-sm">
-          {positionsToShow.map(pos => (
+          {DISPLAY_POSITIONS.map(pos => (
             <div key={pos} className="flex items-center gap-1">
-              <span className={`font-bold ${
-                pos === 'QB' ? 'text-red-400' :
-                pos === 'RB' ? 'text-green-400' :
-                pos === 'WR' ? 'text-blue-400' :
-                pos === 'TE' ? 'text-yellow-400' :
-                'text-slate-400'
-              }`}>
+              <span className={`font-bold ${POSITION_COLORS[pos] || 'text-slate-400'}`}>
                 {pos}
               </span>
               <span className="text-slate-400">{positionCounts[pos] || 0}</span>

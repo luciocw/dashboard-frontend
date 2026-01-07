@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { POSITION_COLORS } from '@/constants'
 import type { NFLPlayer } from '@/hooks/usePlayers'
 
 interface PlayerCardProps {
@@ -6,18 +7,6 @@ interface PlayerCardProps {
   isStarter?: boolean
   isTaxi?: boolean
   isIR?: boolean
-}
-
-const positionColors: Record<string, string> = {
-  QB: 'text-red-400',
-  RB: 'text-green-400',
-  WR: 'text-blue-400',
-  TE: 'text-yellow-400',
-  K: 'text-purple-400',
-  DEF: 'text-orange-400',
-  DL: 'text-orange-400',
-  LB: 'text-orange-400',
-  DB: 'text-orange-400',
 }
 
 export const PlayerCard = memo(function PlayerCard({ 
@@ -34,7 +23,7 @@ export const PlayerCard = memo(function PlayerCard({
     )
   }
 
-  const posColor = positionColors[player.position] || 'text-slate-400'
+  const posColor = POSITION_COLORS[player.position] || 'text-slate-400'
   const name = player.full_name || `${player.first_name} ${player.last_name}`
 
   return (

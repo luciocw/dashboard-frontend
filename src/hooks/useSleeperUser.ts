@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { API_URL, CACHE_TIMES } from '@/constants'
 import { ApiError } from '@/utils/errors'
 import type { SleeperUser, SleeperLeague, LeagueData } from '@/types/sleeper'
 
-const API = 'https://api.sleeper.app/v1'
-
 async function fetchUser(username: string): Promise<SleeperUser> {
-  const endpoint = `${API}/user/${username}`
+  const endpoint = `${API_URL}/user/${username}`
   const res = await fetch(endpoint)
   
   if (!res.ok) {
@@ -19,7 +18,7 @@ async function fetchUser(username: string): Promise<SleeperUser> {
 }
 
 async function fetchLeagues(userId: string, season: string): Promise<SleeperLeague[]> {
-  const endpoint = `${API}/user/${userId}/leagues/nfl/${season}`
+  const endpoint = `${API_URL}/user/${userId}/leagues/nfl/${season}`
   const res = await fetch(endpoint)
   
   if (!res.ok) {
@@ -31,16 +30,16 @@ async function fetchLeagues(userId: string, season: string): Promise<SleeperLeag
 
 async function fetchLeagueDetails(leagueId: string): Promise<LeagueData> {
   const [leagueRes, rostersRes, usersRes] = await Promise.all([
-    fetch(`${API}/league/${leagueId}`),
-    fetch(`${API}/league/${leagueId}/rosters`),
-    fetch(`${API}/league/${leagueId}/users`),
+    fetch(`${API_URL}/league/${leagueId}`),
+    fetch(`${API_URL}/league/${leagueId}/rosters`),
+    fetch(`${API_URL}/league/${leagueId}/users`),
   ])
   
   if (!leagueRes.ok || !rostersRes.ok || !usersRes.ok) {
     throw new ApiError(
       'Erro ao buscar detalhes da liga',
       leagueRes.status || rostersRes.status || usersRes.status,
-      `${API}/league/${leagueId}`
+      `${API_URL}/league/${leagueId}`
     )
   }
   
@@ -57,7 +56,7 @@ export function useSleeperUser(username: string) {
     queryFn: () => fetchUser(username),
     enabled: !!username,
     retry: false,
-    staleTime: 1000 * 60 * 60 * 4,
+    staleTime: CACHE_TIMES.USER,
   })
 }
 
@@ -66,7 +65,7 @@ export function useSleeperLeagues(userId: string | undefined, season: string) {
     queryKey: ['leagues', userId, season],
     queryFn: () => fetchLeagues(userId!, season),
     enabled: !!userId,
-    staleTime: 1000 * 60 * 60 * 4,
+    staleTime: CACHE_TIMES.LEAGUES,
   })
 }
 
@@ -75,6 +74,6 @@ export function useLeagueData(leagueId: string | undefined) {
     queryKey: ['leagueData', leagueId],
     queryFn: () => fetchLeagueDetails(leagueId!),
     enabled: !!leagueId,
-    staleTime: 1000 * 60 * 60 * 2,
+    staleTime: CACHE_TIMES.LEAGUE_DATA,
   })
 }
