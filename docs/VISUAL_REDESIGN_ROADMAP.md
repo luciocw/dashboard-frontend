@@ -11,7 +11,7 @@
 |---|------------|--------|------|
 | 1 | Header + Hero Section | ✅ Implementado | 07/01/2026 |
 | 2 | League Card | ✅ Implementado | 07/01/2026 |
-| 3 | Matchup Card | 🔜 Pendente | - |
+| 3 | Matchup Card | ✅ Implementado | 07/01/2026 |
 | 4 | Standings Table | 🔜 Pendente | - |
 | 5 | Power Rankings | 🔜 Pendente | - |
 | 6 | Design System / Color Palette | 🔜 Pendente | - |
@@ -63,7 +63,7 @@ Tech: React + Tailwind CSS only, lucide-react for icons.
 
 ---
 
-### PROMPT 3 - Matchup Card 🔜
+### PROMPT 3 - Matchup Card ✅
 ```
 Create a matchup/versus card for weekly fantasy football games with dark theme:
 - Two teams side by side
@@ -169,3 +169,4 @@ Tech: React + Tailwind CSS only, lucide-react for icons.
 | 07/01/2026 | Criação do cronograma |
 | 07/01/2026 | ✅ Prompt 1 - Header + Hero |
 | 07/01/2026 | ✅ Prompt 2 - League Card |
+| 07/01/2026 | ✅ Prompt 3 - Matchup Card |
