@@ -8,6 +8,7 @@ import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
 import { ErrorCard } from '@/components/ui/ErrorCard'
+import { SkeletonCard } from '@/components/ui/SkeletonCard'
 import { Footer } from '@/components/Footer'
 import { getAvailableSeasons } from '@/utils/nfl'
 import { validateUsername, sanitizeInput } from '@/utils/validation'
@@ -40,7 +41,6 @@ export function Home() {
     data: user, 
     isLoading: loadingUser, 
     error: userError,
-    refetch: refetchUser 
   } = useSleeperUser(searchUsername)
   
   const { 
@@ -103,7 +103,6 @@ export function Home() {
 
   const effectiveUser = currentUser || user
 
-  // Determinar mensagem de erro
   const getErrorMessage = () => {
     if (validationError) return validationError
     if (userError) {
@@ -134,7 +133,8 @@ export function Home() {
               <select
                 value={selectedSeason}
                 onChange={(e) => setSelectedSeason(e.target.value)}
-                className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                aria-label="Selecionar temporada"
+                className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               >
                 {availableSeasons.map(s => (
                   <option key={s} value={s}>{s}</option>
@@ -146,7 +146,7 @@ export function Home() {
                   <img 
                     src={`https://sleepercdn.com/avatars/thumbs/${effectiveUser.avatar}`}
                     className="w-8 h-8 rounded-full"
-                    alt=""
+                    alt={`Avatar de ${effectiveUser.display_name || effectiveUser.username}`}
                     loading="lazy"
                   />
                 )}
@@ -155,7 +155,8 @@ export function Home() {
 
               <button
                 onClick={handleLogout}
-                className="text-xs text-slate-400 hover:text-white transition"
+                aria-label="Sair da conta"
+                className="text-xs text-slate-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded px-2 py-1"
               >
                 Sair
               </button>
@@ -183,10 +184,11 @@ export function Home() {
                   maxLength={25}
                   aria-label="Username do Sleeper"
                   aria-describedby={errorMessage ? 'error-message' : undefined}
-                  className={`w-full px-4 py-3 bg-slate-900 border rounded-xl focus:outline-none transition ${
+                  aria-invalid={!!errorMessage}
+                  className={`w-full px-4 py-3 bg-slate-900 border rounded-xl focus:outline-none focus:ring-2 transition ${
                     errorMessage 
-                      ? 'border-red-500 focus:border-red-500' 
-                      : 'border-slate-700 focus:border-blue-500'
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' 
+                      : 'border-slate-700 focus:border-blue-500 focus:ring-blue-500/20'
                   }`}
                   disabled={loadingUser}
                 />
@@ -198,7 +200,7 @@ export function Home() {
               <button 
                 type="submit"
                 disabled={loadingUser || !inputValue.trim() || !isOnline} 
-                className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl font-medium transition"
+                className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               >
                 {loadingUser ? 'Carregando...' : 'Entrar'}
               </button>
@@ -227,24 +229,26 @@ export function Home() {
               </div>
             )}
 
-            {/* Erro ao carregar jogadores */}
             {playersError && (
-              <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-800 rounded-lg text-yellow-400 text-sm">
+              <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-800 rounded-lg text-yellow-400 text-sm" role="alert">
                 ⚠️ Erro ao carregar dados dos jogadores. Algumas informações podem estar incompletas.
               </div>
             )}
 
-            {/* Loading */}
+            {/* Loading com Skeleton */}
             {loadingLeagues && (
-              <div className="flex justify-center py-12">
-                <div className="text-center">
-                  <div className="animate-spin text-4xl mb-4">🏈</div>
-                  <p className="text-slate-400">Carregando ligas...</p>
+              <>
+                <h2 className="text-lg font-semibold mb-4 text-slate-300">
+                  Carregando ligas...
+                </h2>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {[1,2,3,4,5,6].map(i => (
+                    <SkeletonCard key={i} />
+                  ))}
                 </div>
-              </div>
+              </>
             )}
 
-            {/* Erro ao carregar ligas */}
             {leaguesError && !loadingLeagues && (
               <ErrorCard 
                 message="Erro ao carregar ligas" 
@@ -252,13 +256,16 @@ export function Home() {
               />
             )}
 
-            {/* Leagues Grid */}
             {!loadingLeagues && !leaguesError && leagues && leagues.length > 0 && (
               <>
                 <h2 className="text-lg font-semibold mb-4 text-slate-300">
                   Suas Ligas ({leagues.length})
                 </h2>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div 
+                  className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+                  role="list"
+                  aria-label="Lista de ligas"
+                >
                   {leagues.map(league => (
                     <LeagueCard 
                       key={league.league_id} 
@@ -272,7 +279,6 @@ export function Home() {
               </>
             )}
 
-            {/* Empty State */}
             {!loadingLeagues && !leaguesError && leagues && leagues.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-5xl mb-4">🤷</div>

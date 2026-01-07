@@ -1,9 +1,7 @@
 import { memo } from 'react'
 import { Badge } from './ui/Badge'
 import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
-import type { NFLPlayer } from '@/hooks/usePlayers'
-
-type PlayersMap = Record<string, NFLPlayer>
+import type { PlayersMap } from '@/hooks/usePlayers'
 
 interface LeagueCardProps {
   league: SleeperLeague
@@ -99,13 +97,17 @@ export const LeagueCard = memo(function LeagueCard({
   return (
     <div
       onClick={onClick}
-      className="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all cursor-pointer group"
+      onKeyDown={(e) => e.key === 'Enter' && onClick?.()}
+      role="listitem"
+      tabIndex={0}
+      aria-label={`Liga ${league.name}, ${myRoster ? `${myRoster.settings.wins} vitórias e ${myRoster.settings.losses} derrotas` : 'carregando roster'}`}
+      className="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all cursor-pointer group focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
     >
       <div className="flex items-start gap-3 mb-3">
         {avatarUrl ? (
-          <img src={avatarUrl} alt={league.name} className="w-12 h-12 rounded-lg" loading="lazy" />
+          <img src={avatarUrl} alt="" className="w-12 h-12 rounded-lg" loading="lazy" />
         ) : (
-          <div className="w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center text-xl">
+          <div className="w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center text-xl" aria-hidden="true">
             🏈
           </div>
         )}
