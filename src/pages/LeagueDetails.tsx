@@ -4,11 +4,12 @@ import { useLeagueData } from '@/hooks/useSleeperUser'
 import { calculateStandings } from '@/utils/standings'
 import { RosterView } from '@/components/RosterView'
 import { ChampionsHistory } from '@/components/ChampionsHistory'
+import { MatchupsView } from '@/components/MatchupsView'
 import { SkeletonTable } from '@/components/ui/SkeletonTable'
 import { useAppStore } from '@/store/useAppStore'
 import type { StandingTeam } from '@/types/sleeper'
 
-type Tab = 'standings' | 'roster' | 'history'
+type Tab = 'standings' | 'matchups' | 'roster' | 'history'
 
 export function LeagueDetails() {
   const { id } = useParams<{ id: string }>()
@@ -72,6 +73,13 @@ export function LeagueDetails() {
   const myRoster = data.rosters.find(r => r.owner_id === currentUser?.user_id)
   const myUser = data.users.find(u => u.user_id === currentUser?.user_id)
 
+  const tabs = [
+    { id: 'standings' as Tab, label: '📊 Classificação' },
+    { id: 'matchups' as Tab, label: '🏈 Matchups' },
+    { id: 'roster' as Tab, label: '👤 Meu Roster' },
+    { id: 'history' as Tab, label: '🏆 Histórico' },
+  ]
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 pb-10">
       <div className="sticky top-0 z-10 bg-slate-950/95 backdrop-blur border-b border-slate-800">
@@ -92,43 +100,22 @@ export function LeagueDetails() {
             </div>
           </div>
 
-          <div className="flex gap-2" role="tablist" aria-label="Visualização da liga">
-            <button
-              onClick={() => setActiveTab('standings')}
-              role="tab"
-              aria-selected={activeTab === 'standings'}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
-                activeTab === 'standings'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-              }`}
-            >
-              📊 Classificação
-            </button>
-            <button
-              onClick={() => setActiveTab('roster')}
-              role="tab"
-              aria-selected={activeTab === 'roster'}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
-                activeTab === 'roster'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-              }`}
-            >
-              👤 Meu Roster
-            </button>
-            <button
-              onClick={() => setActiveTab('history')}
-              role="tab"
-              aria-selected={activeTab === 'history'}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
-                activeTab === 'history'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-              }`}
-            >
-              🏆 Histórico
-            </button>
+          <div className="flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Visualização da liga">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -186,6 +173,16 @@ export function LeagueDetails() {
               </tbody>
             </table>
           </div>
+        )}
+
+        {/* Tab: Matchups */}
+        {activeTab === 'matchups' && (
+          <MatchupsView 
+            league={data.league}
+            rosters={data.rosters}
+            users={data.users}
+            currentUserId={currentUser?.user_id}
+          />
         )}
 
         {/* Tab: Meu Roster */}

@@ -12,6 +12,7 @@ export interface LeagueSettings {
   fpts?: number
   fpts_decimal?: number
   type?: number
+  leg?: number // Semana atual
 }
 
 export interface SleeperLeague {
