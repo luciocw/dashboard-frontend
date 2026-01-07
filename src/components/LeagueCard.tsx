@@ -5,7 +5,6 @@ import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface LeagueCardProps {
   league: SleeperLeague
-  players?: any
   myRoster?: SleeperRoster | null
   picks?: any[]
   onClick?: () => void
@@ -111,7 +110,6 @@ function groupPicks(picks: any[] | undefined) {
 
 export const LeagueCard = memo(function LeagueCard({
   league,
-  players,
   myRoster,
   picks,
   onClick,
