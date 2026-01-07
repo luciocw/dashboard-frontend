@@ -13,7 +13,7 @@
 | 2 | League Card | ✅ Implementado | 07/01/2026 |
 | 3 | Matchup Card | ✅ Implementado | 07/01/2026 |
 | 4 | Standings Table | ✅ Implementado | 07/01/2026 |
-| 5 | Power Rankings | 🔜 Pendente | - |
+| 5 | Power Rankings | ✅ Implementado | 07/01/2026 |
 | 6 | Design System / Color Palette | 🔜 Pendente | - |
 
 ---
@@ -97,7 +97,7 @@ Tech: React + Tailwind CSS only, lucide-react for icons.
 
 ---
 
-### PROMPT 5 - Power Rankings 🔜
+### PROMPT 5 - Power Rankings ✅
 ```
 Create a Power Rankings visualization for fantasy football with dark theme:
 - Ranked list of teams (not table)
