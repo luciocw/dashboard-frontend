@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { usePlayers, getPlayerInfo, sortPlayersByPosition } from '@/hooks/usePlayers'
+import type { PlayersMap } from '@/hooks/usePlayers'
 import { PlayerCard } from './PlayerCard'
 import { Badge } from './ui/Badge'
 import type { SleeperRoster, SleeperUser, SleeperLeague } from '@/types/sleeper'
@@ -10,7 +11,7 @@ interface RosterViewProps {
   league: SleeperLeague
 }
 
-function groupByPosition(playerIds: string[], players: Record<string, any>): Record<string, string[]> {
+function groupByPosition(playerIds: string[], players: PlayersMap): Record<string, string[]> {
   const groups: Record<string, string[]> = {}
   
   playerIds.forEach(id => {
@@ -25,7 +26,7 @@ function groupByPosition(playerIds: string[], players: Record<string, any>): Rec
   return groups
 }
 
-function calculateAvgAge(playerIds: string[], players: Record<string, any>): number {
+function calculateAvgAge(playerIds: string[], players: PlayersMap): number {
   const ages = playerIds
     .map(id => players[id]?.age)
     .filter((age): age is number => typeof age === 'number')

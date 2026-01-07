@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { ApiError } from '@/utils/errors'
 
 export interface NFLPlayer {
   player_id: string
@@ -13,11 +14,16 @@ export interface NFLPlayer {
   injury_status?: string
 }
 
-type PlayersMap = Record<string, NFLPlayer>
+export type PlayersMap = Record<string, NFLPlayer>
 
 async function fetchAllPlayers(): Promise<PlayersMap> {
-  const res = await fetch('https://api.sleeper.app/v1/players/nfl')
-  if (!res.ok) throw new Error('Failed to fetch players')
+  const endpoint = 'https://api.sleeper.app/v1/players/nfl'
+  const res = await fetch(endpoint)
+  
+  if (!res.ok) {
+    throw new ApiError('Erro ao buscar jogadores', res.status, endpoint)
+  }
+  
   return res.json()
 }
 
@@ -25,18 +31,16 @@ export function usePlayers() {
   return useQuery({
     queryKey: ['players'],
     queryFn: fetchAllPlayers,
-    staleTime: 1000 * 60 * 60 * 24, // 24 horas (dados mudam pouco)
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 dias no cache
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24 * 7,
   })
 }
 
-// Helper para pegar info do jogador
 export function getPlayerInfo(players: PlayersMap | undefined, playerId: string): NFLPlayer | null {
   if (!players || !playerId) return null
   return players[playerId] || null
 }
 
-// Helper para ordenar jogadores por posição
 export function sortPlayersByPosition(playerIds: string[], players: PlayersMap): string[] {
   const positionOrder = ['QB', 'RB', 'WR', 'TE', 'K', 'DEF']
   

@@ -1,17 +1,31 @@
 import { useQuery } from '@tanstack/react-query'
+import { ApiError } from '@/utils/errors'
 import type { SleeperUser, SleeperLeague, LeagueData } from '@/types/sleeper'
 
 const API = 'https://api.sleeper.app/v1'
 
 async function fetchUser(username: string): Promise<SleeperUser> {
-  const res = await fetch(`${API}/user/${username}`)
-  if (!res.ok) throw new Error('User not found')
+  const endpoint = `${API}/user/${username}`
+  const res = await fetch(endpoint)
+  
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw new ApiError('Usuário não encontrado', 404, endpoint)
+    }
+    throw new ApiError('Erro ao buscar usuário', res.status, endpoint)
+  }
+  
   return res.json()
 }
 
 async function fetchLeagues(userId: string, season: string): Promise<SleeperLeague[]> {
-  const res = await fetch(`${API}/user/${userId}/leagues/nfl/${season}`)
-  if (!res.ok) throw new Error('Leagues not found')
+  const endpoint = `${API}/user/${userId}/leagues/nfl/${season}`
+  const res = await fetch(endpoint)
+  
+  if (!res.ok) {
+    throw new ApiError('Erro ao buscar ligas', res.status, endpoint)
+  }
+  
   return res.json()
 }
 
@@ -21,9 +35,15 @@ async function fetchLeagueDetails(leagueId: string): Promise<LeagueData> {
     fetch(`${API}/league/${leagueId}/rosters`),
     fetch(`${API}/league/${leagueId}/users`),
   ])
+  
   if (!leagueRes.ok || !rostersRes.ok || !usersRes.ok) {
-    throw new Error('Failed to fetch league details')
+    throw new ApiError(
+      'Erro ao buscar detalhes da liga',
+      leagueRes.status || rostersRes.status || usersRes.status,
+      `${API}/league/${leagueId}`
+    )
   }
+  
   return {
     league: await leagueRes.json(),
     rosters: await rostersRes.json(),

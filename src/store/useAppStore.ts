@@ -1,17 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-interface User {
-  user_id: string
-  username: string
-  display_name?: string
-  avatar?: string
-}
+import type { SleeperUser } from '@/types/sleeper'
 
 interface AppState {
   // User state
-  currentUser: User | null
-  setCurrentUser: (user: User | null) => void
+  currentUser: SleeperUser | null
+  setCurrentUser: (user: SleeperUser | null) => void
   
   // Season state
   selectedSeason: string

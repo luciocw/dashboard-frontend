@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { ApiError } from '@/utils/errors'
 import type { SleeperRoster } from '@/types/sleeper'
 
 const API = 'https://api.sleeper.app/v1'
@@ -11,12 +12,15 @@ async function fetchAllRosters(
   leagueIds: string[],
   userId: string
 ): Promise<RostersByLeague> {
-  // Buscar todos os rosters em paralelo
   const results = await Promise.all(
     leagueIds.map(async (leagueId) => {
       try {
-        const res = await fetch(`${API}/league/${leagueId}/rosters`)
-        if (!res.ok) return { leagueId, roster: null }
+        const endpoint = `${API}/league/${leagueId}/rosters`
+        const res = await fetch(endpoint)
+        
+        if (!res.ok) {
+          throw new ApiError('Erro ao buscar roster', res.status, endpoint)
+        }
         
         const rosters: SleeperRoster[] = await res.json()
         const myRoster = rosters.find(r => r.owner_id === userId) || null
@@ -28,7 +32,6 @@ async function fetchAllRosters(
     })
   )
 
-  // Converter array para objeto
   const rostersByLeague: RostersByLeague = {}
   results.forEach(({ leagueId, roster }) => {
     rostersByLeague[leagueId] = roster
@@ -42,6 +45,6 @@ export function useAllMyRosters(leagueIds: string[], userId: string | undefined)
     queryKey: ['allMyRosters', leagueIds.sort().join(','), userId],
     queryFn: () => fetchAllRosters(leagueIds, userId!),
     enabled: leagueIds.length > 0 && !!userId,
-    staleTime: 1000 * 60 * 60 * 2, // 2 horas
+    staleTime: 1000 * 60 * 60 * 2,
   })
 }
