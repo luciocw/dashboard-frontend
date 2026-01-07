@@ -12,7 +12,7 @@
 | 1 | Header + Hero Section | ✅ Implementado | 07/01/2026 |
 | 2 | League Card | ✅ Implementado | 07/01/2026 |
 | 3 | Matchup Card | ✅ Implementado | 07/01/2026 |
-| 4 | Standings Table | 🔜 Pendente | - |
+| 4 | Standings Table | ✅ Implementado | 07/01/2026 |
 | 5 | Power Rankings | 🔜 Pendente | - |
 | 6 | Design System / Color Palette | 🔜 Pendente | - |
 
@@ -80,7 +80,7 @@ Tech: React + Tailwind CSS only, lucide-react for icons.
 
 ---
 
-### PROMPT 4 - Standings Table 🔜
+### PROMPT 4 - Standings Table ✅
 ```
 Create a standings/leaderboard table for fantasy football with dark theme:
 - Columns: Rank (#), Manager (avatar + name), Record (W-L), Points, Win%
