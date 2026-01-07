@@ -47,15 +47,15 @@ src/store/ - useAppStore
 src/types/ - sleeper.ts
 src/utils/ - validation, errors, league, roster, standings, nfl
 src/constants/ - index.ts (API_URL, CACHE_TIMES, POSITION_COLORS, POSITION_ORDER)
-src/test/ - setup.ts, *.test.ts
+src/test/ - setup.ts
 
 ## 🧪 Comandos Úteis
 
 npm run dev (desenvolvimento)
-npm test (testes)
+npm test (testes - 24 passando)
 npm run type-check (verificar tipos)
 npm run build (build produção)
-git push (deploy automático)
+git push (deploy automático Cloudflare)
 
 ## 📝 Próxima Feature Sugerida
 
