@@ -16,9 +16,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.19",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.11.0",
+    "tailwind-merge": "^3.4.0",
     "zod": "^3.22.4",
     "zustand": "^4.4.7"
   },
