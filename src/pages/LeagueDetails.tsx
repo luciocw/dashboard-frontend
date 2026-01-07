@@ -3,11 +3,12 @@ import { useParams, Link } from 'react-router-dom'
 import { useLeagueData } from '@/hooks/useSleeperUser'
 import { calculateStandings } from '@/utils/standings'
 import { RosterView } from '@/components/RosterView'
+import { ChampionsHistory } from '@/components/ChampionsHistory'
 import { SkeletonTable } from '@/components/ui/SkeletonTable'
 import { useAppStore } from '@/store/useAppStore'
 import type { StandingTeam } from '@/types/sleeper'
 
-type Tab = 'standings' | 'roster'
+type Tab = 'standings' | 'roster' | 'history'
 
 export function LeagueDetails() {
   const { id } = useParams<{ id: string }>()
@@ -29,6 +30,7 @@ export function LeagueDetails() {
             </div>
             <div className="flex gap-2">
               <div className="h-9 w-32 bg-slate-700 rounded-lg animate-pulse" />
+              <div className="h-9 w-28 bg-slate-800 rounded-lg animate-pulse" />
               <div className="h-9 w-28 bg-slate-800 rounded-lg animate-pulse" />
             </div>
           </div>
@@ -95,7 +97,6 @@ export function LeagueDetails() {
               onClick={() => setActiveTab('standings')}
               role="tab"
               aria-selected={activeTab === 'standings'}
-              aria-controls="standings-panel"
               className={`px-4 py-2 rounded-lg text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
                 activeTab === 'standings'
                   ? 'bg-blue-600 text-white'
@@ -108,7 +109,6 @@ export function LeagueDetails() {
               onClick={() => setActiveTab('roster')}
               role="tab"
               aria-selected={activeTab === 'roster'}
-              aria-controls="roster-panel"
               className={`px-4 py-2 rounded-lg text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
                 activeTab === 'roster'
                   ? 'bg-blue-600 text-white'
@@ -117,18 +117,26 @@ export function LeagueDetails() {
             >
               👤 Meu Roster
             </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              role="tab"
+              aria-selected={activeTab === 'history'}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${
+                activeTab === 'history'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              }`}
+            >
+              🏆 Histórico
+            </button>
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 mt-6">
+        {/* Tab: Standings */}
         {activeTab === 'standings' && (
-          <div 
-            id="standings-panel"
-            role="tabpanel"
-            aria-labelledby="standings-tab"
-            className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden"
-          >
+          <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
             <div className="p-4 border-b border-slate-800 flex justify-between">
               <h2 className="font-semibold">Classificação</h2>
               <span className="text-xs text-slate-400">{data.league.total_rosters} Times</span>
@@ -180,13 +188,9 @@ export function LeagueDetails() {
           </div>
         )}
 
+        {/* Tab: Meu Roster */}
         {activeTab === 'roster' && (
-          <div 
-            id="roster-panel"
-            role="tabpanel"
-            aria-labelledby="roster-tab"
-            className="max-w-2xl mx-auto"
-          >
+          <div className="max-w-2xl mx-auto">
             {myRoster ? (
               <RosterView roster={myRoster} owner={myUser} league={data.league} />
             ) : (
@@ -196,6 +200,13 @@ export function LeagueDetails() {
                 <p className="text-slate-400">Você não parece ter um time nesta liga.</p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab: Histórico */}
+        {activeTab === 'history' && (
+          <div className="max-w-2xl mx-auto">
+            <ChampionsHistory leagueId={data.league.league_id} />
           </div>
         )}
       </div>

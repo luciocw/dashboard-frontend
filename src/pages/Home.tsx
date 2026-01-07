@@ -5,23 +5,43 @@ import { useAppStore } from '@/store/useAppStore'
 import { usePlayers } from '@/hooks/usePlayers'
 import { useAllMyRosters } from '@/hooks/useAllMyRosters'
 import { useAllDraftPicks } from '@/hooks/useAllDraftPicks'
+import { useAllUserLeagues } from '@/hooks/useAllUserLeagues'
+import { useUserTitles } from '@/hooks/useUserTitles'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
 import { ErrorCard } from '@/components/ui/ErrorCard'
 import { SkeletonCard } from '@/components/ui/SkeletonCard'
+import { TitlesModal } from '@/components/TitlesModal'
 import { Footer } from '@/components/Footer'
 import { getAvailableSeasons } from '@/utils/nfl'
 import { validateUsername, sanitizeInput } from '@/utils/validation'
 import { isApiError } from '@/utils/errors'
-import type { SleeperLeague } from '@/types/sleeper'
+import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
 
 function calculateStats(leagues: SleeperLeague[]) {
   const total = leagues.length
   const dynasty = leagues.filter(l => l.settings?.type === 2).length
-  const inSeason = leagues.filter(l => l.status === 'in_season').length
-  const totalTeams = leagues.reduce((sum, l) => sum + l.total_rosters, 0)
-  return { total, dynasty, inSeason, totalTeams }
+  return { total, dynasty }
+}
+
+function calculateRecord(rosters: Record<string, SleeperRoster | null> | undefined) {
+  if (!rosters) return { wins: 0, losses: 0, winRate: 0 }
+  
+  let totalWins = 0
+  let totalLosses = 0
+  
+  Object.values(rosters).forEach(roster => {
+    if (roster) {
+      totalWins += roster.settings.wins || 0
+      totalLosses += roster.settings.losses || 0
+    }
+  })
+  
+  const totalGames = totalWins + totalLosses
+  const winRate = totalGames > 0 ? (totalWins / totalGames) * 100 : 0
+  
+  return { wins: totalWins, losses: totalLosses, winRate }
 }
 
 export function Home() {
@@ -37,6 +57,7 @@ export function Home() {
   const [inputValue, setInputValue] = useState('')
   const [searchUsername, setSearchUsername] = useState(currentUser?.username || '')
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [showTitlesModal, setShowTitlesModal] = useState(false)
 
   const { 
     data: user, 
@@ -51,11 +72,15 @@ export function Home() {
     refetch: refetchLeagues
   } = useSleeperLeagues(user?.user_id, selectedSeason)
   
+  const { data: allLeagues } = useAllUserLeagues(currentUser?.user_id)
+  
   const { data: players, error: playersError } = usePlayers()
   
   const leagueIds = leagues?.map(l => l.league_id) || []
   const { data: rostersByLeague } = useAllMyRosters(leagueIds, currentUser?.user_id)
   const { data: picksByLeague } = useAllDraftPicks(leagueIds)
+  
+  const { data: userTitles, isLoading: loadingTitles } = useUserTitles(allLeagues, currentUser?.user_id)
 
   useEffect(() => {
     if (user && user.user_id !== currentUser?.user_id) {
@@ -71,6 +96,8 @@ export function Home() {
 
   const availableSeasons = getAvailableSeasons()
   const stats = leagues ? calculateStats(leagues) : null
+  const record = calculateRecord(rostersByLeague)
+  const titlesCount = userTitles?.length || 0
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeInput(e.target.value)
@@ -117,6 +144,8 @@ export function Home() {
   }
 
   const errorMessage = getErrorMessage()
+  const recordDisplay = `${record.wins}-${record.losses}`
+  const winRateDisplay = `${record.winRate.toFixed(0)}%`
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
@@ -124,10 +153,7 @@ export function Home() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🏈</span>
-            <div>
-              <h1 className="font-bold text-lg">Dynasty Dashboard</h1>
-              <p className="text-xs text-slate-500">v2.2.0</p>
-            </div>
+            <h1 className="font-bold text-lg">Dynasty Dashboard</h1>
           </div>
           
           {effectiveUser && (
@@ -224,10 +250,35 @@ export function Home() {
           <>
             {stats && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <StatCard label="Total Ligas" value={stats.total} icon="🏆" />
+                <StatCard label="Ligas" value={stats.total} icon="📋" />
                 <StatCard label="Dynasty" value={stats.dynasty} icon="👑" />
-                <StatCard label="Em Andamento" value={stats.inSeason} icon="🔥" />
-                <StatCard label="Total Times" value={stats.totalTeams} icon="👥" />
+                <StatCard 
+                  label={`Record ${selectedSeason}`} 
+                  value={recordDisplay} 
+                  icon="📊" 
+                />
+                <StatCard 
+                  label="Títulos" 
+                  value={loadingTitles ? '...' : titlesCount} 
+                  icon="🏆"
+                  highlight={titlesCount > 0}
+                  onClick={() => setShowTitlesModal(true)}
+                />
+              </div>
+            )}
+
+            {record.wins + record.losses > 0 && (
+              <div className="flex justify-center mb-6">
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+                  record.winRate >= 60 
+                    ? 'bg-green-900/30 text-green-400 border border-green-800/50' 
+                    : record.winRate >= 50 
+                      ? 'bg-blue-900/30 text-blue-400 border border-blue-800/50'
+                      : 'bg-red-900/30 text-red-400 border border-red-800/50'
+                }`}>
+                  <span>Win Rate: {winRateDisplay}</span>
+                  <span className="text-xs opacity-70">({record.wins}W - {record.losses}L)</span>
+                </div>
               </div>
             )}
 
@@ -292,6 +343,12 @@ export function Home() {
       </main>
 
       <Footer />
+
+      <TitlesModal 
+        titles={userTitles || []}
+        isOpen={showTitlesModal}
+        onClose={() => setShowTitlesModal(false)}
+      />
     </div>
   )
 }

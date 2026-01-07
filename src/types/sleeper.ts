@@ -23,6 +23,7 @@ export interface SleeperLeague {
   status: string
   settings: LeagueSettings
   roster_positions?: string[]
+  previous_league_id?: string | null
 }
 
 export interface RosterSettings {
@@ -59,26 +60,4 @@ export interface StandingTeam {
   ties: number
   fpts: number
   winRate: number
-}
-
-// Draft Picks
-export interface DraftPick {
-  season: string
-  round: number
-  roster_id: number
-  owner_id: number
-  previous_owner_id: number
-}
-
-export interface TradedPick {
-  season: string
-  round: number
-  roster_id: number
-  owner_id: number
-  previous_owner_id: number
-}
-
-export interface DraftPicksData {
-  owned: DraftPick[]
-  owed: DraftPick[]
 }
