@@ -8,6 +8,7 @@ import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
 import { Footer } from '@/components/Footer'
 import { getAvailableSeasons } from '@/utils/nfl'
+import { validateUsername, sanitizeInput } from '@/utils/validation'
 import type { SleeperLeague } from '@/types/sleeper'
 
 function calculateStats(leagues: SleeperLeague[]) {
@@ -29,14 +30,13 @@ export function Home() {
 
   const [inputValue, setInputValue] = useState('')
   const [searchUsername, setSearchUsername] = useState(currentUser?.username || '')
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   const { data: user, isLoading: loadingUser, error: userError } = useSleeperUser(searchUsername)
   const { data: leagues, isLoading: loadingLeagues } = useSleeperLeagues(user?.user_id, selectedSeason)
   
-  // BUSCAR PLAYERS UMA VEZ SÓ
   const { data: players } = usePlayers()
   
-  // BUSCAR TODOS OS ROSTERS DE UMA VEZ
   const leagueIds = leagues?.map(l => l.league_id) || []
   const { data: rostersByLeague } = useAllMyRosters(leagueIds, currentUser?.user_id)
 
@@ -55,20 +55,37 @@ export function Home() {
   const availableSeasons = getAvailableSeasons()
   const stats = leagues ? calculateStats(leagues) : null
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeInput(e.target.value)
+    setInputValue(sanitized)
+    setValidationError(null) // Limpa erro ao digitar
+  }
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (inputValue.trim()) {
-      setSearchUsername(inputValue.trim())
+    
+    // Validar input
+    const validation = validateUsername(inputValue)
+    if (!validation.valid) {
+      setValidationError(validation.error || 'Username inválido')
+      return
     }
+    
+    setValidationError(null)
+    setSearchUsername(inputValue.trim())
   }
 
   const handleLogout = () => {
     setSearchUsername('')
     setInputValue('')
+    setValidationError(null)
     logout()
   }
 
   const effectiveUser = currentUser || user
+
+  // Determinar mensagem de erro a mostrar
+  const errorMessage = validationError || (userError ? 'Usuário não encontrado' : null)
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
@@ -127,14 +144,27 @@ export function Home() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Username do Sleeper"
-                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 transition"
-                disabled={loadingUser}
-              />
+              <div>
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  placeholder="Username do Sleeper"
+                  maxLength={25}
+                  aria-label="Username do Sleeper"
+                  aria-describedby={errorMessage ? 'error-message' : undefined}
+                  className={`w-full px-4 py-3 bg-slate-900 border rounded-xl focus:outline-none transition ${
+                    errorMessage 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-slate-700 focus:border-blue-500'
+                  }`}
+                  disabled={loadingUser}
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  3-25 caracteres (letras, números e _)
+                </p>
+              </div>
+              
               <button 
                 type="submit"
                 disabled={loadingUser || !inputValue.trim()} 
@@ -144,9 +174,13 @@ export function Home() {
               </button>
             </form>
             
-            {userError && (
-              <div className="mt-4 p-4 bg-red-900/20 border border-red-800 rounded-xl text-red-400 text-sm text-center">
-                ❌ Usuário não encontrado
+            {errorMessage && (
+              <div 
+                id="error-message"
+                role="alert"
+                className="mt-4 p-4 bg-red-900/20 border border-red-800 rounded-xl text-red-400 text-sm text-center"
+              >
+                ❌ {errorMessage}
               </div>
             )}
           </div>
