@@ -5,16 +5,17 @@ import { calculateStandings } from '@/utils/standings'
 import { RosterView } from '@/components/RosterView'
 import { ChampionsHistory } from '@/components/ChampionsHistory'
 import { MatchupsView } from '@/components/MatchupsView'
+import { TradesView } from '@/components/TradesView'
 import { SkeletonTable } from '@/components/ui/SkeletonTable'
 import { useAppStore } from '@/store/useAppStore'
 import type { StandingTeam } from '@/types/sleeper'
 
-type Tab = 'standings' | 'matchups' | 'roster' | 'history'
+type Tab = 'roster' | 'matchups' | 'standings' | 'trades' | 'history'
 
 export function LeagueDetails() {
   const { id } = useParams<{ id: string }>()
   const { data, isLoading, isError, refetch } = useLeagueData(id)
-  const [activeTab, setActiveTab] = useState<Tab>('standings')
+  const [activeTab, setActiveTab] = useState<Tab>('roster')
   const currentUser = useAppStore((state) => state.currentUser)
 
   if (isLoading) {
@@ -30,9 +31,9 @@ export function LeagueDetails() {
               </div>
             </div>
             <div className="flex gap-2">
-              <div className="h-9 w-32 bg-slate-700 rounded-lg animate-pulse" />
-              <div className="h-9 w-28 bg-slate-800 rounded-lg animate-pulse" />
-              <div className="h-9 w-28 bg-slate-800 rounded-lg animate-pulse" />
+              {[1,2,3,4,5].map(i => (
+                <div key={i} className="h-9 w-24 bg-slate-800 rounded-lg animate-pulse" />
+              ))}
             </div>
           </div>
         </div>
@@ -73,10 +74,12 @@ export function LeagueDetails() {
   const myRoster = data.rosters.find(r => r.owner_id === currentUser?.user_id)
   const myUser = data.users.find(u => u.user_id === currentUser?.user_id)
 
+  // Nova ordem: Roster > Matchups > Classificação > Trades > Histórico
   const tabs = [
-    { id: 'standings' as Tab, label: '📊 Classificação' },
-    { id: 'matchups' as Tab, label: '🏈 Matchups' },
     { id: 'roster' as Tab, label: '👤 Meu Roster' },
+    { id: 'matchups' as Tab, label: '🏈 Matchups' },
+    { id: 'standings' as Tab, label: '📊 Classificação' },
+    { id: 'trades' as Tab, label: '🔄 Trades' },
     { id: 'history' as Tab, label: '🏆 Histórico' },
   ]
 
@@ -121,6 +124,31 @@ export function LeagueDetails() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 mt-6">
+        {/* Tab: Meu Roster */}
+        {activeTab === 'roster' && (
+          <div className="max-w-2xl mx-auto">
+            {myRoster ? (
+              <RosterView roster={myRoster} owner={myUser} league={data.league} />
+            ) : (
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-8 text-center">
+                <div className="text-4xl mb-4">🤷</div>
+                <h3 className="text-lg font-semibold mb-2">Roster não encontrado</h3>
+                <p className="text-slate-400">Você não parece ter um time nesta liga.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab: Matchups */}
+        {activeTab === 'matchups' && (
+          <MatchupsView 
+            league={data.league}
+            rosters={data.rosters}
+            users={data.users}
+            currentUserId={currentUser?.user_id}
+          />
+        )}
+
         {/* Tab: Standings */}
         {activeTab === 'standings' && (
           <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
@@ -154,7 +182,7 @@ export function LeagueDetails() {
                               loading="lazy"
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs" aria-hidden="true">
+                            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">
                               {team.name.charAt(0)}
                             </div>
                           )}
@@ -175,29 +203,14 @@ export function LeagueDetails() {
           </div>
         )}
 
-        {/* Tab: Matchups */}
-        {activeTab === 'matchups' && (
-          <MatchupsView 
-            league={data.league}
+        {/* Tab: Trades */}
+        {activeTab === 'trades' && (
+          <TradesView 
+            leagueId={data.league.league_id}
             rosters={data.rosters}
             users={data.users}
             currentUserId={currentUser?.user_id}
           />
-        )}
-
-        {/* Tab: Meu Roster */}
-        {activeTab === 'roster' && (
-          <div className="max-w-2xl mx-auto">
-            {myRoster ? (
-              <RosterView roster={myRoster} owner={myUser} league={data.league} />
-            ) : (
-              <div className="bg-slate-900 rounded-xl border border-slate-800 p-8 text-center">
-                <div className="text-4xl mb-4" aria-hidden="true">🤷</div>
-                <h3 className="text-lg font-semibold mb-2">Roster não encontrado</h3>
-                <p className="text-slate-400">Você não parece ter um time nesta liga.</p>
-              </div>
-            )}
-          </div>
         )}
 
         {/* Tab: Histórico */}
