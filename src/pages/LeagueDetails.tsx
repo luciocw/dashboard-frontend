@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Users, Calendar } from 'lucide-react'
 import { useLeagueData } from '@/hooks/useSleeperUser'
@@ -21,6 +21,11 @@ export function LeagueDetails() {
   const { data, isLoading, isError, refetch } = useLeagueData(id)
   const [activeTab, setActiveTab] = useState<Tab>('roster')
   const currentUser = useAppStore((state) => state.currentUser)
+
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [id])
 
   if (isLoading) {
     return (

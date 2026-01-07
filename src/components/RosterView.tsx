@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Users, Truck, ShieldPlus } from 'lucide-react'
+import { Users, Car, Hospital } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@/utils/cn'
 import { API_URL, CACHE_TIMES } from '@/constants'
@@ -198,13 +198,13 @@ export const RosterView = memo(function RosterView({ roster, league }: RosterVie
             </div>
             {taxi.length > 0 && (
               <div className="flex items-center gap-1.5 text-sm">
-                <Truck className="h-4 w-4 text-amber-400" />
+                <Car className="h-4 w-4 text-amber-400" />
                 <span className="text-amber-400 font-medium">{taxi.length}</span>
               </div>
             )}
             {reserve.length > 0 && (
               <div className="flex items-center gap-1.5 text-sm">
-                <ShieldPlus className="h-4 w-4 text-red-400" />
+                <Hospital className="h-4 w-4 text-red-400" />
                 <span className="text-red-400 font-medium">{reserve.length}</span>
               </div>
             )}
@@ -277,7 +277,7 @@ export const RosterView = memo(function RosterView({ roster, league }: RosterVie
         <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-amber-500/40 overflow-hidden">
           <div className="px-4 py-3 border-b border-amber-500/30 bg-amber-500/10">
             <h3 className="font-semibold text-amber-400 flex items-center gap-2">
-              <Truck className="h-4 w-4" />
+              <Car className="h-4 w-4" />
               Taxi Squad ({taxi.length})
             </h3>
           </div>
@@ -296,7 +296,7 @@ export const RosterView = memo(function RosterView({ roster, league }: RosterVie
         <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-red-500/40 overflow-hidden">
           <div className="px-4 py-3 border-b border-red-500/30 bg-red-500/10">
             <h3 className="font-semibold text-red-400 flex items-center gap-2">
-              <ShieldPlus className="h-4 w-4" />
+              <Hospital className="h-4 w-4" />
               Injured Reserve ({reserve.length})
             </h3>
           </div>
