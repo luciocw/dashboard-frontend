@@ -3,10 +3,19 @@ import { API_URL, CACHE_TIMES } from '@/constants'
 import { ApiError } from '@/utils/errors'
 import type { SleeperRoster } from '@/types/sleeper'
 
+/**
+ * Mapa de rosters indexado por league_id
+ */
 interface RostersByLeague {
   [leagueId: string]: SleeperRoster | null
 }
 
+/**
+ * Busca rosters de múltiplas ligas em paralelo
+ * @param leagueIds - Array de IDs de ligas
+ * @param userId - ID do usuário para filtrar apenas seu roster
+ * @returns Mapa de rosters por liga
+ */
 async function fetchAllRosters(
   leagueIds: string[],
   userId: string
@@ -39,6 +48,17 @@ async function fetchAllRosters(
   return rostersByLeague
 }
 
+/**
+ * Hook para buscar rosters do usuário em múltiplas ligas
+ * Otimizado para buscar todos em paralelo (evita N+1)
+ * @param leagueIds - Array de IDs de ligas
+ * @param userId - ID do usuário logado
+ * @returns Query result com mapa de rosters por liga
+ * @example
+ * const leagueIds = leagues?.map(l => l.league_id) || []
+ * const { data: rosters } = useAllMyRosters(leagueIds, user?.user_id)
+ * const myRoster = rosters?.['123456789']
+ */
 export function useAllMyRosters(leagueIds: string[], userId: string | undefined) {
   return useQuery({
     queryKey: ['allMyRosters', leagueIds.sort().join(','), userId],

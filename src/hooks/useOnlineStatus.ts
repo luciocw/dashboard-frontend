@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
 
-export function useOnlineStatus() {
+/**
+ * Hook para monitorar status de conexão do navegador
+ * @returns true se online, false se offline
+ * @example
+ * const isOnline = useOnlineStatus()
+ * if (!isOnline) showOfflineBanner()
+ */
+export function useOnlineStatus(): boolean {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
 
   useEffect(() => {
