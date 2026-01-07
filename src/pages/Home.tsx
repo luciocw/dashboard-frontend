@@ -2,6 +2,8 @@ import { useState, FormEvent, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSleeperUser, useSleeperLeagues } from '@/hooks/useSleeperUser'
 import { useAppStore } from '@/store/useAppStore'
+import { usePlayers } from '@/hooks/usePlayers'
+import { useAllMyRosters } from '@/hooks/useAllMyRosters'
 import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
 import { Footer } from '@/components/Footer'
@@ -19,29 +21,31 @@ function calculateStats(leagues: SleeperLeague[]) {
 export function Home() {
   const navigate = useNavigate()
   
-  // Store (persistido)
   const currentUser = useAppStore((state) => state.currentUser)
   const setCurrentUser = useAppStore((state) => state.setCurrentUser)
   const selectedSeason = useAppStore((state) => state.selectedSeason)
   const setSelectedSeason = useAppStore((state) => state.setSelectedSeason)
   const logout = useAppStore((state) => state.logout)
 
-  // Local state para input
   const [inputValue, setInputValue] = useState('')
   const [searchUsername, setSearchUsername] = useState(currentUser?.username || '')
 
-  // Buscar usuário
   const { data: user, isLoading: loadingUser, error: userError } = useSleeperUser(searchUsername)
   const { data: leagues, isLoading: loadingLeagues } = useSleeperLeagues(user?.user_id, selectedSeason)
+  
+  // BUSCAR PLAYERS UMA VEZ SÓ
+  const { data: players } = usePlayers()
+  
+  // BUSCAR TODOS OS ROSTERS DE UMA VEZ
+  const leagueIds = leagues?.map(l => l.league_id) || []
+  const { data: rostersByLeague } = useAllMyRosters(leagueIds, currentUser?.user_id)
 
-  // Salvar usuário no store quando carregar
   useEffect(() => {
     if (user && user.user_id !== currentUser?.user_id) {
       setCurrentUser(user)
     }
   }, [user, currentUser, setCurrentUser])
 
-  // Se já tem usuário no store, buscar dados dele
   useEffect(() => {
     if (currentUser?.username && !searchUsername) {
       setSearchUsername(currentUser.username)
@@ -64,12 +68,10 @@ export function Home() {
     logout()
   }
 
-  // Usuário efetivo (do store ou da busca)
   const effectiveUser = currentUser || user
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      {/* Header */}
       <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -98,6 +100,7 @@ export function Home() {
                     src={`https://sleepercdn.com/avatars/thumbs/${effectiveUser.avatar}`}
                     className="w-8 h-8 rounded-full"
                     alt=""
+                    loading="lazy"
                   />
                 )}
                 <span className="text-sm font-medium hidden sm:inline">{effectiveUser.display_name || effectiveUser.username}</span>
@@ -114,9 +117,7 @@ export function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
-        {/* Login Form */}
         {!effectiveUser && (
           <div className="max-w-md mx-auto mt-20">
             <div className="text-center mb-8">
@@ -151,10 +152,8 @@ export function Home() {
           </div>
         )}
 
-        {/* Dashboard */}
         {effectiveUser && (
           <>
-            {/* HUD Stats */}
             {stats && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <StatCard label="Total Ligas" value={stats.total} icon="🏆" />
@@ -164,7 +163,6 @@ export function Home() {
               </div>
             )}
 
-            {/* Loading */}
             {loadingLeagues && (
               <div className="flex justify-center py-12">
                 <div className="text-center">
@@ -174,7 +172,6 @@ export function Home() {
               </div>
             )}
 
-            {/* Leagues Grid */}
             {!loadingLeagues && leagues && leagues.length > 0 && (
               <>
                 <h2 className="text-lg font-semibold mb-4 text-slate-300">
@@ -184,7 +181,9 @@ export function Home() {
                   {leagues.map(league => (
                     <LeagueCard 
                       key={league.league_id} 
-                      league={league} 
+                      league={league}
+                      players={players}
+                      myRoster={rostersByLeague?.[league.league_id]}
                       onClick={() => navigate(`/league/${league.league_id}`)}
                     />
                   ))}
@@ -192,7 +191,6 @@ export function Home() {
               </>
             )}
 
-            {/* Empty State */}
             {!loadingLeagues && leagues && leagues.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-5xl mb-4">🤷</div>
@@ -203,7 +201,6 @@ export function Home() {
         )}
       </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   )

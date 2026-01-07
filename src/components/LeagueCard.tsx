@@ -1,11 +1,14 @@
+import { memo } from 'react'
 import { Badge } from './ui/Badge'
-import { useAppStore } from '@/store/useAppStore'
-import { useMyRoster } from '@/hooks/useMyRoster'
-import { usePlayers } from '@/hooks/usePlayers'
-import type { SleeperLeague } from '@/types/sleeper'
+import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
+import type { NFLPlayer } from '@/hooks/usePlayers'
+
+type PlayersMap = Record<string, NFLPlayer>
 
 interface LeagueCardProps {
   league: SleeperLeague
+  players?: PlayersMap
+  myRoster?: SleeperRoster | null
   onClick?: () => void
 }
 
@@ -22,30 +25,24 @@ function getLeagueTags(league: SleeperLeague): { label: string; variant: 'defaul
   const tags: { label: string; variant: 'default' | 'success' | 'warning' | 'info' | 'error' }[] = []
   const positions = league.roster_positions || []
   
-  // Tipo
   const type = getLeagueType(league.settings)
   if (type === 'Dynasty') tags.push({ label: 'DYNASTY', variant: 'success' })
   else if (type === 'Keeper') tags.push({ label: 'KEEPER', variant: 'warning' })
   else tags.push({ label: 'REDRAFT', variant: 'default' })
   
-  // PPR
   tags.push({ label: 'PPR', variant: 'info' })
   
-  // Superflex
   if (positions.includes('SUPER_FLEX')) tags.push({ label: 'SF', variant: 'error' })
   
-  // IDP
   if (positions.some(p => ['DL', 'LB', 'DB', 'IDP_FLEX'].includes(p))) {
     tags.push({ label: 'IDP', variant: 'warning' })
   }
   
-  // Times
   tags.push({ label: `${league.total_rosters}T`, variant: 'default' })
   
   return tags
 }
 
-// Formatar lineup
 function formatLineup(positions: string[]): string[] {
   const counts: Record<string, number> = {}
   positions.forEach(pos => {
@@ -58,8 +55,7 @@ function formatLineup(positions: string[]): string[] {
   )
 }
 
-// Contar por posição
-function countByPosition(playerIds: string[], players: Record<string, any>): Record<string, number> {
+function countByPosition(playerIds: string[], players: PlayersMap): Record<string, number> {
   const counts: Record<string, number> = {}
   playerIds.forEach(id => {
     const player = players[id]
@@ -70,8 +66,7 @@ function countByPosition(playerIds: string[], players: Record<string, any>): Rec
   return counts
 }
 
-// Calcular idade média
-function calculateAvgAge(playerIds: string[], players: Record<string, any>): number {
+function calculateAvgAge(playerIds: string[], players: PlayersMap): number {
   const ages = playerIds
     .map(id => players[id]?.age)
     .filter((age): age is number => typeof age === 'number')
@@ -79,11 +74,12 @@ function calculateAvgAge(playerIds: string[], players: Record<string, any>): num
   return ages.reduce((sum, age) => sum + age, 0) / ages.length
 }
 
-export function LeagueCard({ league, onClick }: LeagueCardProps) {
-  const currentUser = useAppStore((state) => state.currentUser)
-  const { data: rosterData } = useMyRoster(league.league_id, currentUser?.user_id)
-  const { data: players } = usePlayers()
-  
+export const LeagueCard = memo(function LeagueCard({ 
+  league, 
+  players, 
+  myRoster,
+  onClick 
+}: LeagueCardProps) {
   const tags = getLeagueTags(league)
   const avatarUrl = league.avatar 
     ? `https://sleepercdn.com/avatars/thumbs/${league.avatar}`
@@ -91,17 +87,13 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
 
   const lineup = formatLineup(league.roster_positions || [])
   
-  // Dados do meu roster
-  const myRoster = rosterData?.roster
   const allPlayers = myRoster?.players || []
   const taxi = myRoster?.taxi || []
   const ir = myRoster?.reserve || []
   
-  // Stats do roster
   const positionCounts = players ? countByPosition(allPlayers, players) : {}
   const avgAge = players ? calculateAvgAge(allPlayers, players) : 0
   
-  // Posições para mostrar
   const positionsToShow = ['QB', 'RB', 'WR', 'TE']
 
   return (
@@ -109,10 +101,9 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
       onClick={onClick}
       className="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all cursor-pointer group"
     >
-      {/* Header: Logo + Nome + Record */}
       <div className="flex items-start gap-3 mb-3">
         {avatarUrl ? (
-          <img src={avatarUrl} alt={league.name} className="w-12 h-12 rounded-lg" />
+          <img src={avatarUrl} alt={league.name} className="w-12 h-12 rounded-lg" loading="lazy" />
         ) : (
           <div className="w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center text-xl">
             🏈
@@ -123,7 +114,6 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
           <h3 className="font-bold text-white truncate group-hover:text-blue-400 transition-colors">
             {league.name}
           </h3>
-          {/* Tags */}
           <div className="flex flex-wrap gap-1 mt-1">
             {tags.map((tag, i) => (
               <Badge key={i} variant={tag.variant}>{tag.label}</Badge>
@@ -131,7 +121,6 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
           </div>
         </div>
 
-        {/* Record + Idade */}
         {myRoster && (
           <div className="text-right">
             <div className="text-xl font-bold">
@@ -144,7 +133,6 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
         )}
       </div>
 
-      {/* Lineup */}
       <div className="mb-3">
         <div className="text-xs text-slate-500 mb-1">LINEUP</div>
         <div className="flex flex-wrap gap-1">
@@ -165,7 +153,6 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
         </div>
       </div>
 
-      {/* Contadores */}
       {myRoster && (
         <div className="flex gap-3 text-xs mb-3">
           <span className="text-yellow-500">⚠ {allPlayers.length}</span>
@@ -174,7 +161,6 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
         </div>
       )}
 
-      {/* Contagem por posição */}
       {myRoster && players && (
         <div className="flex gap-3 text-sm">
           {positionsToShow.map(pos => (
@@ -194,10 +180,9 @@ export function LeagueCard({ league, onClick }: LeagueCardProps) {
         </div>
       )}
 
-      {/* Loading state */}
-      {!myRoster && (
+      {myRoster === undefined && (
         <div className="text-xs text-slate-500">Carregando roster...</div>
       )}
     </div>
   )
-}
+})

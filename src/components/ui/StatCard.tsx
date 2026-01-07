@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 interface StatCardProps {
   label: string
   value: string | number
@@ -5,13 +7,13 @@ interface StatCardProps {
   trend?: 'up' | 'down' | 'neutral'
 }
 
-export function StatCard({ label, value, icon, trend }: StatCardProps) {
-  const trendColors = {
-    up: 'text-green-400',
-    down: 'text-red-400',
-    neutral: 'text-slate-400',
-  }
+const trendColors = {
+  up: 'text-green-400',
+  down: 'text-red-400',
+  neutral: 'text-slate-400',
+}
 
+export const StatCard = memo(function StatCard({ label, value, icon, trend }: StatCardProps) {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-lg p-4">
       <div className="flex items-center justify-between mb-1">
@@ -23,4 +25,4 @@ export function StatCard({ label, value, icon, trend }: StatCardProps) {
       </div>
     </div>
   )
-}
+})

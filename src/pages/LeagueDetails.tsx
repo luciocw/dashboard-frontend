@@ -46,13 +46,11 @@ export function LeagueDetails() {
 
   const standings: StandingTeam[] = calculateStandings(data.rosters, data.users)
   
-  // Encontrar o roster do usuário logado
   const myRoster = data.rosters.find(r => r.owner_id === currentUser?.user_id)
   const myUser = data.users.find(u => u.user_id === currentUser?.user_id)
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 pb-10">
-      {/* Header Sticky */}
       <div className="sticky top-0 z-10 bg-slate-950/95 backdrop-blur border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
@@ -67,7 +65,6 @@ export function LeagueDetails() {
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex gap-2">
             <button
               onClick={() => setActiveTab('standings')}
@@ -93,9 +90,7 @@ export function LeagueDetails() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-6xl mx-auto px-4 mt-6">
-        {/* Tab: Standings */}
         {activeTab === 'standings' && (
           <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
             <div className="p-4 border-b border-slate-800 flex justify-between">
@@ -121,7 +116,12 @@ export function LeagueDetails() {
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           {team.avatar ? (
-                            <img src={`https://sleepercdn.com/avatars/thumbs/${team.avatar}`} className="w-8 h-8 rounded-full" alt="" />
+                            <img 
+                              src={`https://sleepercdn.com/avatars/thumbs/${team.avatar}`} 
+                              className="w-8 h-8 rounded-full" 
+                              alt=""
+                              loading="lazy"
+                            />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">{team.name.charAt(0)}</div>
                           )}
@@ -142,7 +142,6 @@ export function LeagueDetails() {
           </div>
         )}
 
-        {/* Tab: Meu Roster */}
         {activeTab === 'roster' && (
           <div className="max-w-2xl mx-auto">
             {myRoster ? (

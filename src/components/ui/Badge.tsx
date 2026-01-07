@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 interface BadgeProps {
   children: React.ReactNode
   variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
@@ -11,10 +13,10 @@ const variants = {
   info: 'bg-blue-900/50 text-blue-300 border border-blue-800',
 }
 
-export function Badge({ children, variant = 'default' }: BadgeProps) {
+export const Badge = memo(function Badge({ children, variant = 'default' }: BadgeProps) {
   return (
     <span className={`px-2 py-0.5 rounded text-xs font-medium ${variants[variant]}`}>
       {children}
     </span>
   )
-}
+})

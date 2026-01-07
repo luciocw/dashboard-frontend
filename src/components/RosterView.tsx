@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { usePlayers, getPlayerInfo, sortPlayersByPosition } from '@/hooks/usePlayers'
 import { PlayerCard } from './PlayerCard'
 import { Badge } from './ui/Badge'
@@ -9,7 +10,6 @@ interface RosterViewProps {
   league: SleeperLeague
 }
 
-// Agrupar jogadores por posição
 function groupByPosition(playerIds: string[], players: Record<string, any>): Record<string, string[]> {
   const groups: Record<string, string[]> = {}
   
@@ -25,7 +25,6 @@ function groupByPosition(playerIds: string[], players: Record<string, any>): Rec
   return groups
 }
 
-// Calcular idade média
 function calculateAvgAge(playerIds: string[], players: Record<string, any>): number {
   const ages = playerIds
     .map(id => players[id]?.age)
@@ -35,34 +34,27 @@ function calculateAvgAge(playerIds: string[], players: Record<string, any>): num
   return ages.reduce((sum, age) => sum + age, 0) / ages.length
 }
 
-// Obter tags da liga
 function getLeagueTags(league: SleeperLeague): { label: string; variant: 'default' | 'success' | 'warning' | 'info' | 'error' }[] {
   const tags: { label: string; variant: 'default' | 'success' | 'warning' | 'info' | 'error' }[] = []
   const positions = league.roster_positions || []
   
-  // Tipo
   if (league.settings?.type === 2) tags.push({ label: 'DYNASTY', variant: 'success' })
   else if (league.settings?.type === 1) tags.push({ label: 'KEEPER', variant: 'warning' })
   else tags.push({ label: 'REDRAFT', variant: 'default' })
   
-  // PPR (assumir que é PPR por padrão)
   tags.push({ label: 'PPR', variant: 'info' })
   
-  // Superflex
   if (positions.includes('SUPER_FLEX')) tags.push({ label: 'SF', variant: 'error' })
   
-  // IDP
   if (positions.some(p => ['DL', 'LB', 'DB', 'IDP_FLEX'].includes(p))) {
     tags.push({ label: 'IDP', variant: 'warning' })
   }
   
-  // Times
   tags.push({ label: `${league.total_rosters}T`, variant: 'default' })
   
   return tags
 }
 
-// Formatar lineup positions
 function formatLineup(positions: string[]): string[] {
   const counts: Record<string, number> = {}
   positions.forEach(pos => {
@@ -78,7 +70,7 @@ function formatLineup(positions: string[]): string[] {
 
 const positionOrder = ['QB', 'RB', 'WR', 'TE', 'K', 'DL', 'LB', 'DB', 'DEF']
 
-export function RosterView({ roster, owner, league }: RosterViewProps) {
+export const RosterView = memo(function RosterView({ roster, owner, league }: RosterViewProps) {
   const { data: players, isLoading } = usePlayers()
 
   const ownerName = owner?.display_name || owner?.username || 'Meu Time'
@@ -86,14 +78,11 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
     ? `https://sleepercdn.com/avatars/thumbs/${league.avatar}`
     : null
 
-  // Dados do roster
   const allPlayers = roster.players || []
   const starters = roster.starters || []
   const taxi = roster.taxi || []
   const ir = roster.reserve || []
-  const bench = allPlayers.filter(p => !starters.includes(p) && !taxi.includes(p) && !ir.includes(p))
 
-  // Tags e lineup
   const tags = getLeagueTags(league)
   const lineupPositions = formatLineup(league.roster_positions || [])
 
@@ -112,18 +101,15 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
     )
   }
 
-  // Agrupar por posição
   const grouped = groupByPosition(allPlayers, players)
   const avgAge = calculateAvgAge(allPlayers, players)
 
   return (
     <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-      {/* Header com logo e tags */}
       <div className="p-4 border-b border-slate-800 bg-slate-800/50">
         <div className="flex items-start gap-4">
-          {/* Logo da liga */}
           {leagueAvatar ? (
-            <img src={leagueAvatar} alt={league.name} className="w-14 h-14 rounded-lg" />
+            <img src={leagueAvatar} alt={league.name} className="w-14 h-14 rounded-lg" loading="lazy" />
           ) : (
             <div className="w-14 h-14 rounded-lg bg-slate-700 flex items-center justify-center text-2xl">
               🏈
@@ -132,7 +118,6 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
           
           <div className="flex-1">
             <h3 className="font-bold text-lg">{league.name}</h3>
-            {/* Tags */}
             <div className="flex flex-wrap gap-1.5 mt-2">
               {tags.map((tag, i) => (
                 <Badge key={i} variant={tag.variant}>{tag.label}</Badge>
@@ -140,7 +125,6 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
             </div>
           </div>
           
-          {/* Record e Idade */}
           <div className="text-right">
             <div className="text-2xl font-bold">
               {roster.settings.wins}-{roster.settings.losses}
@@ -152,7 +136,6 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
         </div>
       </div>
 
-      {/* Lineup Positions */}
       <div className="px-4 py-3 border-b border-slate-800">
         <div className="text-xs text-slate-500 mb-2">LINEUP</div>
         <div className="flex flex-wrap gap-2">
@@ -173,14 +156,12 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
         </div>
       </div>
 
-      {/* Contadores */}
       <div className="px-4 py-3 border-b border-slate-800 flex gap-4 text-sm">
         <span className="text-yellow-500">⚠ {allPlayers.length}</span>
         <span className="text-red-500">{ir.length} IR</span>
         <span className="text-yellow-400">{taxi.length} TAXI</span>
       </div>
 
-      {/* Jogadores agrupados por posição */}
       <div className="p-4 space-y-4">
         {positionOrder.map(pos => {
           const playersInPos = grouped[pos]
@@ -225,4 +206,4 @@ export function RosterView({ roster, owner, league }: RosterViewProps) {
       </div>
     </div>
   )
-}
+})

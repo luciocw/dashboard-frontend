@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { NFLPlayer } from '@/hooks/usePlayers'
 
 interface PlayerCardProps {
@@ -19,7 +20,12 @@ const positionColors: Record<string, string> = {
   DB: 'text-orange-400',
 }
 
-export function PlayerCard({ player, isStarter = false, isTaxi = false, isIR = false }: PlayerCardProps) {
+export const PlayerCard = memo(function PlayerCard({ 
+  player, 
+  isStarter = false, 
+  isTaxi = false, 
+  isIR = false 
+}: PlayerCardProps) {
   if (!player) {
     return (
       <div className="flex items-center justify-between py-1.5 px-2 text-slate-500 text-sm">
@@ -60,4 +66,4 @@ export function PlayerCard({ player, isStarter = false, isTaxi = false, isIR = f
       </div>
     </div>
   )
-}
+})
