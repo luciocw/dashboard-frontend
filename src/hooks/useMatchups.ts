@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { API_URL, CACHE_TIMES } from '@/constants'
+import { API_URL } from '@/constants'
 import { ApiError } from '@/utils/errors'
 import type { SleeperUser, SleeperRoster } from '@/types/sleeper'
 

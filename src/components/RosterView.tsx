@@ -7,15 +7,15 @@ import { calculateAvgAge, groupByPosition } from '@/utils/roster'
 import { PlayerCard } from './PlayerCard'
 import { DraftPickBadge } from './DraftPickBadge'
 import { Badge } from './ui/Badge'
-import type { SleeperRoster, SleeperUser, SleeperLeague } from '@/types/sleeper'
+import type { SleeperRoster, SleeperLeague } from '@/types/sleeper'
 
 interface RosterViewProps {
   roster: SleeperRoster
-  owner: SleeperUser | undefined
+  
   league: SleeperLeague
 }
 
-export const RosterView = memo(function RosterView({ roster, owner, league }: RosterViewProps) {
+export const RosterView = memo(function RosterView({ roster, league }: RosterViewProps) {
   const { data: players, isLoading: loadingPlayers } = usePlayers()
   const { data: picks, isLoading: loadingPicks } = useDraftPicks(league.league_id)
 

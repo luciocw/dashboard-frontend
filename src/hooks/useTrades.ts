@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { API_URL, CACHE_TIMES } from '@/constants'
-import { ApiError } from '@/utils/errors'
 
 /**
  * Representa uma trade

@@ -2,6 +2,17 @@ import { describe, it, expect } from 'vitest'
 import { getLeagueType, getLeagueTags, formatLineup } from './league'
 import type { SleeperLeague } from '@/types/sleeper'
 
+const createMockLeague = (overrides: Partial<SleeperLeague> = {}): SleeperLeague => ({
+  league_id: '123',
+  name: 'Test League',
+  season: '2025',
+  status: 'in_season',
+  total_rosters: 12,
+  settings: {},
+  roster_positions: [],
+  ...overrides,
+})
+
 describe('getLeagueType', () => {
   it('deve retornar Dynasty para type 2', () => {
     expect(getLeagueType({ type: 2 })).toBe('Dynasty')
@@ -39,19 +50,19 @@ describe('formatLineup', () => {
 
 describe('getLeagueTags', () => {
   it('deve incluir tag DYNASTY para liga dynasty', () => {
-    const league = { settings: { type: 2 }, roster_positions: [], total_rosters: 12 } as SleeperLeague
+    const league = createMockLeague({ settings: { type: 2 } })
     const tags = getLeagueTags(league)
     expect(tags.some(t => t.label === 'DYNASTY')).toBe(true)
   })
 
   it('deve incluir tag SF para superflex', () => {
-    const league = { settings: {}, roster_positions: ['QB', 'SUPER_FLEX'], total_rosters: 10 } as SleeperLeague
+    const league = createMockLeague({ roster_positions: ['QB', 'SUPER_FLEX'], total_rosters: 10 })
     const tags = getLeagueTags(league)
     expect(tags.some(t => t.label === 'SF')).toBe(true)
   })
 
   it('deve incluir tag IDP para ligas IDP', () => {
-    const league = { settings: {}, roster_positions: ['QB', 'DL', 'LB'], total_rosters: 12 } as SleeperLeague
+    const league = createMockLeague({ roster_positions: ['QB', 'DL', 'LB'] })
     const tags = getLeagueTags(league)
     expect(tags.some(t => t.label === 'IDP')).toBe(true)
   })

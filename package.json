@@ -11,7 +11,8 @@
     "test": "vitest",
     "type-check": "tsc --noEmit",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "deploy": "npx wrangler pages deploy dist --project-name=dashboard-frontend"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.19",

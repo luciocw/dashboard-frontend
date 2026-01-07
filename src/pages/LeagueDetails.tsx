@@ -129,7 +129,7 @@ export function LeagueDetails() {
         {activeTab === 'roster' && (
           <div className="max-w-2xl mx-auto">
             {myRoster ? (
-              <RosterView roster={myRoster} owner={myUser} league={data.league} />
+              <RosterView roster={myRoster} league={data.league} />
             ) : (
               <div className="bg-slate-900 rounded-xl border border-slate-800 p-8 text-center">
                 <div className="text-4xl mb-4">🤷</div>

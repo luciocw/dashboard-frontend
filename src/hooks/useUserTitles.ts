@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { API_URL, CACHE_TIMES } from '@/constants'
-import type { SleeperLeague, SleeperRoster, SleeperUser } from '@/types/sleeper'
+import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
 
 /**
  * Título conquistado pelo usuário
