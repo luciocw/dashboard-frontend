@@ -1,9 +1,11 @@
 import { memo } from 'react'
 import { usePlayers, getPlayerInfo, sortPlayersByPosition } from '@/hooks/usePlayers'
+import { useDraftPicks, getPicksForRoster, getLostPicks } from '@/hooks/useDraftPicks'
 import { POSITION_COLORS, POSITION_ORDER } from '@/constants'
 import { getLeagueTags, formatLineup } from '@/utils/league'
 import { calculateAvgAge, groupByPosition } from '@/utils/roster'
 import { PlayerCard } from './PlayerCard'
+import { DraftPickBadge } from './DraftPickBadge'
 import { Badge } from './ui/Badge'
 import type { SleeperRoster, SleeperUser, SleeperLeague } from '@/types/sleeper'
 
@@ -14,7 +16,8 @@ interface RosterViewProps {
 }
 
 export const RosterView = memo(function RosterView({ roster, owner, league }: RosterViewProps) {
-  const { data: players, isLoading } = usePlayers()
+  const { data: players, isLoading: loadingPlayers } = usePlayers()
+  const { data: picks, isLoading: loadingPicks } = useDraftPicks(league.league_id)
 
   const leagueAvatar = league.avatar 
     ? `https://sleepercdn.com/avatars/thumbs/${league.avatar}`
@@ -28,7 +31,13 @@ export const RosterView = memo(function RosterView({ roster, owner, league }: Ro
   const tags = getLeagueTags(league)
   const lineupPositions = formatLineup(league.roster_positions || [])
 
-  if (isLoading || !players) {
+  // Picks
+  const currentYear = new Date().getFullYear()
+  const futureSeasons = [currentYear + 1, currentYear + 2, currentYear + 3].map(String)
+  const myPicks = getPicksForRoster(picks, roster.roster_id, futureSeasons)
+  const lostPicks = getLostPicks(picks, roster.roster_id).filter(p => futureSeasons.includes(p.season))
+
+  if (loadingPlayers || !players) {
     return (
       <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
         <div className="animate-pulse">
@@ -48,6 +57,7 @@ export const RosterView = memo(function RosterView({ roster, owner, league }: Ro
 
   return (
     <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+      {/* Header */}
       <div className="p-4 border-b border-slate-800 bg-slate-800/50">
         <div className="flex items-start gap-4">
           {leagueAvatar ? (
@@ -78,6 +88,7 @@ export const RosterView = memo(function RosterView({ roster, owner, league }: Ro
         </div>
       </div>
 
+      {/* Lineup */}
       <div className="px-4 py-3 border-b border-slate-800">
         <div className="text-xs text-slate-500 mb-2">LINEUP</div>
         <div className="flex flex-wrap gap-2">
@@ -98,12 +109,60 @@ export const RosterView = memo(function RosterView({ roster, owner, league }: Ro
         </div>
       </div>
 
+      {/* Counters */}
       <div className="px-4 py-3 border-b border-slate-800 flex gap-4 text-sm">
         <span className="text-yellow-500">⚠ {allPlayers.length}</span>
         <span className="text-red-500">{ir.length} IR</span>
         <span className="text-yellow-400">{taxi.length} TAXI</span>
       </div>
 
+      {/* Draft Picks Section */}
+      {(myPicks.length > 0 || lostPicks.length > 0) && (
+        <div className="px-4 py-3 border-b border-slate-800">
+          <div className="text-xs text-slate-500 mb-2">DRAFT PICKS ({currentYear + 1}-{currentYear + 3})</div>
+          
+          {/* Picks que tenho */}
+          {myPicks.length > 0 && (
+            <div className="mb-3">
+              <div className="text-xs text-green-500 mb-1">✓ Picks ({myPicks.length})</div>
+              <div className="flex flex-wrap gap-1">
+                {myPicks.map((pick, i) => (
+                  <DraftPickBadge 
+                    key={i} 
+                    season={pick.season} 
+                    round={pick.round}
+                    isOwn={pick.previous_owner_id === roster.roster_id}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Picks que perdi */}
+          {lostPicks.length > 0 && (
+            <div>
+              <div className="text-xs text-red-500 mb-1">✗ Picks Negociadas ({lostPicks.length})</div>
+              <div className="flex flex-wrap gap-1 opacity-50">
+                {lostPicks.map((pick, i) => (
+                  <DraftPickBadge 
+                    key={i} 
+                    season={pick.season} 
+                    round={pick.round}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {loadingPicks && (
+        <div className="px-4 py-3 border-b border-slate-800">
+          <div className="text-xs text-slate-500">Carregando picks...</div>
+        </div>
+      )}
+
+      {/* Players by Position */}
       <div className="p-4 space-y-4">
         {POSITION_ORDER.map(pos => {
           const playersInPos = grouped[pos]

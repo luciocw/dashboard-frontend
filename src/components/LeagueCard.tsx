@@ -1,15 +1,19 @@
 import { memo } from 'react'
 import { Badge } from './ui/Badge'
+import { DraftPickBadge } from './DraftPickBadge'
 import { POSITION_COLORS, DISPLAY_POSITIONS } from '@/constants'
 import { getLeagueTags, formatLineup } from '@/utils/league'
 import { countByPosition, calculateAvgAge } from '@/utils/roster'
+import { getPicksForRoster } from '@/hooks/useDraftPicks'
 import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
 import type { PlayersMap } from '@/hooks/usePlayers'
+import type { TradedPick } from '@/hooks/useDraftPicks'
 
 interface LeagueCardProps {
   league: SleeperLeague
   players?: PlayersMap
   myRoster?: SleeperRoster | null
+  picks?: TradedPick[]
   onClick?: () => void
 }
 
@@ -17,6 +21,7 @@ export const LeagueCard = memo(function LeagueCard({
   league, 
   players, 
   myRoster,
+  picks,
   onClick 
 }: LeagueCardProps) {
   const tags = getLeagueTags(league)
@@ -32,6 +37,13 @@ export const LeagueCard = memo(function LeagueCard({
   
   const positionCounts = players ? countByPosition(allPlayers, players) : {}
   const avgAge = players ? calculateAvgAge(allPlayers, players) : 0
+
+  // Pegar picks do meu roster (próximas 3 temporadas)
+  const currentYear = new Date().getFullYear()
+  const futureSeasons = [currentYear + 1, currentYear + 2, currentYear + 3].map(String)
+  const myPicks = myRoster 
+    ? getPicksForRoster(picks, myRoster.roster_id, futureSeasons)
+    : []
 
   return (
     <div
@@ -103,7 +115,7 @@ export const LeagueCard = memo(function LeagueCard({
       )}
 
       {myRoster && players && (
-        <div className="flex gap-3 text-sm">
+        <div className="flex gap-3 text-sm mb-3">
           {DISPLAY_POSITIONS.map(pos => (
             <div key={pos} className="flex items-center gap-1">
               <span className={`font-bold ${POSITION_COLORS[pos] || 'text-slate-400'}`}>
@@ -112,6 +124,26 @@ export const LeagueCard = memo(function LeagueCard({
               <span className="text-slate-400">{positionCounts[pos] || 0}</span>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Draft Picks */}
+      {myPicks.length > 0 && (
+        <div>
+          <div className="text-xs text-slate-500 mb-1">DRAFT PICKS</div>
+          <div className="flex flex-wrap gap-1">
+            {myPicks.slice(0, 10).map((pick, i) => (
+              <DraftPickBadge 
+                key={i} 
+                season={pick.season} 
+                round={pick.round}
+                isOwn={pick.previous_owner_id === pick.owner_id}
+              />
+            ))}
+            {myPicks.length > 10 && (
+              <span className="text-xs text-slate-500">+{myPicks.length - 10}</span>
+            )}
+          </div>
         </div>
       )}
 

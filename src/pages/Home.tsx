@@ -4,6 +4,7 @@ import { useSleeperUser, useSleeperLeagues } from '@/hooks/useSleeperUser'
 import { useAppStore } from '@/store/useAppStore'
 import { usePlayers } from '@/hooks/usePlayers'
 import { useAllMyRosters } from '@/hooks/useAllMyRosters'
+import { useAllDraftPicks } from '@/hooks/useAllDraftPicks'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
@@ -54,6 +55,7 @@ export function Home() {
   
   const leagueIds = leagues?.map(l => l.league_id) || []
   const { data: rostersByLeague } = useAllMyRosters(leagueIds, currentUser?.user_id)
+  const { data: picksByLeague } = useAllDraftPicks(leagueIds)
 
   useEffect(() => {
     if (user && user.user_id !== currentUser?.user_id) {
@@ -124,7 +126,7 @@ export function Home() {
             <span className="text-2xl">🏈</span>
             <div>
               <h1 className="font-bold text-lg">Dynasty Dashboard</h1>
-              <p className="text-xs text-slate-500">v2.1.0</p>
+              <p className="text-xs text-slate-500">v2.2.0</p>
             </div>
           </div>
           
@@ -235,7 +237,6 @@ export function Home() {
               </div>
             )}
 
-            {/* Loading com Skeleton */}
             {loadingLeagues && (
               <>
                 <h2 className="text-lg font-semibold mb-4 text-slate-300">
@@ -272,6 +273,7 @@ export function Home() {
                       league={league}
                       players={players}
                       myRoster={rostersByLeague?.[league.league_id]}
+                      picks={picksByLeague?.[league.league_id]}
                       onClick={() => navigate(`/league/${league.league_id}`)}
                     />
                   ))}
