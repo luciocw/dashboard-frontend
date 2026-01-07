@@ -1,11 +1,11 @@
 # 🎨 Visual Redesign Roadmap - Dynasty Dashboard
 
-> Cronograma de prompts visuais para o v0.dev/Vercel
+> Cronograma de redesign visual do projeto
 > Última atualização: 07/01/2026
 
 ---
 
-## Status Geral
+## ✅ Status Geral - COMPLETO!
 
 | # | Componente | Status | Data |
 |---|------------|--------|------|
@@ -14,121 +14,12 @@
 | 3 | Matchup Card | ✅ Implementado | 07/01/2026 |
 | 4 | Standings Table | ✅ Implementado | 07/01/2026 |
 | 5 | Power Rankings | ✅ Implementado | 07/01/2026 |
-| 6 | Design System / Color Palette | ✅ Implementado | 07/01/2026 |
-
----
-
-## Prompts Detalhados
-
-### PROMPT 1 - Header + Hero Section ✅
-```
-Create a header and hero section for a fantasy football dashboard with dark theme:
-
-Header:
-- Logo: styled text "Dynasty Dashboard" (no emoji), modern font
-- Season selector dropdown (2024, 2025, 2026)
-- User avatar (circular image) with display name
-- Logout button
-- Background with subtle gradient or geometric pattern
-
-Hero section (after login):
-- Personalized greeting "Hello, [username]"
-- 4 stat cards in grid: "Leagues", "Dynasty", "Record" (W-L format like "45-23"), "Titles"
-- Cards with SVG icons (not emojis), large numbers, small labels
-- "Titles" card with golden highlight/glow if value > 0
-- Win Rate badge below cards (green if >=60%, blue if >=50%, red if <50%)
-
-Style: Dark theme, glassmorphism cards, vibrant accent colors (cyan/blue primary, gold for achievements), modern and professional look.
-Tech: React + Tailwind CSS only, lucide-react for icons.
-```
-
----
-
-### PROMPT 2 - League Card ✅
-```
-Create a league card component for a fantasy football dashboard with dark theme:
-- League avatar (circular image) on the left
-- League name (main title) 
-- Season record prominent (e.g., "8-3")
-- Colored tags/badges row: league type (DYNASTY in purple, REDRAFT in gray), format (PPR in blue, SF in green, IDP in red), size (10T, 12T in gray)
-- Lineup section: small badges showing positions (QB, 2RB, 2WR, TE, FLEX, SUPER_FLEX)
-- Player count by position: colored text (QB 3 in red, RB 8 in green, WR 10 in blue, TE 3 in yellow)
-- Draft Picks section: badges with year and round (e.g., '25 R1 in gold, '26 R2 in silver)
-- Hover state with elevation/shadow animation
-- Clickable (pointer cursor)
-
-Style: Dark theme, glassmorphism or gradient border, professional sports app look.
-Tech: React + Tailwind CSS only, lucide-react for icons.
-```
-
----
-
-### PROMPT 3 - Matchup Card ✅
-```
-Create a matchup/versus card for weekly fantasy football games with dark theme:
-- Two teams side by side
-- Each side: manager avatar (circular), manager name, large score number
-- Visual indicator for winning team (green glow, border, or highlight)
-- Small record below each name (e.g., "8-3")
-- If it's MY matchup, special blue border or highlight
-- Center divider with styled "VS" text
-- Tied game state with yellow/gold indicator
-
-Style: Dark theme, competitive sports feel, clear visual hierarchy showing who's winning.
-Tech: React + Tailwind CSS only, lucide-react for icons.
-```
-
----
-
-### PROMPT 4 - Standings Table ✅
-```
-Create a standings/leaderboard table for fantasy football with dark theme:
-- Columns: Rank (#), Manager (avatar + name), Record (W-L), Points, Win%
-- Current user row highlighted with blue background
-- Top 3 with visual indicators (gold/silver/bronze badges or colored ranks)
-- Hover state on rows
-- Responsive for mobile (prioritize rank, name, record)
-- Alternating row colors or dividers
-- Points in cyan/blue color, Win% in green color
-
-Style: Dark theme, clean data table, professional sports statistics look.
-Tech: React + Tailwind CSS only, lucide-react for icons.
-```
-
----
-
-### PROMPT 5 - Power Rankings ✅
-```
-Create a Power Rankings visualization for fantasy football with dark theme:
-- Ranked list of teams (not table)
-- Each item: rank badge (1-3 special gold/silver/bronze), avatar, team name, record, total points, average points
-- Power Score prominently displayed (large number in cyan/blue)
-- Trend indicator: green arrow up (rising), red arrow down (falling), gray dash (stable)
-- Top 3 with special styling (glow, border, or background)
-- Header with title "Power Rankings" and short explanation text
-
-Style: Dark theme, modern card-based list, gamification feel with ranks and badges.
-Tech: React + Tailwind CSS only, lucide-react for icons.
-```
-
----
-
-### PROMPT 6 - Design System / Color Palette ✅
-```
-Create a design system preview for a fantasy football dashboard with dark theme:
-
-Show a component that displays:
-- Color palette: background colors, card colors, accent colors (primary blue/cyan, success green, danger red, warning yellow, gold for achievements)
-- Player position colors: QB (red), RB (green), WR (blue), TE (orange/yellow), K (purple), DEF (gray)
-- Typography scale: headings (h1-h4), body text, captions, labels
-- Button variants: primary, secondary, ghost, with hover states
-- Badge variants: different colors and sizes
-- Card example with glassmorphism effect
-- Icon examples from lucide-react
-
-Style: Dark theme (#0f172a background), modern, professional sports app aesthetic.
-Tech: React + Tailwind CSS only, lucide-react for icons.
-```
+| 6 | Design System | ✅ Implementado | 07/01/2026 |
+| 7 | LeagueDetails (integração) | ✅ Implementado | 07/01/2026 |
+| 8 | MatchupsView | ✅ Implementado | 07/01/2026 |
+| 9 | RosterView | ✅ Implementado | 07/01/2026 |
+| 10 | TradesView | ✅ Implementado | 07/01/2026 |
+| 11 | ChampionsHistory | ✅ Implementado | 07/01/2026 |
 
 ---
 
@@ -139,34 +30,100 @@ Tech: React + Tailwind CSS only, lucide-react for icons.
 - Cards: `slate-800/50` com `backdrop-blur-sm`
 - Primary: `cyan-400`, `cyan-500`
 - Borders: `slate-700/60`
+- Gradientes: `from-cyan-600 to-blue-600`
 
 ### Posições (cores)
-- QB: `red-400`
-- RB: `green-400`
-- WR: `blue-400`
-- TE: `yellow-400`
-- K: `purple-400`
-- DEF: `orange-400`
+| Posição | Cor |
+|---------|-----|
+| QB | `red-400` |
+| RB | `green-400` |
+| WR | `blue-400` |
+| TE | `yellow-400` |
+| K | `purple-400` |
+| DEF | `orange-400` |
+| DL | `pink-400` |
+| LB | `indigo-400` |
+| DB | `teal-400` |
 
 ### Badges de Liga
-- DYNASTY: `purple-500/20`
-- REDRAFT: `slate-500/20`
-- SF: `green-500/20`
-- IDP: `red-500/20`
+| Tipo | Cor |
+|------|-----|
+| DYNASTY | `purple-500/20` |
+| REDRAFT | `slate-500/20` |
+| SF | `green-500/20` |
+| IDP | `red-500/20` |
+| PPR | `blue-500/20` |
 
 ### Draft Picks
-- Round 1: `yellow-500/20` (gold)
-- Round 2: `slate-300/20` (silver)
-- Round 3: `amber-700/20` (bronze)
-- Round 4+: `slate-600/20`
+| Round | Cor |
+|-------|-----|
+| Round 1 | `yellow-500/20` (gold) |
+| Round 2 | `slate-300/20` (silver) |
+| Round 3 | `amber-700/20` (bronze) |
+| Round 4+ | `slate-600/20` |
+
+### Ícones (lucide-react)
+- Taxi Squad: `Car` (amarelo)
+- Injured Reserve: `Hospital` (vermelho)
+- Troféu: `Trophy` (amarelo)
+- Tendência subindo: `TrendingUp` (verde)
+- Tendência caindo: `TrendingDown` (vermelho)
 
 ---
 
-## 📅 Histórico
+## 📅 Histórico de Alterações
 
 | Data | Alteração |
 |------|-----------|
-| 07/01/2026 | Criação do cronograma |
-| 07/01/2026 | ✅ Prompt 1 - Header + Hero |
-| 07/01/2026 | ✅ Prompt 2 - League Card |
-| 07/01/2026 | ✅ Prompt 3 - Matchup Card |
+| 07/01/2026 | Criação do roadmap |
+| 07/01/2026 | ✅ Header + HeroSection redesenhados |
+| 07/01/2026 | ✅ LeagueCard com roster status e picks |
+| 07/01/2026 | ✅ MatchupCard visual (VS, scores, glow) |
+| 07/01/2026 | ✅ StandingsTable com badges top 3 |
+| 07/01/2026 | ✅ PowerRankings com tendências |
+| 07/01/2026 | ✅ DesignSystem reference criado |
+| 07/01/2026 | ✅ Integração completa na LeagueDetails |
+| 07/01/2026 | ✅ MatchupsView usando MatchupCard |
+| 07/01/2026 | ✅ RosterView com cores por posição |
+| 07/01/2026 | ✅ TradesView layout lado-a-lado |
+| 07/01/2026 | ✅ ChampionsHistory Hall da Fama |
+| 07/01/2026 | ✅ Scroll to top ao abrir liga |
+| 07/01/2026 | ✅ Ícones Taxi (Car) e IR (Hospital) |
+
+---
+
+## 🚀 Próximos Passos (Backlog)
+
+- [ ] Implementar Draft Picks feature completa
+- [ ] Mobile optimization refinements
+- [ ] Dark/Light theme toggle
+- [ ] Animações de transição entre páginas
+- [ ] PWA (Progressive Web App)
+- [ ] Notificações push
+
+---
+
+## 📁 Arquivos Criados/Modificados
+
+### Novos Componentes
+- `src/components/DashboardHeader.tsx`
+- `src/components/HeroSection.tsx`
+- `src/components/MatchupCard.tsx`
+- `src/components/StandingsTable.tsx`
+- `src/components/PowerRankings.tsx`
+- `src/components/DesignSystem.tsx`
+
+### Componentes Atualizados
+- `src/components/LeagueCard.tsx`
+- `src/components/MatchupsView.tsx`
+- `src/components/RosterView.tsx`
+- `src/components/TradesView.tsx`
+- `src/components/ChampionsHistory.tsx`
+- `src/components/TitlesModal.tsx`
+
+### Páginas Atualizadas
+- `src/pages/Home.tsx`
+- `src/pages/LeagueDetails.tsx`
+
+### Utilitários
+- `src/utils/cn.ts` (class merge helper)
