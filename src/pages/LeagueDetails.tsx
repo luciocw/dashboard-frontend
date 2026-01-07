@@ -6,11 +6,12 @@ import { RosterView } from '@/components/RosterView'
 import { ChampionsHistory } from '@/components/ChampionsHistory'
 import { MatchupsView } from '@/components/MatchupsView'
 import { TradesView } from '@/components/TradesView'
+import { PowerRankingsView } from '@/components/PowerRankingsView'
 import { SkeletonTable } from '@/components/ui/SkeletonTable'
 import { useAppStore } from '@/store/useAppStore'
 import type { StandingTeam } from '@/types/sleeper'
 
-type Tab = 'roster' | 'matchups' | 'standings' | 'trades' | 'history'
+type Tab = 'roster' | 'matchups' | 'standings' | 'power' | 'trades' | 'history'
 
 export function LeagueDetails() {
   const { id } = useParams<{ id: string }>()
@@ -31,7 +32,7 @@ export function LeagueDetails() {
               </div>
             </div>
             <div className="flex gap-2">
-              {[1,2,3,4,5].map(i => (
+              {[1,2,3,4,5,6].map(i => (
                 <div key={i} className="h-9 w-24 bg-slate-800 rounded-lg animate-pulse" />
               ))}
             </div>
@@ -74,11 +75,11 @@ export function LeagueDetails() {
   const myRoster = data.rosters.find(r => r.owner_id === currentUser?.user_id)
   const myUser = data.users.find(u => u.user_id === currentUser?.user_id)
 
-  // Nova ordem: Roster > Matchups > Classificação > Trades > Histórico
   const tabs = [
-    { id: 'roster' as Tab, label: '👤 Meu Roster' },
+    { id: 'roster' as Tab, label: '👤 Roster' },
     { id: 'matchups' as Tab, label: '🏈 Matchups' },
     { id: 'standings' as Tab, label: '📊 Classificação' },
+    { id: 'power' as Tab, label: '⚡ Power' },
     { id: 'trades' as Tab, label: '🔄 Trades' },
     { id: 'history' as Tab, label: '🏆 Histórico' },
   ]
@@ -200,6 +201,17 @@ export function LeagueDetails() {
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Tab: Power Rankings */}
+        {activeTab === 'power' && (
+          <div className="max-w-2xl mx-auto">
+            <PowerRankingsView 
+              rosters={data.rosters}
+              users={data.users}
+              currentUserId={currentUser?.user_id}
+            />
           </div>
         )}
 
