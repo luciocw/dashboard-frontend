@@ -273,7 +273,6 @@ export function Home() {
                       <LeagueCard 
                         key={league.league_id} 
                         league={league}
-                        players={players}
                         myRoster={rostersByLeague?.[league.league_id]}
                         picks={picksByLeague?.[league.league_id]}
                         onClick={() => navigate(`/league/${league.league_id}`)}
