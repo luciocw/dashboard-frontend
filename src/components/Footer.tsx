@@ -9,30 +9,14 @@ export const Footer = memo(function Footer() {
           <span>Dynasty Dashboard</span>
         </div>
         
-        <div className="flex items-center gap-4">
-          <a 
-            href="https://buymeacoffee.com/luciocw" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-yellow-400 transition"
-          >
-            ☕ Buy me a coffee
-          </a>
-          
-          <a 
-            href="https://sleeper.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-blue-400 transition"
-          >
-            <img 
-              src="https://sleepercdn.com/images/v2/icons/league/league_avatar_mint.webp" 
-              alt="Sleeper" 
-              className="w-4 h-4"
-            />
-            Sleeper
-          </a>
-        </div>
+        <a 
+          href="https://buymeacoffee.com/luciocw" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 hover:text-yellow-400 transition"
+        >
+          ☕ Buy me a coffee
+        </a>
 
         <div>
           Desenvolvido por{' '}

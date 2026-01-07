@@ -1,128 +1,95 @@
-# 🏈 Dynasty Dashboard - Roadmap de Desenvolvimento
+# 🏈 Dynasty Dashboard - Roadmap
 
-> Última atualização: 06/01/2026
+> Última atualização: 07/01/2026
 
-## 📊 Status Geral
+---
 
-Progresso: 75% Completo
+## ✅ FASE A - Setup (COMPLETA)
+- [x] Projeto React + TypeScript + Vite
+- [x] Tailwind CSS configurado
+- [x] React Router
+- [x] TanStack Query
+- [x] Zustand store
 
-Versão Atual: v2.1.0
-Deploy: https://dashboard-frontend.luciocw.workers.dev/
-Repositório: https://github.com/luciocw/dashboard-frontend
+## ✅ FASE B - Infraestrutura (COMPLETA)
+- [x] Hooks para Sleeper API
+- [x] Cache otimizado
+- [x] Tratamento de erros
+- [x] Persistência de sessão
 
-## ✅ CONCLUÍDO
+## ✅ FASE C - Features FREE (COMPLETA)
+- [x] Login com username Sleeper
+- [x] Listagem de ligas por temporada
+- [x] Cards ricos (tags, lineup, idade média)
+- [x] Meu Roster (agrupado por posição)
+- [x] Classificação (Standings)
+- [x] Draft Picks (cards + roster)
+- [x] Histórico de Títulos (modal clicável)
+- [x] Matchups da Semana
+- [x] Trade History
+- [x] Power Rankings
+- [x] HUD de estatísticas (Ligas, Dynasty, Record, Títulos)
 
-### FASE A - Setup Inicial
-- Projeto Vite + React 18 + TypeScript
-- Tailwind CSS configurado
-- Path aliases (@/)
-- Estrutura de pastas organizada
-- ESLint + Prettier
-- Git + GitHub SSH
+## ✅ FASE D - Qualidade (COMPLETA)
+- [x] Auditoria técnica (8 fases)
+- [x] Performance (N+1 corrigido, React.memo, lazy loading)
+- [x] TypeScript strict (zero `any`)
+- [x] Segurança (validação de input)
+- [x] Tratamento de erros (offline detection, retry)
+- [x] UX/Acessibilidade (skeleton loaders, ARIA, keyboard nav)
+- [x] Organização (constants, utils)
+- [x] Documentação (JSDoc)
+- [x] Testes (24 testes passando)
 
-### FASE B - Infraestrutura
-- Zustand store com persistência localStorage
-- TanStack Query para cache de API
-- React Router 6 para navegação
-- Types centralizados em src/types/sleeper.ts
-- Error Boundary global
+## ✅ FASE E - Deploy (COMPLETA)
+- [x] Build de produção
+- [x] Deploy Cloudflare Pages
+- [x] URL: https://dashboard-frontend-tmg.pages.dev
 
-### FASE C - Funcionalidades Base
-- Login com username Sleeper
-- Persistência de sessão (não desloga ao navegar)
-- Listagem de ligas por temporada
-- Seletor de temporada dinâmico
-- HUD de estatísticas (Total, Dynasty, Em Andamento, Times)
-- Página de detalhes da liga
-- Classificação (Standings) com destaque do usuário
-- Botão logout
+---
 
-### FASE D - Visual Rico
-- LeagueCard com tags (DYNASTY, PPR, SF, IDP, 12T)
-- LeagueCard com LINEUP positions
-- LeagueCard com contadores (total, IR, TAXI)
-- LeagueCard com idade média do roster
-- LeagueCard com contagem por posição (QB, RB, WR, TE)
-- LeagueCard com Record (W-L)
-- Aba "Meu Roster" na página de detalhes
-- RosterView agrupado por posição
-- PlayerCard com badges TAXI/IR/Injury
-- Cores por posição (QB vermelho, RB verde, etc)
-- Footer profissional com links
-- Componentes UI reutilizáveis (Badge, Avatar, StatCard)
+## 🔄 PRÓXIMAS FASES
 
-### FASE E - Deploy
-- Build de produção otimizado (~230KB gzip)
-- Configuração wrangler.jsonc
-- Deploy Cloudflare Workers
-- Deploy automático via GitHub push
-- URL pública funcionando
+### FASE F - Mobile Optimization
+- [ ] Testes em dispositivos reais
+- [ ] Safe area support (notch)
+- [ ] Touch targets (44px mínimo)
+- [ ] Swipe gestures
+- [ ] PWA (Progressive Web App)
 
-## 🔄 PENDENTE - Features FREE
+### FASE G - Features Avançadas FREE
+- [ ] Waiver Wire / Free Agents
+- [ ] Injury Report (lesões dos jogadores)
+- [ ] Projeções da semana
+- [ ] Notificações de matchup
 
-### FASE F - Features Adicionais
-- Draft Picks no card e página de detalhes
-- Histórico de Títulos (winners de cada temporada)
-- Matchups da Semana (confrontos atuais)
-- Trade History (últimas trades da liga)
-- Power Rankings (ranking por performance)
+### FASE H - Premium ($4.99/mês)
+- [ ] Ver TODOS os rosters (não só o seu)
+- [ ] Comparar rosters lado a lado
+- [ ] Trade Calculator / Analyzer
+- [ ] Alertas de lesões
+- [ ] Export avançado (CSV, PDF)
+- [ ] Start/Sit advice
 
-### FASE G - Melhorias de UX
-- Skeleton loaders em todos os componentes
-- Pull-to-refresh no mobile
-- PWA (instalável, offline básico)
-- Dark/Light mode toggle
-- Notificações de atualização
+### FASE I - Expansão
+- [ ] App iOS (React Native ou PWA)
+- [ ] App Android
+- [ ] Internacionalização (PT, EN, ES)
+- [ ] Dark/Light mode toggle
 
-## ⏳ FUTURO - Premium ($4.99/mês)
+---
 
-### Modelo de Monetização
-FREE: Features atuais + Draft Picks + Histórico + Matchups + Trades
-PREMIUM: Ver todos os rosters, comparar times, trade analyzer, alertas, export
+## 📊 Métricas Atuais
 
-### Features Premium Planejadas
-- Sistema de autenticação (Clerk/Auth0)
-- Integração Stripe para pagamentos
-- Painel admin
-- Rosters de todos os times
-- Trade analyzer
-- Injury alerts
-- Compare rosters
-- Export avançado (PDF, CSV)
+- **Testes:** 24 passando
+- **Build:** ~282 KB (gzip: ~86 KB)
+- **Lighthouse:** Pendente medição
+- **Cobertura:** Pendente
 
-## 🛠️ Stack Técnica
+---
 
-- Framework: React 18
-- Build: Vite 5
-- Linguagem: TypeScript 5 (strict)
-- Estilo: Tailwind CSS 3
-- Estado Global: Zustand
-- Cache/Fetch: TanStack Query
-- Roteamento: React Router 6
-- Deploy: Cloudflare Workers
-- API: Sleeper API v1
+## 🔗 Links
 
-## 📁 Estrutura do Projeto
-
-src/components/ui/ - Badge, Avatar, StatCard
-src/components/ - Footer, Header, LeagueCard, PlayerCard, RosterView, ErrorBoundary
-src/hooks/ - useSleeperUser, useMyRoster, usePlayers
-src/pages/ - Home, LeagueDetails
-src/store/ - useAppStore
-src/types/ - sleeper.ts
-src/utils/ - nfl.ts, standings.ts
-
-## 📝 Notas para Próxima Sessão
-
-1. Continuar de: FASE F - Draft Picks ou Histórico de Títulos
-2. Arquivos principais: LeagueCard.tsx, RosterView.tsx, LeagueDetails.tsx
-3. API Sleeper: https://api.sleeper.app/v1
-4. Store Zustand: currentUser persistido em localStorage
-5. Deploy: Push automático para Cloudflare
-
-## 🔗 Links Úteis
-
-- Produção: https://dashboard-frontend.luciocw.workers.dev/
-- GitHub: https://github.com/luciocw/dashboard-frontend
-- Sleeper API Docs: https://docs.sleeper.com/
-- Cloudflare Dashboard: https://dash.cloudflare.com/
+- **Produção:** https://dashboard-frontend-tmg.pages.dev
+- **GitHub:** https://github.com/luciocw/dashboard-frontend
+- **Sleeper API:** https://api.sleeper.app/v1
