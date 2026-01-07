@@ -4,11 +4,14 @@ import { useSleeperUser, useSleeperLeagues } from '@/hooks/useSleeperUser'
 import { useAppStore } from '@/store/useAppStore'
 import { usePlayers } from '@/hooks/usePlayers'
 import { useAllMyRosters } from '@/hooks/useAllMyRosters'
+import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { LeagueCard } from '@/components/LeagueCard'
 import { StatCard } from '@/components/ui/StatCard'
+import { ErrorCard } from '@/components/ui/ErrorCard'
 import { Footer } from '@/components/Footer'
 import { getAvailableSeasons } from '@/utils/nfl'
 import { validateUsername, sanitizeInput } from '@/utils/validation'
+import { isApiError } from '@/utils/errors'
 import type { SleeperLeague } from '@/types/sleeper'
 
 function calculateStats(leagues: SleeperLeague[]) {
@@ -21,6 +24,7 @@ function calculateStats(leagues: SleeperLeague[]) {
 
 export function Home() {
   const navigate = useNavigate()
+  const isOnline = useOnlineStatus()
   
   const currentUser = useAppStore((state) => state.currentUser)
   const setCurrentUser = useAppStore((state) => state.setCurrentUser)
@@ -32,10 +36,21 @@ export function Home() {
   const [searchUsername, setSearchUsername] = useState(currentUser?.username || '')
   const [validationError, setValidationError] = useState<string | null>(null)
 
-  const { data: user, isLoading: loadingUser, error: userError } = useSleeperUser(searchUsername)
-  const { data: leagues, isLoading: loadingLeagues } = useSleeperLeagues(user?.user_id, selectedSeason)
+  const { 
+    data: user, 
+    isLoading: loadingUser, 
+    error: userError,
+    refetch: refetchUser 
+  } = useSleeperUser(searchUsername)
   
-  const { data: players } = usePlayers()
+  const { 
+    data: leagues, 
+    isLoading: loadingLeagues,
+    error: leaguesError,
+    refetch: refetchLeagues
+  } = useSleeperLeagues(user?.user_id, selectedSeason)
+  
+  const { data: players, error: playersError } = usePlayers()
   
   const leagueIds = leagues?.map(l => l.league_id) || []
   const { data: rostersByLeague } = useAllMyRosters(leagueIds, currentUser?.user_id)
@@ -58,13 +73,17 @@ export function Home() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeInput(e.target.value)
     setInputValue(sanitized)
-    setValidationError(null) // Limpa erro ao digitar
+    setValidationError(null)
   }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     
-    // Validar input
+    if (!isOnline) {
+      setValidationError('Você está offline')
+      return
+    }
+    
     const validation = validateUsername(inputValue)
     if (!validation.valid) {
       setValidationError(validation.error || 'Username inválido')
@@ -84,8 +103,19 @@ export function Home() {
 
   const effectiveUser = currentUser || user
 
-  // Determinar mensagem de erro a mostrar
-  const errorMessage = validationError || (userError ? 'Usuário não encontrado' : null)
+  // Determinar mensagem de erro
+  const getErrorMessage = () => {
+    if (validationError) return validationError
+    if (userError) {
+      if (isApiError(userError) && userError.statusCode === 404) {
+        return 'Usuário não encontrado'
+      }
+      return 'Erro ao buscar usuário'
+    }
+    return null
+  }
+
+  const errorMessage = getErrorMessage()
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
@@ -167,7 +197,7 @@ export function Home() {
               
               <button 
                 type="submit"
-                disabled={loadingUser || !inputValue.trim()} 
+                disabled={loadingUser || !inputValue.trim() || !isOnline} 
                 className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-xl font-medium transition"
               >
                 {loadingUser ? 'Carregando...' : 'Entrar'}
@@ -197,6 +227,14 @@ export function Home() {
               </div>
             )}
 
+            {/* Erro ao carregar jogadores */}
+            {playersError && (
+              <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-800 rounded-lg text-yellow-400 text-sm">
+                ⚠️ Erro ao carregar dados dos jogadores. Algumas informações podem estar incompletas.
+              </div>
+            )}
+
+            {/* Loading */}
             {loadingLeagues && (
               <div className="flex justify-center py-12">
                 <div className="text-center">
@@ -206,7 +244,16 @@ export function Home() {
               </div>
             )}
 
-            {!loadingLeagues && leagues && leagues.length > 0 && (
+            {/* Erro ao carregar ligas */}
+            {leaguesError && !loadingLeagues && (
+              <ErrorCard 
+                message="Erro ao carregar ligas" 
+                onRetry={() => refetchLeagues()}
+              />
+            )}
+
+            {/* Leagues Grid */}
+            {!loadingLeagues && !leaguesError && leagues && leagues.length > 0 && (
               <>
                 <h2 className="text-lg font-semibold mb-4 text-slate-300">
                   Suas Ligas ({leagues.length})
@@ -225,7 +272,8 @@ export function Home() {
               </>
             )}
 
-            {!loadingLeagues && leagues && leagues.length === 0 && (
+            {/* Empty State */}
+            {!loadingLeagues && !leaguesError && leagues && leagues.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-5xl mb-4">🤷</div>
                 <p className="text-slate-400">Nenhuma liga encontrada para {selectedSeason}</p>
