@@ -72,7 +72,7 @@ export function Home() {
   
   const { data: allLeagues } = useAllUserLeagues(currentUser?.user_id)
   
-  const { data: players, error: playersError } = usePlayers()
+  const { error: playersError } = usePlayers()
   
   const leagueIds = leagues?.map(l => l.league_id) || []
   const { data: rostersByLeague } = useAllMyRosters(leagueIds, currentUser?.user_id)
