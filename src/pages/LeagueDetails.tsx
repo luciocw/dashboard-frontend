@@ -10,11 +10,12 @@ import { TradesView } from '@/components/TradesView'
 import { StandingsTable } from '@/components/StandingsTable'
 import { PowerRankings } from '@/components/PowerRankings'
 import { SkeletonTable } from '@/components/ui/SkeletonTable'
+import { IDPExplorerView } from '@/features/idp'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/utils/cn'
 import type { StandingTeam } from '@/types/sleeper'
 
-type Tab = 'roster' | 'matchups' | 'standings' | 'power' | 'trades' | 'history'
+type Tab = 'roster' | 'matchups' | 'standings' | 'power' | 'trades' | 'history' | 'idp'
 
 export function LeagueDetails() {
   const { id } = useParams<{ id: string }>()
@@ -149,6 +150,7 @@ export function LeagueDetails() {
     { id: 'power' as Tab, label: 'Power', icon: '⚡' },
     { id: 'trades' as Tab, label: 'Trades', icon: '🔄' },
     { id: 'history' as Tab, label: 'Histórico', icon: '🏆' },
+    { id: 'idp' as Tab, label: 'IDP', icon: '🛡️' },
   ]
 
   return (
@@ -278,6 +280,14 @@ export function LeagueDetails() {
           <div className="max-w-2xl mx-auto">
             <ChampionsHistory leagueId={data.league.league_id} />
           </div>
+        )}
+
+        {/* Tab: IDP Explorer */}
+        {activeTab === 'idp' && (
+          <IDPExplorerView
+            myRosterPlayerIds={myRoster?.players || []}
+            scoringSettings={data.league.scoring_settings}
+          />
         )}
       </main>
     </div>

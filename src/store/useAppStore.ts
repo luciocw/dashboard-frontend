@@ -6,7 +6,7 @@ interface AppState {
   // User state
   currentUser: SleeperUser | null
   setCurrentUser: (user: SleeperUser | null) => void
-  
+
   // Season state
   selectedSeason: string
   setSelectedSeason: (season: string) => void
@@ -14,6 +14,12 @@ interface AppState {
   // UI state
   theme: 'dark' | 'light'
   toggleTheme: () => void
+
+  // Premium features
+  // TODO [PRE-LAUNCH]: Mudar isPremiumUser default para FALSE antes do lançamento!
+  // A feature IDP Explorer deve ser bloqueada para não-premium
+  isPremiumUser: boolean
+  setIsPremiumUser: (isPremium: boolean) => void
 
   // Actions
   logout: () => void
@@ -26,6 +32,8 @@ export const useAppStore = create<AppState>()(
       currentUser: null,
       selectedSeason: '2025',
       theme: 'dark',
+      // TODO [PRE-LAUNCH]: Mudar para FALSE antes do lançamento!
+      isPremiumUser: true,
 
       // Actions
       setCurrentUser: (user) => set({ currentUser: user }),
@@ -35,6 +43,8 @@ export const useAppStore = create<AppState>()(
       toggleTheme: () => set((state) => ({
         theme: state.theme === 'dark' ? 'light' : 'dark'
       })),
+
+      setIsPremiumUser: (isPremium) => set({ isPremiumUser: isPremium }),
 
       logout: () => set({
         currentUser: null,
@@ -46,6 +56,7 @@ export const useAppStore = create<AppState>()(
         currentUser: state.currentUser,
         selectedSeason: state.selectedSeason,
         theme: state.theme,
+        isPremiumUser: state.isPremiumUser,
       }),
     }
   )
