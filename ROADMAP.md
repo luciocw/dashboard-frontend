@@ -46,32 +46,47 @@
 - [x] Deploy Cloudflare Pages
 - [x] URL: https://dashboard-frontend-tmg.pages.dev
 
+## ✅ FASE F - IDP Explorer (COMPLETA)
+- [x] Nova tab "IDP" dentro de cada liga
+- [x] Integração ESPN API (stats temporada 2025)
+- [x] Filtros por posição (DL, LB, DB)
+- [x] Filtros por stats mínimas (tackles, sacks, TFL)
+- [x] Filtros rápidos (Mike LB, Pass Rushers, Box Safeties)
+- [x] Badge "Já tenho" (integração Sleeper roster)
+- [x] Projeção de pontos baseada no scoring_settings da liga
+- [x] Card detalhado com breakdown da projeção
+- [x] Colunas: TKL, SCK, TFL, PD, INT, FF, Proj
+- [x] Feature premium (gate com isPremiumUser)
+
 ---
 
 ## 🔄 PRÓXIMAS FASES
 
-### FASE F - Mobile Optimization
+### FASE G - Mobile Optimization
 - [ ] Testes em dispositivos reais
 - [ ] Safe area support (notch)
 - [ ] Touch targets (44px mínimo)
 - [ ] Swipe gestures
 - [ ] PWA (Progressive Web App)
 
-### FASE G - Features Avançadas FREE
+### FASE H - Features Avançadas FREE
 - [ ] Waiver Wire / Free Agents
 - [ ] Injury Report (lesões dos jogadores)
 - [ ] Projeções da semana
 - [ ] Notificações de matchup
 
-### FASE H - Premium ($4.99/mês)
+### FASE I - Premium ($4.99/mês)
 - [ ] Ver TODOS os rosters (não só o seu)
 - [ ] Comparar rosters lado a lado
 - [ ] Trade Calculator / Analyzer
 - [ ] Alertas de lesões
 - [ ] Export avançado (CSV, PDF)
 - [ ] Start/Sit advice
+- [ ] Alvos (expandir IDP para todos jogadores: QB, RB, WR, TE, K)
+- [ ] Projeção multi-temporada (ajuda em trades)
+- [ ] Status waiver/time (mostrar se disponível)
 
-### FASE I - Expansão
+### FASE J - Expansão
 - [ ] App iOS (React Native ou PWA)
 - [ ] App Android
 - [ ] Internacionalização (PT, EN, ES)
