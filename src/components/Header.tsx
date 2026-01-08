@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Button } from './ui/Button'
 
 interface HeaderProps {
@@ -9,7 +10,7 @@ interface HeaderProps {
   onLogout?: () => void
 }
 
-export function Header({ user, onLogout }: HeaderProps) {
+export const Header = memo(function Header({ user, onLogout }: HeaderProps) {
   return (
     <header className="mb-8 flex flex-wrap justify-between items-center gap-4">
       <div>
@@ -40,4 +41,4 @@ export function Header({ user, onLogout }: HeaderProps) {
       )}
     </header>
   )
-}
+})

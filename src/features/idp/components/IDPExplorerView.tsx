@@ -72,15 +72,14 @@ export const IDPExplorerView = memo(function IDPExplorerView({
           Com ele você pode buscar e filtrar jogadores defensivos para
           melhorar seu time de fantasy.
         </p>
-        <button
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-medium transition-all"
-          onClick={() => {
-            // TODO: Implementar flow de upgrade
-            alert('Flow de upgrade será implementado em breve!')
-          }}
+        <a
+          href="https://buymeacoffee.com/luciocw"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-medium transition-all"
         >
-          Saiba mais sobre Premium
-        </button>
+          Apoiar o projeto
+        </a>
       </div>
     )
   }
