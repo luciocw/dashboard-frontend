@@ -150,7 +150,7 @@ export const LeagueCard = memo(function LeagueCard({
           {league.avatar ? (
             <img
               src={`https://sleepercdn.com/avatars/thumbs/${league.avatar}`}
-              alt=""
+              alt={league.name}
               className="h-14 w-14 flex-shrink-0 rounded-full border-2 border-cyan-500/40 object-cover"
               loading="lazy"
             />

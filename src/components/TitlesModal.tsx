@@ -78,7 +78,7 @@ export const TitlesModal = memo(function TitlesModal({
                   {title.leagueAvatar ? (
                     <img
                       src={`https://sleepercdn.com/avatars/thumbs/${title.leagueAvatar}`}
-                      alt=""
+                      alt={title.leagueName}
                       className="w-10 h-10 rounded-lg"
                     />
                   ) : (

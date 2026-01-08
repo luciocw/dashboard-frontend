@@ -125,9 +125,9 @@ const TradeCard = memo(function TradeCard({
         <div>
           <div className="flex items-center gap-2 mb-2">
             {getOwnerAvatar(roster1Id, rosters, users) ? (
-              <img 
+              <img
                 src={`https://sleepercdn.com/avatars/thumbs/${getOwnerAvatar(roster1Id, rosters, users)}`}
-                alt=""
+                alt={getOwnerName(roster1Id, rosters, users)}
                 className="w-6 h-6 rounded-full"
               />
             ) : (
@@ -147,9 +147,9 @@ const TradeCard = memo(function TradeCard({
         <div>
           <div className="flex items-center gap-2 mb-2">
             {getOwnerAvatar(roster2Id, rosters, users) ? (
-              <img 
+              <img
                 src={`https://sleepercdn.com/avatars/thumbs/${getOwnerAvatar(roster2Id, rosters, users)}`}
-                alt=""
+                alt={getOwnerName(roster2Id, rosters, users)}
                 className="w-6 h-6 rounded-full"
               />
             ) : (

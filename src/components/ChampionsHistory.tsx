@@ -79,7 +79,7 @@ export const ChampionsHistory = memo(function ChampionsHistory({ leagueId }: Cha
               {champion.ownerAvatar ? (
                 <img
                   src={`https://sleepercdn.com/avatars/thumbs/${champion.ownerAvatar}`}
-                  alt=""
+                  alt={champion.ownerName}
                   className={`w-12 h-12 rounded-full ${isCurrentChamp ? 'ring-2 ring-yellow-500' : ''}`}
                   loading="lazy"
                 />

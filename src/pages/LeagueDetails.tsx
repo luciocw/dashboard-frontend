@@ -171,9 +171,9 @@ export function LeagueDetails() {
               {/* League Avatar + Info */}
               <div className="flex items-center gap-3">
                 {data.league.avatar ? (
-                  <img 
+                  <img
                     src={`https://sleepercdn.com/avatars/thumbs/${data.league.avatar}`}
-                    alt=""
+                    alt={data.league.name}
                     className="h-12 w-12 rounded-full border-2 border-cyan-500/40 object-cover"
                   />
                 ) : (

@@ -64,9 +64,9 @@ export const PowerRankingsView = memo(function PowerRankingsView({
 
               {/* Avatar */}
               {team.owner?.avatar ? (
-                <img 
+                <img
                   src={`https://sleepercdn.com/avatars/thumbs/${team.owner.avatar}`}
-                  alt=""
+                  alt={team.owner?.display_name || team.owner?.username}
                   className="w-10 h-10 rounded-full"
                   loading="lazy"
                 />
