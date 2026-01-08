@@ -11,8 +11,12 @@ import type { IDPPlayer } from '../types'
  */
 export interface ProjectionResult {
   totalPoints: number
+  ppg: number // Points per game (assumindo 17 jogos)
   breakdown: ProjectionBreakdown[]
 }
+
+// Número de jogos na temporada regular NFL
+const GAMES_PER_SEASON = 17
 
 export interface ProjectionBreakdown {
   stat: string
@@ -175,8 +179,12 @@ export function calculateIDPProjection(
     totalPoints += pts
   }
 
+  const roundedTotal = Math.round(totalPoints * 10) / 10 // 1 casa decimal
+  const ppg = Math.round((totalPoints / GAMES_PER_SEASON) * 10) / 10 // PPG com 1 casa decimal
+
   return {
-    totalPoints: Math.round(totalPoints * 10) / 10, // 1 casa decimal
+    totalPoints: roundedTotal,
+    ppg,
     breakdown: breakdown.filter(b => b.points > 0), // Remove zeros
   }
 }

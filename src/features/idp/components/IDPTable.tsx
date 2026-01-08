@@ -142,7 +142,7 @@ export const IDPTable = memo(function IDPTable({
                 <SortHeader column="pd">PD</SortHeader>
                 <SortHeader column="int">INT</SortHeader>
                 <SortHeader column="ff">FF</SortHeader>
-                <SortHeader column="proj" className="text-right">Proj</SortHeader>
+                <SortHeader column="proj" className="text-right">PPG</SortHeader>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -236,13 +236,13 @@ export const IDPTable = memo(function IDPTable({
                       {player.stats.forcedFumbles}
                     </td>
 
-                    {/* Projeção de pontos */}
+                    {/* PPG (Points Per Game) */}
                     <td className="px-2 py-2 text-sm text-right">
                       {(() => {
                         const projection = calculateIDPProjection(player, scoringSettings)
                         return (
                           <span className="font-medium text-cyan-400">
-                            {formatPoints(projection.totalPoints)}
+                            {formatPoints(projection.ppg)}
                           </span>
                         )
                       })()}

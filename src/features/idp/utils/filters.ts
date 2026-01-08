@@ -125,8 +125,8 @@ export function sortPlayers(
         valueB = b.stats.interceptions
         break
       case 'proj':
-        valueA = calculateIDPProjection(a, scoringSettings).totalPoints
-        valueB = calculateIDPProjection(b, scoringSettings).totalPoints
+        valueA = calculateIDPProjection(a, scoringSettings).ppg
+        valueB = calculateIDPProjection(b, scoringSettings).ppg
         break
     }
 

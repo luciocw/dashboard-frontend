@@ -212,9 +212,14 @@ export const IDPPlayerCard = memo(function IDPPlayerCard({
                 <Zap className="w-3 h-3 text-cyan-400" />
                 Projeção de Pontos
               </h4>
-              <span className="text-xl font-bold text-cyan-400">
-                {formatPoints(projection.totalPoints)} pts
-              </span>
+              <div className="text-right">
+                <span className="text-xl font-bold text-cyan-400">
+                  {formatPoints(projection.ppg)} PPG
+                </span>
+                <div className="text-xs text-slate-500">
+                  {formatPoints(projection.totalPoints)} pts/temporada
+                </div>
+              </div>
             </div>
 
             {projection.breakdown.length > 0 && (
