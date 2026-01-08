@@ -1,6 +1,6 @@
 # 🏈 Dynasty Dashboard - Roadmap
 
-> Última atualização: 08/01/2026
+> Última atualização: 08/01/2026 (noite)
 
 ---
 
@@ -58,27 +58,46 @@
 - [x] Colunas: TKL, SCK, TFL, PD, INT, FF, Proj
 - [x] Feature premium (gate com isPremiumUser)
 
+## ✅ FASE G - Backend Cloudflare Workers (COMPLETA)
+- [x] Migração de Python/FastAPI para TypeScript
+- [x] NFL Stats API Worker (`https://nfl-stats-api.luciocw.workers.dev`)
+- [x] Integração Tank01 API (RapidAPI)
+- [x] Endpoints: `/api/stats/defense`, `/api/stats/offense`, `/api/seasons`
+- [x] Cache com Cloudflare KV
+- [x] Tudo grátis no plano Cloudflare (100k req/dia)
+
+## ✅ FASE H - Trade Calculator FREE (COMPLETA)
+- [x] Nova rota `/trade-calc` (acesso público)
+- [x] Interface dois lados (Side A e Side B)
+- [x] Busca de jogadores com filtro por posição (QB, RB, WR, TE, K, DL, LB, DB)
+- [x] Seleção de draft picks (2025-2028, rounds 1-4, early/mid/late)
+- [x] Valores fixos 0-100 baseados em rankings dynasty
+- [x] Resultado com vencedor, diferença e análise
+- [x] Header atualizado com navegação (Ligas + Trade Calc)
+- [ ] **Pendente:** Integrar API externa para valores dinâmicos (KeepTradeCut, FantasyCalc)
+
 ---
 
 ## 🔄 PRÓXIMAS FASES
 
-### FASE G - Mobile Optimization
+### FASE I - Mobile Optimization
 - [ ] Testes em dispositivos reais
 - [ ] Safe area support (notch)
 - [ ] Touch targets (44px mínimo)
 - [ ] Swipe gestures
 - [ ] PWA (Progressive Web App)
 
-### FASE H - Features Avançadas FREE
+### FASE J - Features Avançadas FREE
 - [ ] Waiver Wire / Free Agents
 - [ ] Injury Report (lesões dos jogadores)
 - [ ] Projeções da semana
 - [ ] Notificações de matchup
+- [ ] Trade Calculator com valores dinâmicos (API externa)
 
-### FASE I - Premium ($4.99/mês)
+### FASE K - Premium ($4.99/mês)
 - [ ] Ver TODOS os rosters (não só o seu)
 - [ ] Comparar rosters lado a lado
-- [ ] Trade Calculator / Analyzer
+- [ ] Trade Analyzer (análise avançada)
 - [ ] Alertas de lesões
 - [ ] Export avançado (CSV, PDF)
 - [ ] Start/Sit advice
@@ -86,7 +105,7 @@
 - [ ] Projeção multi-temporada (ajuda em trades)
 - [ ] Status waiver/time (mostrar se disponível)
 
-### FASE J - Expansão
+### FASE L - Expansão
 - [ ] App iOS (React Native ou PWA)
 - [ ] App Android
 - [ ] Internacionalização (PT, EN, ES)
@@ -97,7 +116,7 @@
 ## 📊 Métricas Atuais
 
 - **Testes:** 24 passando
-- **Build:** ~357 KB (gzip: ~106 KB)
+- **Build:** ~385 KB (gzip: ~113 KB)
 - **TypeScript:** 0 erros, 0 `any`
 - **ESLint:** 0 erros, 0 warnings
 - **Cobertura:** ~4% (3 arquivos de teste)
@@ -107,6 +126,7 @@
 
 ## 🔗 Links
 
-- **Produção:** https://dashboard-frontend-tmg.pages.dev
+- **Frontend:** https://dashboard-frontend-tmg.pages.dev
+- **NFL Stats API:** https://nfl-stats-api.luciocw.workers.dev
 - **GitHub:** https://github.com/luciocw/dashboard-frontend
 - **Sleeper API:** https://api.sleeper.app/v1
