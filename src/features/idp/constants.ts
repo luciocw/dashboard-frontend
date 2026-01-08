@@ -73,13 +73,13 @@ export const FILTER_SUGGESTIONS = {
     filters: { minTackles: 100 },
   },
   DL: {
-    label: 'Pass Rushers',
-    description: 'DLs com 6+ sacks (consistentes)',
+    label: 'Edge',
+    description: 'DLs com 6+ sacks (edge rushers)',
     filters: { minSacks: 6 },
   },
   DB: {
-    label: 'Box Safeties',
-    description: 'DBs com 50+ tackles (atuam perto da linha)',
+    label: 'Nickel',
+    description: 'DBs com 50+ tackles (nickel/slot)',
     filters: { minTackles: 50 },
   },
 } as const
