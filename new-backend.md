@@ -2,7 +2,9 @@
 
 ## Resumo
 
-Estamos migrando o backend da API de stats NFL de **Python/FastAPI** para **Cloudflare Workers (TypeScript)** para ter tudo em uma única plataforma (Cloudflare) e eliminar custos de hospedagem.
+Migramos o backend da API de stats NFL de **Python/FastAPI** para **Cloudflare Workers (TypeScript)** para ter tudo em uma única plataforma (Cloudflare) e eliminar custos de hospedagem.
+
+**Status: COMPLETO**
 
 ---
 
@@ -12,28 +14,28 @@ Estamos migrando o backend da API de stats NFL de **Python/FastAPI** para **Clou
 
 | Componente | Tecnologia | Hospedagem | Custo |
 |------------|------------|------------|-------|
-| Frontend | React/TypeScript | Cloudflare Pages | Grátis |
-| Backend | Python/FastAPI | Não deployed | - |
+| Frontend | React/TypeScript | Cloudflare Pages | Gratis |
+| Backend | Python/FastAPI | Nao deployed | - |
 
-O backend Python precisaria de hospedagem separada (Railway ~$5/mês) porque:
-- GitHub Pages e Cloudflare Pages só servem arquivos estáticos
-- Python não roda em ambiente serverless tradicional
+O backend Python precisaria de hospedagem separada (Railway ~$5/mes) porque:
+- GitHub Pages e Cloudflare Pages so servem arquivos estaticos
+- Python nao roda em ambiente serverless tradicional
 
-### Solucão: Cloudflare Workers
+### Solucao: Cloudflare Workers
 
 | Componente | Tecnologia | Hospedagem | Custo |
 |------------|------------|------------|-------|
-| Frontend | React/TypeScript | Cloudflare Pages | Grátis |
-| Backend | TypeScript | Cloudflare Workers | Grátis* |
+| Frontend | React/TypeScript | Cloudflare Pages | Gratis |
+| Backend | TypeScript | Cloudflare Workers | Gratis* |
 
 *100.000 requests/dia no plano gratuito
 
-### Benefícios
+### Beneficios
 
 1. **Tudo no Cloudflare** - Uma conta, um dashboard
-2. **Grátis** - 100k requests/dia é muito para uso pessoal
-3. **Edge Computing** - API roda em servidores globais (baixa latência)
-4. **Sem servidor** - Não precisa gerenciar infra
+2. **Gratis** - 100k requests/dia e muito para uso pessoal
+3. **Edge Computing** - API roda em servidores globais (baixa latencia)
+4. **Sem servidor** - Nao precisa gerenciar infra
 5. **Stack consistente** - TypeScript no frontend e backend
 
 ---
@@ -48,8 +50,8 @@ workers/nfl-stats-api/
 │   ├── index.ts           # Handler principal (endpoints)
 │   ├── types.ts           # TypeScript types
 │   └── sources/
-│       └── tank01.ts      # Integracão Tank01 API
-├── wrangler.toml          # Configuracão Cloudflare
+│       └── tank01.ts      # Integracao Tank01 API
+├── wrangler.toml          # Configuracao Cloudflare
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -57,72 +59,74 @@ workers/nfl-stats-api/
 
 ### 2. Endpoints Implementados
 
-| Método | Path | Descricão |
+| Metodo | Path | Descricao |
 |--------|------|-----------|
 | GET | `/` | Health check e info da API |
-| GET | `/api/seasons` | Lista de temporadas disponíveis |
+| GET | `/api/seasons` | Lista de temporadas disponiveis |
 | GET | `/api/stats/defense?season=2024` | Stats defensivas |
 | GET | `/api/stats/offense?season=2024` | Stats ofensivas |
 | POST | `/api/cache/clear` | Limpar cache |
 
 ### 3. Recursos Cloudflare Utilizados
 
-- **Workers** - Executa o código TypeScript
+- **Workers** - Executa o codigo TypeScript
 - **KV (Key-Value)** - Cache persistente para dados da API
 - **Secrets** - Armazena a chave da RapidAPI de forma segura
 
 ### 4. Deploy Realizado
 
-- **URL**: https://nfl-stats-api.luciocw.workers.dev
+- **API URL**: https://nfl-stats-api.luciocw.workers.dev
+- **Frontend URL**: https://dashboard-frontend-tmg.pages.dev
 - **Status**: Funcionando
 - **Testado**: Endpoint de defense retornou 780 jogadores
 
+### 5. Frontend Atualizado
+
+- URL da API atualizada em `src/constants/index.ts`
+- IDP Explorer funcionando com dados da nova API
+- Coluna de projecao mudada de "PROJ" (total) para "PPG" (points per game)
+
 ---
 
-## O que ainda falta fazer
+## Funcionalidade PPG
 
-### 1. Atualizar o Frontend
+A coluna de projecao agora mostra **PPG (Points Per Game)** em vez de pontos totais da temporada.
 
-Modificar o arquivo `src/features/idp/constants.ts` ou `src/constants/index.ts` para usar a nova URL:
-
-```typescript
-// De:
-export const IDP_API_URL = import.meta.env.VITE_IDP_API_URL || 'https://api.dynastydashboard.com'
-
-// Para:
-export const IDP_API_URL = import.meta.env.VITE_IDP_API_URL || 'https://nfl-stats-api.luciocw.workers.dev'
+### Calculo
+```
+PPG = Total de Pontos / 17 jogos
 ```
 
-### 2. Testar IDP Explorer
+### Exemplo
+- Jordyn Brooks: 162.5 pts total → **9.6 PPG**
 
-Após atualizar o frontend:
-1. Rodar `npm run build`
-2. Fazer deploy no Cloudflare Pages
-3. Testar o IDP Explorer no site de producão
-
-### 3. (Opcional) Adicionar nflverse como fallback
-
-O backend Python usava nflverse (dados históricos) como fallback quando Tank01 falhava. Por enquanto, só implementamos Tank01. Para adicionar nflverse:
-
-1. Os dados são arquivos `.parquet` (formato binário)
-2. Precisaria de uma biblioteca JS para ler parquet
-3. Ou um Worker scheduled para pré-processar os dados
+### Arquivos modificados
+- `src/features/idp/utils/projection.ts` - Adicionado calculo de PPG
+- `src/features/idp/components/IDPTable.tsx` - Coluna renomeada para PPG
+- `src/features/idp/components/IDPPlayerCard.tsx` - Mostra PPG + total
+- `src/features/idp/utils/filters.ts` - Ordenacao por PPG
 
 ---
 
-## Comandos Úteis
+## Comandos Uteis
 
-### Desenvolvimento local
+### Desenvolvimento local do Worker
 ```bash
 cd workers/nfl-stats-api
 npm run dev
 # Acessa em http://localhost:8787
 ```
 
-### Deploy
+### Deploy do Worker
 ```bash
 cd workers/nfl-stats-api
 npm run deploy
+```
+
+### Deploy do Frontend
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name=dashboard-frontend
 ```
 
 ### Ver logs em tempo real
@@ -140,16 +144,17 @@ echo "SUA_CHAVE_AQUI" | npx wrangler secret put RAPIDAPI_KEY --config workers/nf
 
 ## Arquivos Importantes
 
-| Arquivo | Descricão |
+| Arquivo | Descricao |
 |---------|-----------|
-| `workers/nfl-stats-api/wrangler.toml` | Config do Worker (KV IDs, variáveis) |
-| `workers/nfl-stats-api/src/index.ts` | Lógica principal da API |
-| `workers/nfl-stats-api/src/sources/tank01.ts` | Integracão com Tank01 API |
+| `workers/nfl-stats-api/wrangler.toml` | Config do Worker (KV IDs, variaveis) |
+| `workers/nfl-stats-api/src/index.ts` | Logica principal da API |
+| `workers/nfl-stats-api/src/sources/tank01.ts` | Integracao com Tank01 API |
 | `src/constants/index.ts` | URL da API no frontend |
+| `src/features/idp/utils/projection.ts` | Calculo de PPG |
 
 ---
 
-## Comparacão Python vs TypeScript
+## Comparacao Python vs TypeScript
 
 ### Python (antigo)
 ```python
@@ -169,26 +174,37 @@ async function handleDefenseStats(request: Request, env: Env): Promise<Response>
 }
 ```
 
-A lógica é a mesma, só mudou a sintaxe e o sistema de cache (arquivos → KV).
+A logica e a mesma, so mudou a sintaxe e o sistema de cache (arquivos → KV).
 
 ---
 
-## Próximos Passos para Continuar
+## Melhorias Futuras (Opcional)
 
-1. **Abrir o projeto**: `cd /Users/luciocw/Desktop/Fantasy/Fantasy-Frontend`
+### 1. Adicionar nflverse como fallback
 
-2. **Atualizar a URL da API no frontend**:
-   - Arquivo: `src/constants/index.ts`
-   - Trocar `https://api.dynastydashboard.com` por `https://nfl-stats-api.luciocw.workers.dev`
+O backend Python usava nflverse (dados historicos) como fallback quando Tank01 falhava. Para adicionar:
 
-3. **Build e deploy**:
-   ```bash
-   npm run build
-   npx wrangler pages deploy dist
-   ```
+1. Os dados sao arquivos `.parquet` (formato binario)
+2. Precisaria de uma biblioteca JS para ler parquet
+3. Ou um Worker scheduled para pre-processar os dados
 
-4. **Testar** no site de producão
+### 2. Adicionar games played real
+
+Atualmente o PPG assume 17 jogos. Para ter o numero real de jogos:
+
+1. Verificar se Tank01 API fornece `gamesPlayed`
+2. Ou buscar de outra fonte (ESPN, etc)
+3. Atualizar o calculo de PPG
 
 ---
 
-*Documentacão criada em 08/01/2026*
+## Commits Relacionados
+
+| Hash | Descricao |
+|------|-----------|
+| `5f16953` | feat: change IDP projection from total points to PPG |
+| `3a3cd46` | feat: migrate backend to Cloudflare Workers |
+
+---
+
+*Documentacao atualizada em 08/01/2026*
