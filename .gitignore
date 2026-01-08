@@ -34,3 +34,5 @@ pnpm-debug.log*
 # OS
 .DS_Store
 Thumbs.db
+backend/.env
+backend/cache_data/
