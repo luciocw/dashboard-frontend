@@ -1,5 +1,6 @@
 import { memo } from 'react'
-import { ChevronDown, LogOut } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
+import { ChevronDown, LogOut, Scale, Home } from 'lucide-react'
 
 interface DashboardHeaderProps {
   username: string
@@ -20,16 +21,48 @@ export const DashboardHeader = memo(function DashboardHeader({
   onSeasonChange,
   onLogout,
 }: DashboardHeaderProps) {
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const isTradeCalc = location.pathname === '/trade-calc'
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-700/40 bg-slate-900/80 backdrop-blur-xl">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <h1 className="text-xl font-bold tracking-tight md:text-2xl">
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-              Dynasty Dashboard
-            </span>
-          </h1>
+          {/* Logo + Nav */}
+          <div className="flex items-center gap-6">
+            <h1 className="text-xl font-bold tracking-tight md:text-2xl">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+                Dynasty Dashboard
+              </span>
+            </h1>
+
+            {/* Navigation */}
+            <nav className="hidden sm:flex items-center gap-1">
+              <Link
+                to="/"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  isHome
+                    ? 'bg-slate-800 text-white'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                <Home className="w-4 h-4" />
+                <span>Ligas</span>
+              </Link>
+              <Link
+                to="/trade-calc"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  isTradeCalc
+                    ? 'bg-cyan-600/20 text-cyan-400'
+                    : 'text-slate-400 hover:text-cyan-400 hover:bg-cyan-600/10'
+                }`}
+              >
+                <Scale className="w-4 h-4" />
+                <span>Trade Calc</span>
+              </Link>
+            </nav>
+          </div>
 
           {/* Right side controls */}
           <div className="flex items-center gap-3 md:gap-4">
