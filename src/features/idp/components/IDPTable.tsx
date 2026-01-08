@@ -45,7 +45,7 @@ export const IDPTable = memo(function IDPTable({
     return (
       <th
         onClick={() => onSort(column)}
-        className={`px-3 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-200 transition-colors ${className}`}
+        className={`px-2 py-2 text-left text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-200 transition-colors ${className}`}
       >
         <div className="flex items-center gap-1">
           {children}
@@ -132,7 +132,7 @@ export const IDPTable = memo(function IDPTable({
           <table className="w-full">
             <thead className="bg-slate-800/50">
               <tr>
-                <SortHeader column="name" className="w-64">Jogador</SortHeader>
+                <SortHeader column="name" className="min-w-[180px]">Jogador</SortHeader>
                 <SortHeader column="position">Pos</SortHeader>
                 <SortHeader column="team">Time</SortHeader>
                 <SortHeader column="tackles">TKL</SortHeader>
@@ -143,7 +143,6 @@ export const IDPTable = memo(function IDPTable({
                 <SortHeader column="int">INT</SortHeader>
                 <SortHeader column="ff">FF</SortHeader>
                 <SortHeader column="proj" className="text-right">Proj</SortHeader>
-                <th className="px-3 py-3 w-20"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -158,8 +157,8 @@ export const IDPTable = memo(function IDPTable({
                     className="hover:bg-slate-800/50 cursor-pointer transition-colors"
                   >
                     {/* Jogador */}
-                    <td className="px-3 py-3">
-                      <div className="flex items-center gap-3">
+                    <td className="px-2 py-2">
+                      <div className="flex items-center gap-2">
                         {/* Avatar */}
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-700 flex-shrink-0">
                           {player.photoUrl ? (
@@ -203,42 +202,42 @@ export const IDPTable = memo(function IDPTable({
                     </td>
 
                     {/* Posição */}
-                    <td className="px-3 py-3">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${IDP_POSITION_BG[player.fantasyPosition]} ${IDP_POSITION_COLORS[player.fantasyPosition]}`}>
+                    <td className="px-2 py-2">
+                      <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${IDP_POSITION_BG[player.fantasyPosition]} ${IDP_POSITION_COLORS[player.fantasyPosition]}`}>
                         {player.fantasyPosition}
                       </span>
                     </td>
 
                     {/* Time */}
-                    <td className="px-3 py-3 text-sm text-slate-400">
+                    <td className="px-2 py-2 text-sm text-slate-400">
                       {player.teamAbbr || '-'}
                     </td>
 
                     {/* Stats */}
-                    <td className="px-3 py-3 text-sm">
+                    <td className="px-2 py-2 text-sm">
                       <StatCell value={player.stats.tackles} position={player.fantasyPosition} statType="tackles" />
                     </td>
-                    <td className="px-3 py-3 text-sm">
+                    <td className="px-2 py-2 text-sm">
                       <StatCell value={player.stats.sacks} position={player.fantasyPosition} statType="sacks" />
                     </td>
-                    <td className="px-3 py-3 text-sm text-slate-400">
+                    <td className="px-2 py-2 text-sm text-slate-400">
                       {player.stats.tfl}
                     </td>
-                    <td className="px-3 py-3 text-sm text-slate-400">
+                    <td className="px-2 py-2 text-sm text-slate-400">
                       {player.stats.qbHits || 0}
                     </td>
-                    <td className="px-3 py-3 text-sm">
+                    <td className="px-2 py-2 text-sm">
                       <StatCell value={player.stats.passesDefended} position={player.fantasyPosition} statType="pd" />
                     </td>
-                    <td className="px-3 py-3 text-sm text-slate-400">
+                    <td className="px-2 py-2 text-sm text-slate-400">
                       {player.stats.interceptions}
                     </td>
-                    <td className="px-3 py-3 text-sm text-slate-400">
+                    <td className="px-2 py-2 text-sm text-slate-400">
                       {player.stats.forcedFumbles}
                     </td>
 
                     {/* Projeção de pontos */}
-                    <td className="px-3 py-3 text-sm text-right">
+                    <td className="px-2 py-2 text-sm text-right">
                       {(() => {
                         const projection = calculateIDPProjection(player, scoringSettings)
                         return (
@@ -247,19 +246,6 @@ export const IDPTable = memo(function IDPTable({
                           </span>
                         )
                       })()}
-                    </td>
-
-                    {/* Ações */}
-                    <td className="px-3 py-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedPlayer(player)
-                        }}
-                        className="px-2 py-1 rounded text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                      >
-                        Ver
-                      </button>
                     </td>
                   </tr>
                 )

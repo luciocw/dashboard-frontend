@@ -47,8 +47,11 @@ export function calculateIDPProjection(
   player: IDPPlayer,
   scoring: ScoringSettings | undefined
 ): ProjectionResult {
-  // Usa scoring da liga ou valores padrão
-  const s = scoring || DEFAULT_IDP_SCORING
+  // Merge: usa valores da liga se existirem, senão usa defaults
+  const s: Partial<ScoringSettings> = {
+    ...DEFAULT_IDP_SCORING,
+    ...(scoring || {}),
+  }
 
   const breakdown: ProjectionBreakdown[] = []
   let totalPoints = 0
