@@ -1,0 +1,18 @@
+name = "nfl-stats-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# KV namespace for caching
+[[kv_namespaces]]
+binding = "CACHE"
+id = "8dbc7dd1248440089f7aab95011c5e02"
+preview_id = "eba3e1675bce4b548359343964348acc"
+
+# Environment variables (set via wrangler secret or dashboard)
+# RAPIDAPI_KEY - Tank01 API key
+
+[vars]
+PRIMARY_SOURCE = "tank01"
+CACHE_TTL_TANK01 = "3600"
+CACHE_TTL_NFLVERSE = "86400"
+DEBUG = "false"

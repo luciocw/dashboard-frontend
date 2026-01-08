@@ -1,7 +1,7 @@
 // API URLs (configuráveis via variáveis de ambiente)
 export const API_URL = import.meta.env.VITE_SLEEPER_API_URL || 'https://api.sleeper.app/v1'
 export const SLEEPER_CDN = import.meta.env.VITE_SLEEPER_CDN_URL || 'https://sleepercdn.com'
-export const IDP_API_URL = import.meta.env.VITE_IDP_API_URL || 'https://api.dynastydashboard.com'
+export const IDP_API_URL = import.meta.env.VITE_IDP_API_URL || 'https://nfl-stats-api.luciocw.workers.dev'
 
 // Cache times (em ms)
 export const CACHE_TIMES = {
