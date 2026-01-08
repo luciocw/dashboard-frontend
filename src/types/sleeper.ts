@@ -116,3 +116,43 @@ export interface StandingTeam {
   fpts: number
   winRate: number
 }
+
+/**
+ * Jogo do bracket de playoffs
+ */
+export interface BracketGame {
+  r: number          // Round number
+  m: number          // Match number
+  t1: number | null  // Team 1 roster_id
+  t2: number | null  // Team 2 roster_id
+  w: number | null   // Winner roster_id
+  l: number | null   // Loser roster_id
+  t1_from?: { w?: number; l?: number }
+  t2_from?: { w?: number; l?: number }
+}
+
+/**
+ * Draft pick (para trades e exibição)
+ */
+export interface DraftPick {
+  season: string
+  round: number
+  roster_id: number
+  previous_owner_id: number
+  owner_id: number
+}
+
+/**
+ * Player do Sleeper (dados básicos)
+ */
+export interface SleeperPlayer {
+  player_id: string
+  first_name: string
+  last_name: string
+  full_name?: string
+  position?: string
+  team?: string
+  age?: number
+  years_exp?: number
+  status?: string
+}

@@ -55,7 +55,7 @@ export const IDPExplorerView = memo(function IDPExplorerView({
     if (latestSeason && filters.season !== String(latestSeason)) {
       updateFilter('season', String(latestSeason))
     }
-  }, [latestSeason])
+  }, [latestSeason, filters.season, updateFilter])
 
   // Gate de premium
   if (!isPremiumUser) {

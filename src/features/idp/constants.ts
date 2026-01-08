@@ -5,10 +5,11 @@
 
 import type { FantasyPosition, ESPNPosition, IDPFilters } from './types'
 
+import { IDP_API_URL } from '@/constants'
+
 // Backend API URL (nflverse data)
-// Em produção, configure via variável de ambiente ou altere o valor default
 export const STATS_API = {
-  BASE_URL: 'http://localhost:8000',
+  BASE_URL: IDP_API_URL,
   DEFENSE: '/api/stats/defense',
   OFFENSE: '/api/stats/offense',
 }

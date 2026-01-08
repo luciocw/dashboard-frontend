@@ -15,9 +15,7 @@ interface AppState {
   theme: 'dark' | 'light'
   toggleTheme: () => void
 
-  // Premium features
-  // TODO [PRE-LAUNCH]: Mudar isPremiumUser default para FALSE antes do lançamento!
-  // A feature IDP Explorer deve ser bloqueada para não-premium
+  // Premium features (IDP Explorer bloqueado para não-premium)
   isPremiumUser: boolean
   setIsPremiumUser: (isPremium: boolean) => void
 
@@ -32,8 +30,7 @@ export const useAppStore = create<AppState>()(
       currentUser: null,
       selectedSeason: '2025',
       theme: 'dark',
-      // TODO [PRE-LAUNCH]: Mudar para FALSE antes do lançamento!
-      isPremiumUser: true,
+      isPremiumUser: false,
 
       // Actions
       setCurrentUser: (user) => set({ currentUser: user }),

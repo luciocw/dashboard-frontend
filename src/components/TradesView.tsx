@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useTrades, type Trade } from '@/hooks/useTrades'
-import { usePlayers } from '@/hooks/usePlayers'
+import { usePlayers, type PlayersMap } from '@/hooks/usePlayers'
 import { DraftPickBadge } from './DraftPickBadge'
 import type { SleeperRoster, SleeperUser } from '@/types/sleeper'
 
@@ -15,7 +15,7 @@ interface TradeCardProps {
   trade: Trade
   rosters: SleeperRoster[]
   users: SleeperUser[]
-  players: Record<string, any> | undefined
+  players: PlayersMap | undefined
   currentUserId?: string
 }
 

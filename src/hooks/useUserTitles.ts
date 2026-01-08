@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { API_URL, CACHE_TIMES } from '@/constants'
-import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
+import type { SleeperLeague, SleeperRoster, BracketGame } from '@/types/sleeper'
 
 /**
  * Título conquistado pelo usuário
@@ -15,7 +15,7 @@ export interface UserTitle {
 /**
  * Busca bracket de vencedores
  */
-async function fetchWinnersBracket(leagueId: string): Promise<any[]> {
+async function fetchWinnersBracket(leagueId: string): Promise<BracketGame[]> {
   const res = await fetch(`${API_URL}/league/${leagueId}/winners_bracket`)
   if (!res.ok) return []
   return res.json()
@@ -57,8 +57,8 @@ async function checkIfUserWon(
     
     if (!bracket || bracket.length === 0) return null
     
-    // Encontrar a final
-    const finalGame = bracket.reduce((max: any, game: any) => 
+    // Encontrar a final (maior round)
+    const finalGame = bracket.reduce<BracketGame | null>((max, game) =>
       (game.r > (max?.r || 0)) ? game : max
     , null)
     

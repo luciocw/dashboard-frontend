@@ -1,12 +1,11 @@
 import { memo } from 'react'
 import { cn } from '@/utils/cn'
-import type { SleeperLeague, SleeperRoster } from '@/types/sleeper'
+import type { SleeperLeague, SleeperRoster, DraftPick } from '@/types/sleeper'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface LeagueCardProps {
   league: SleeperLeague
   myRoster?: SleeperRoster | null
-  picks?: any[]
+  picks?: DraftPick[]
   onClick?: () => void
 }
 
@@ -91,7 +90,7 @@ function getRosterStatus(roster: SleeperRoster | null | undefined, maxRosterSize
 }
 
 // Agrupa picks por ano/round
-function groupPicks(picks: any[] | undefined) {
+function groupPicks(picks: DraftPick[] | undefined) {
   if (!picks || picks.length === 0) return { total: 0, summary: [] }
   
   const byYearRound: Record<string, number> = {}

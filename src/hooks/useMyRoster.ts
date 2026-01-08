@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { SleeperRoster, SleeperUser } from '@/types/sleeper'
-
-const API = 'https://api.sleeper.app/v1'
+import { API_URL } from '@/constants'
 
 interface MyRosterData {
   roster: SleeperRoster | null
@@ -10,8 +9,8 @@ interface MyRosterData {
 
 async function fetchMyRoster(leagueId: string, userId: string): Promise<MyRosterData> {
   const [rostersRes, usersRes] = await Promise.all([
-    fetch(`${API}/league/${leagueId}/rosters`),
-    fetch(`${API}/league/${leagueId}/users`),
+    fetch(`${API_URL}/league/${leagueId}/rosters`),
+    fetch(`${API_URL}/league/${leagueId}/users`),
   ])
   
   if (!rostersRes.ok || !usersRes.ok) {
