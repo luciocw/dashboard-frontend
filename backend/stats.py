@@ -52,7 +52,7 @@ class StatsResult:
         }
 
 
-def get_defensive_stats(season: int = 2024) -> StatsResult:
+async def get_defensive_stats(season: int = 2024) -> StatsResult:
     """
     Busca stats defensivas com fallback automático
 
@@ -68,7 +68,7 @@ def get_defensive_stats(season: int = 2024) -> StatsResult:
             if DEBUG:
                 print(f"[orchestrator] Tentando Tank01 para defense stats (season={season})")
 
-            players = get_defensive_stats_tank01(season)
+            players = await get_defensive_stats_tank01(season)
 
             if players:
                 # Verifica se veio do cache
@@ -117,7 +117,7 @@ def get_defensive_stats(season: int = 2024) -> StatsResult:
         )
 
 
-def get_offensive_stats(season: int = 2024) -> StatsResult:
+async def get_offensive_stats(season: int = 2024) -> StatsResult:
     """
     Busca stats ofensivas com fallback automático
     """
@@ -129,7 +129,7 @@ def get_offensive_stats(season: int = 2024) -> StatsResult:
             if DEBUG:
                 print(f"[orchestrator] Tentando Tank01 para offense stats (season={season})")
 
-            players = get_offensive_stats_tank01(season)
+            players = await get_offensive_stats_tank01(season)
 
             if players:
                 cache_key = f"tank01_off_stats_{season}"

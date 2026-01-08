@@ -88,7 +88,7 @@ async def defense_stats(
     - cached: bool - se veio do cache
     - cache_age_seconds: int - idade do cache em segundos
     """
-    result = get_defensive_stats(season)
+    result = await get_defensive_stats(season)
 
     response = result.to_dict()
     response["season"] = season
@@ -115,7 +115,7 @@ async def offense_stats(
     - cached: bool - se veio do cache
     - cache_age_seconds: int - idade do cache em segundos
     """
-    result = get_offensive_stats(season)
+    result = await get_offensive_stats(season)
 
     response = result.to_dict()
     response["season"] = season

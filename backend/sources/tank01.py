@@ -3,9 +3,7 @@ Tank01 NFL API data source (RapidAPI)
 API: https://rapidapi.com/tank01/api/nfl-live-in-game-real-time-statistics-nfl
 
 Endpoints utilizados:
-- /getNFLPlayerList - Lista de jogadores com stats
-- /getNFLTeamRoster - Roster de um time
-- /getNFLGamesForPlayer - Jogos de um jogador específico
+- /getNFLTeamRoster?teamAbv=XXX&getStats=true - Roster com stats
 """
 
 import httpx
@@ -18,23 +16,22 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import RAPIDAPI_KEY, TANK01_BASE_URL, REQUEST_TIMEOUT
 from cache import read_cache, write_cache
 
+# Todos os times NFL
+NFL_TEAMS = [
+    "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE",
+    "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC",
+    "LAC", "LAR", "LV", "MIA", "MIN", "NE", "NO", "NYG",
+    "NYJ", "PHI", "PIT", "SF", "SEA", "TB", "TEN", "WAS"
+]
+
 # Mapeamento de posições para Fantasy
 POSITION_MAP = {
     # DL (Defensive Line)
-    "DE": "DL",
-    "DT": "DL",
-    "NT": "DL",
+    "DE": "DL", "DT": "DL", "NT": "DL",
     # LB (Linebacker)
-    "LB": "LB",
-    "ILB": "LB",
-    "OLB": "LB",
-    "MLB": "LB",
+    "LB": "LB", "ILB": "LB", "OLB": "LB", "MLB": "LB",
     # DB (Defensive Back)
-    "CB": "DB",
-    "S": "DB",
-    "FS": "DB",
-    "SS": "DB",
-    "DB": "DB",
+    "CB": "DB", "S": "DB", "FS": "DB", "SS": "DB", "DB": "DB",
 }
 
 DEFENSIVE_POSITIONS = list(POSITION_MAP.keys())
@@ -69,52 +66,19 @@ def safe_float(value, default=0.0) -> float:
     if value is None:
         return default
     try:
-        return float(str(value).replace(",", ""))
+        f = float(str(value).replace(",", ""))
+        if f != f or f == float('inf') or f == float('-inf'):  # NaN or Infinity
+            return default
+        return f
     except (ValueError, TypeError):
         return default
 
 
-async def fetch_player_list() -> list[dict]:
+async def fetch_team_roster_with_stats(team: str) -> list[dict]:
     """
-    Busca lista de todos os jogadores da NFL
-    Endpoint: /getNFLPlayerList
+    Busca roster de um time com stats
+    Endpoint: /getNFLTeamRoster?teamAbv=XXX&getStats=true
     """
-    cache_key = "tank01_player_list"
-    cached = read_cache(cache_key, 0)
-    if cached is not None:
-        return cached
-
-    if not is_configured():
-        raise ValueError("Tank01 API not configured. Set RAPIDAPI_KEY environment variable.")
-
-    url = f"{TANK01_BASE_URL}/getNFLPlayerList"
-
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            url,
-            headers=get_headers(),
-            timeout=REQUEST_TIMEOUT
-        )
-        response.raise_for_status()
-        data = response.json()
-
-        # API retorna { body: [...players] }
-        players = data.get("body", [])
-
-        write_cache(cache_key, 0, players)
-        return players
-
-
-async def fetch_team_roster(team: str) -> list[dict]:
-    """
-    Busca roster de um time específico
-    Endpoint: /getNFLTeamRoster
-    """
-    cache_key = f"tank01_roster_{team}"
-    cached = read_cache(cache_key, 0)
-    if cached is not None:
-        return cached
-
     if not is_configured():
         raise ValueError("Tank01 API not configured")
 
@@ -124,41 +88,43 @@ async def fetch_team_roster(team: str) -> list[dict]:
         response = await client.get(
             url,
             headers=get_headers(),
-            params={"teamAbv": team},
+            params={"teamAbv": team, "getStats": "true"},
             timeout=REQUEST_TIMEOUT
         )
         response.raise_for_status()
         data = response.json()
-
-        roster = data.get("body", {}).get("roster", [])
-
-        write_cache(cache_key, 0, roster)
-        return roster
+        return data.get("body", {}).get("roster", [])
 
 
-def get_defensive_stats(season: int = 2024) -> list[dict]:
+async def fetch_all_players_with_stats() -> list[dict]:
     """
-    Retorna stats defensivas usando Tank01 API (síncrono wrapper)
-    Note: Tank01 não tem endpoint sazonal, então usamos dados atuais
+    Busca todos os jogadores de todos os times com stats
+    Faz 32 chamadas (1 por time)
     """
-    import asyncio
+    cache_key = "tank01_all_players"
+    cached = read_cache(cache_key, 0)
+    if cached is not None:
+        return cached
 
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+    all_players = []
 
-    try:
-        return loop.run_until_complete(_get_defensive_stats_async(season))
-    except Exception as e:
-        print(f"[tank01] Error fetching defensive stats: {e}")
-        raise
+    for team in NFL_TEAMS:
+        try:
+            print(f"[tank01] Buscando roster de {team}...")
+            roster = await fetch_team_roster_with_stats(team)
+            all_players.extend(roster)
+        except Exception as e:
+            print(f"[tank01] Erro ao buscar {team}: {e}")
+
+    if all_players:
+        write_cache(cache_key, 0, all_players)
+
+    return all_players
 
 
-async def _get_defensive_stats_async(season: int = 2024) -> list[dict]:
+async def get_defensive_stats(season: int = 2024) -> list[dict]:
     """
-    Busca stats defensivas de todos os jogadores
+    Retorna stats defensivas usando Tank01 API
     """
     cache_key = f"tank01_def_stats_{season}"
     cached = read_cache(cache_key, 0)
@@ -168,8 +134,8 @@ async def _get_defensive_stats_async(season: int = 2024) -> list[dict]:
     if not is_configured():
         raise ValueError("Tank01 API not configured. Set RAPIDAPI_KEY environment variable.")
 
-    # Busca lista de jogadores
-    players_raw = await fetch_player_list()
+    # Busca todos os jogadores com stats
+    players_raw = await fetch_all_players_with_stats()
 
     result = []
 
@@ -182,24 +148,20 @@ async def _get_defensive_stats_async(season: int = 2024) -> list[dict]:
 
         fantasy_pos = POSITION_MAP.get(pos, "LB")
 
-        # Extrai stats do objeto
-        # Tank01 retorna stats no formato: { "Tackles": "50", "Sacks": "5.0", ... }
-        stats_raw = player_data.get("stats", {}) or {}
+        # Extrai stats do objeto - Tank01 usa nested structure
+        stats_obj = player_data.get("stats", {}) or {}
+        def_stats = stats_obj.get("Defense", {}) or {}
 
-        tackles = safe_int(stats_raw.get("tackles") or stats_raw.get("Tackles") or
-                          stats_raw.get("totalTackles") or player_data.get("tackles", 0))
-        sacks = safe_float(stats_raw.get("sacks") or stats_raw.get("Sacks") or
-                          player_data.get("sacks", 0))
-        tfl = safe_int(stats_raw.get("tfl") or stats_raw.get("TFL") or
-                      stats_raw.get("tacklesForLoss") or player_data.get("tfl", 0))
-        qb_hits = safe_int(stats_raw.get("qbHits") or stats_raw.get("QB Hits") or
-                          player_data.get("qbHits", 0))
-        pd = safe_int(stats_raw.get("passDeflections") or stats_raw.get("Pass Deflections") or
-                     stats_raw.get("pd") or player_data.get("passDeflections", 0))
-        ints = safe_int(stats_raw.get("interceptions") or stats_raw.get("Int") or
-                       player_data.get("interceptions", 0))
-        ff = safe_int(stats_raw.get("forcedFumbles") or stats_raw.get("Forced Fumbles") or
-                     player_data.get("forcedFumbles", 0))
+        tackles = safe_int(def_stats.get("totalTackles", 0))
+        solo = safe_int(def_stats.get("soloTackles", 0))
+        sacks = safe_float(def_stats.get("sacks", 0))
+        tfl = safe_int(def_stats.get("tfl", 0))
+        qb_hits = safe_int(def_stats.get("qbHits", 0))
+        pd = safe_int(def_stats.get("passDeflections", 0))
+        ints = safe_int(def_stats.get("defensiveInterceptions", 0))
+        ff = safe_int(def_stats.get("forcedFumbles", 0))
+        fr = safe_int(def_stats.get("fumblesRecovered", 0))
+        def_td = safe_int(def_stats.get("defTD", 0))
 
         # Só adiciona se tiver stats relevantes
         if tackles == 0 and sacks == 0 and ints == 0:
@@ -209,7 +171,7 @@ async def _get_defensive_stats_async(season: int = 2024) -> list[dict]:
             "id": str(player_data.get("playerID", player_data.get("espnID", ""))),
             "name": player_data.get("longName") or player_data.get("espnName", "Unknown"),
             "team": player_data.get("team", ""),
-            "teamAbbr": player_data.get("teamAbv", player_data.get("team", "")),
+            "teamAbbr": player_data.get("team", ""),
             "photoUrl": player_data.get("espnHeadshot", ""),
             "espnPosition": pos,
             "fantasyPosition": fantasy_pos,
@@ -224,17 +186,16 @@ async def _get_defensive_stats_async(season: int = 2024) -> list[dict]:
                 "passesDefended": pd,
                 "interceptions": ints,
                 "forcedFumbles": ff,
-                # Stats adicionais (zeros se não disponíveis)
-                "soloTackles": safe_int(stats_raw.get("soloTackles", 0)),
-                "assistTackles": safe_int(stats_raw.get("assistTackles", 0)),
+                "soloTackles": solo,
+                "assistTackles": tackles - solo if tackles > solo else 0,
                 "tacklesWithAssist": 0,
                 "tflYards": 0,
-                "sackYards": safe_float(stats_raw.get("sackYards", 0)),
-                "intYards": safe_int(stats_raw.get("intYards", 0)),
-                "defensiveTds": safe_int(stats_raw.get("defTD", 0)),
+                "sackYards": 0,
+                "intYards": 0,
+                "defensiveTds": def_td,
                 "fumbleRecoveryOwn": 0,
-                "fumbleRecoveryOpp": safe_int(stats_raw.get("fumbleRecoveries", 0)),
-                "safeties": safe_int(stats_raw.get("safeties", 0)),
+                "fumbleRecoveryOpp": fr,
+                "safeties": 0,
             }
         }
 
@@ -244,33 +205,15 @@ async def _get_defensive_stats_async(season: int = 2024) -> list[dict]:
     result.sort(key=lambda x: x["stats"]["tackles"], reverse=True)
 
     # Cache o resultado
-    write_cache(cache_key, 0, result)
+    if result:
+        write_cache(cache_key, 0, result)
 
     return result
 
 
-def get_offensive_stats(season: int = 2024) -> list[dict]:
+async def get_offensive_stats(season: int = 2024) -> list[dict]:
     """
-    Retorna stats ofensivas usando Tank01 API (síncrono wrapper)
-    """
-    import asyncio
-
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-    try:
-        return loop.run_until_complete(_get_offensive_stats_async(season))
-    except Exception as e:
-        print(f"[tank01] Error fetching offensive stats: {e}")
-        raise
-
-
-async def _get_offensive_stats_async(season: int = 2024) -> list[dict]:
-    """
-    Busca stats ofensivas de todos os jogadores
+    Retorna stats ofensivas usando Tank01 API
     """
     cache_key = f"tank01_off_stats_{season}"
     cached = read_cache(cache_key, 0)
@@ -280,8 +223,8 @@ async def _get_offensive_stats_async(season: int = 2024) -> list[dict]:
     if not is_configured():
         raise ValueError("Tank01 API not configured. Set RAPIDAPI_KEY environment variable.")
 
-    # Busca lista de jogadores
-    players_raw = await fetch_player_list()
+    # Busca todos os jogadores com stats
+    players_raw = await fetch_all_players_with_stats()
 
     result = []
 
@@ -293,25 +236,34 @@ async def _get_offensive_stats_async(season: int = 2024) -> list[dict]:
             continue
 
         # Extrai stats
-        stats_raw = player_data.get("stats", {}) or {}
+        stats_obj = player_data.get("stats", {}) or {}
+        passing = stats_obj.get("Passing", {}) or {}
+        rushing = stats_obj.get("Rushing", {}) or {}
+        receiving = stats_obj.get("Receiving", {}) or {}
+        defense = stats_obj.get("Defense", {}) or {}  # Para fumbles
 
-        # Passing
-        completions = safe_int(stats_raw.get("passCompletions", 0))
-        attempts = safe_int(stats_raw.get("passAttempts", 0))
-        passing_yards = safe_int(stats_raw.get("passYds") or stats_raw.get("passingYards", 0))
-        passing_tds = safe_int(stats_raw.get("passTD") or stats_raw.get("passingTouchdowns", 0))
-        ints = safe_int(stats_raw.get("int") or stats_raw.get("interceptions", 0))
+        # Passing stats
+        completions = safe_int(passing.get("passCompletions", 0))
+        attempts = safe_int(passing.get("passAttempts", 0))
+        passing_yards = safe_int(passing.get("passYds", 0))
+        passing_tds = safe_int(passing.get("passTD", 0))
+        ints = safe_int(passing.get("int", 0))
+        sacks_taken = safe_int(passing.get("sacked", 0))
 
-        # Rushing
-        carries = safe_int(stats_raw.get("carries") or stats_raw.get("rushAttempts", 0))
-        rushing_yards = safe_int(stats_raw.get("rushYds") or stats_raw.get("rushingYards", 0))
-        rushing_tds = safe_int(stats_raw.get("rushTD") or stats_raw.get("rushingTouchdowns", 0))
+        # Rushing stats
+        carries = safe_int(rushing.get("carries", 0))
+        rushing_yards = safe_int(rushing.get("rushYds", 0))
+        rushing_tds = safe_int(rushing.get("rushTD", 0))
 
-        # Receiving
-        targets = safe_int(stats_raw.get("targets", 0))
-        receptions = safe_int(stats_raw.get("receptions") or stats_raw.get("rec", 0))
-        receiving_yards = safe_int(stats_raw.get("recYds") or stats_raw.get("receivingYards", 0))
-        receiving_tds = safe_int(stats_raw.get("recTD") or stats_raw.get("receivingTouchdowns", 0))
+        # Receiving stats
+        targets = safe_int(receiving.get("targets", 0))
+        receptions = safe_int(receiving.get("receptions", 0))
+        receiving_yards = safe_int(receiving.get("recYds", 0))
+        receiving_tds = safe_int(receiving.get("recTD", 0))
+
+        # Fumbles
+        fumbles = safe_int(defense.get("fumbles", 0))
+        fumbles_lost = safe_int(defense.get("fumblesLost", 0))
 
         # Calcula passer rating
         passer_rating = 0.0
@@ -330,7 +282,7 @@ async def _get_offensive_stats_async(season: int = 2024) -> list[dict]:
             "id": str(player_data.get("playerID", player_data.get("espnID", ""))),
             "name": player_data.get("longName") or player_data.get("espnName", "Unknown"),
             "team": player_data.get("team", ""),
-            "teamAbbr": player_data.get("teamAbv", player_data.get("team", "")),
+            "teamAbbr": player_data.get("team", ""),
             "photoUrl": player_data.get("espnHeadshot", ""),
             "position": pos,
             "age": safe_int(player_data.get("age")) if player_data.get("age") else None,
@@ -347,7 +299,7 @@ async def _get_offensive_stats_async(season: int = 2024) -> list[dict]:
                 "passingAirYards": 0,
                 "passingYac": 0,
                 "passingFirstDowns": 0,
-                "sacks": safe_int(stats_raw.get("sacked", 0)),
+                "sacks": sacks_taken,
                 "sackYards": 0,
 
                 # Rushing
@@ -366,28 +318,29 @@ async def _get_offensive_stats_async(season: int = 2024) -> list[dict]:
                 "receivingFirstDowns": 0,
 
                 # Fumbles
-                "fumbles": safe_int(stats_raw.get("fumbles", 0)),
-                "fumblesLost": safe_int(stats_raw.get("fumblesLost", 0)),
+                "fumbles": fumbles,
+                "fumblesLost": fumbles_lost,
 
-                # Advanced (not available from Tank01)
+                # Advanced (not available from Tank01 basic)
                 "targetShare": 0,
                 "airYardsShare": 0,
                 "wopr": 0,
                 "racr": 0,
                 "pacr": 0,
 
-                # Fantasy
-                "fantasyPoints": safe_float(stats_raw.get("fantasyPoints", 0)),
-                "fantasyPointsPpr": safe_float(stats_raw.get("fantasyPointsPPR", 0)),
+                # Fantasy (calculated later if needed)
+                "fantasyPoints": 0,
+                "fantasyPointsPpr": 0,
             }
         }
 
         result.append(player)
 
-    # Ordena por fantasy points PPR
-    result.sort(key=lambda x: x["stats"].get("fantasyPointsPpr", 0), reverse=True)
+    # Ordena por total yards
+    result.sort(key=lambda x: x["stats"]["passingYards"] + x["stats"]["rushingYards"] + x["stats"]["receivingYards"], reverse=True)
 
     # Cache o resultado
-    write_cache(cache_key, 0, result)
+    if result:
+        write_cache(cache_key, 0, result)
 
     return result
