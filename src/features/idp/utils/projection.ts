@@ -30,6 +30,7 @@ export const DEFAULT_IDP_SCORING: Partial<ScoringSettings> = {
   tkl_ast: 0.5,
   tkl_loss: 1,
   sack: 2,
+  qb_hit: 0.5,  // PRES na UI
   int: 3,
   pass_def: 1,
   ff: 2,
@@ -100,6 +101,20 @@ export function calculateIDPProjection(
       label: 'Sacks',
       value: player.stats.sacks,
       pointsPer: s.sack || 0,
+      points: pts,
+    })
+    totalPoints += pts
+  }
+
+  // QB Hits (Pressures)
+  const qbHits = player.stats.qbHits || 0
+  if (qbHits > 0 && s.qb_hit) {
+    const pts = qbHits * s.qb_hit
+    breakdown.push({
+      stat: 'qb_hit',
+      label: 'QB Hits',
+      value: qbHits,
+      pointsPer: s.qb_hit,
       points: pts,
     })
     totalPoints += pts

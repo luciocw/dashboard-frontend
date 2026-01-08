@@ -65,6 +65,7 @@ export type SortColumn =
   | 'tackles'
   | 'sacks'
   | 'tfl'
+  | 'qbHits'
   | 'ff'
   | 'pd'
   | 'int'
@@ -106,6 +107,10 @@ export function sortPlayers(
       case 'tfl':
         valueA = a.stats.tfl
         valueB = b.stats.tfl
+        break
+      case 'qbHits':
+        valueA = a.stats.qbHits || 0
+        valueB = b.stats.qbHits || 0
         break
       case 'ff':
         valueA = a.stats.forcedFumbles

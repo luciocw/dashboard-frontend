@@ -5,19 +5,16 @@
 
 import type { FantasyPosition, ESPNPosition, IDPFilters } from './types'
 
-// ESPN API URLs
-export const ESPN_API = {
-  // Leaders por categoria (tackles, sacks, PD, INT)
-  LEADERS: 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/{season}/types/2/leaders',
-  // Detalhes do atleta
-  ATHLETE: 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/athletes/{id}',
-  // Stats do atleta por TEMPORADA (não carreira!)
-  STATS_SEASON: 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/{season}/types/2/athletes/{id}/statistics/0',
-  // Stats de carreira (backup)
-  STATS_CAREER: 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/athletes/{id}/statistics/0',
-  // CDN para fotos
-  PHOTO: 'https://a.espncdn.com/i/headshots/nfl/players/full/{id}.png',
+// Backend API URL (nflverse data)
+// Em produção, configure via variável de ambiente ou altere o valor default
+export const STATS_API = {
+  BASE_URL: 'http://localhost:8000',
+  DEFENSE: '/api/stats/defense',
+  OFFENSE: '/api/stats/offense',
 }
+
+// ESPN CDN para fotos (fallback - uso gratuito de CDN público)
+export const ESPN_PHOTO_CDN = 'https://a.espncdn.com/i/headshots/nfl/players/full/{id}.png'
 
 // Mapeamento de posições ESPN → Fantasy
 export const POSITION_MAP: Record<ESPNPosition, FantasyPosition> = {
@@ -64,7 +61,7 @@ export const DEFAULT_FILTERS: IDPFilters = {
   minTFL: 0,
   minFF: 0,
   minPD: 0,
-  season: '2025', // Temporada atual
+  season: '2024', // Última temporada com dados completos
   showOnlyAvailable: false,
 }
 
@@ -108,26 +105,13 @@ export const TIER_COLORS = {
   average: 'text-slate-400',  // Cinza
 }
 
-// Cache times
+// Cache times para React Query
 export const IDP_CACHE_TIMES = {
-  LEADERS: 1000 * 60 * 60 * 4,    // 4 horas
-  ATHLETE: 1000 * 60 * 60 * 24,   // 24 horas (dados mudam pouco)
-  STATS: 1000 * 60 * 60 * 4,      // 4 horas
+  PLAYERS: 1000 * 60 * 60 * 4,    // 4 horas (backend também cacheia)
 }
 
-// Categorias de stats defensivas no endpoint de leaders
-export const ESPN_STAT_CATEGORIES = {
-  TACKLES: 'totalTackles',
-  SACKS: 'sacks',
-  PASSES_DEFENDED: 'passesDefended',
-  INTERCEPTIONS: 'interceptions',
-} as const
-
-// Limite de jogadores a buscar por categoria
-export const LEADERS_LIMIT = 100
-
-// Temporadas disponíveis
-export const AVAILABLE_SEASONS = ['2025', '2024', '2023', '2022', '2021', '2020']
+// Temporadas disponíveis (nflverse data)
+export const AVAILABLE_SEASONS = ['2024', '2023', '2022', '2021', '2020']
 
 // Mapeamento de times ESPN → Sleeper (abreviações)
 export const ESPN_TO_SLEEPER_TEAM: Record<string, string> = {

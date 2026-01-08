@@ -4,12 +4,11 @@
  */
 
 import { useMemo, useState } from 'react'
-import { useIDPLeaders, combineLeaderStats } from './useIDPLeaders'
-import { useIDPAthletes, buildIDPPlayer } from './useIDPAthlete'
+import { useIDPLeaders } from './useIDPLeaders'
 import { usePlayers } from '@/hooks/usePlayers'
 import { enrichPlayersWithSleeperData } from '../utils/matching'
 import { applyFilters, sortPlayers, type SortColumn, type SortDirection } from '../utils/filters'
-import { DEFAULT_FILTERS, POSITION_MAP } from '../constants'
+import { DEFAULT_FILTERS } from '../constants'
 import type { IDPPlayer, IDPFilters, FantasyPosition } from '../types'
 import type { ScoringSettings } from '@/types/sleeper'
 
@@ -45,7 +44,7 @@ interface UseIDPSearchResult {
 
 /**
  * Hook principal para busca de IDPs
- * Combina dados da ESPN com dados do Sleeper e aplica filtros
+ * Combina dados do backend nflverse com dados do Sleeper e aplica filtros
  */
 export function useIDPSearch(options: UseIDPSearchOptions = {}): UseIDPSearchResult {
   const {
@@ -66,58 +65,16 @@ export function useIDPSearch(options: UseIDPSearchOptions = {}): UseIDPSearchRes
   const [sortColumn, setSortColumn] = useState<SortColumn>('tackles')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
-  // Busca leaders da ESPN
+  // Busca jogadores do backend
   const {
-    data: leadersData,
-    isLoading: isLoadingLeaders,
-    isError: isErrorLeaders,
-    error: errorLeaders,
+    data: players = [],
+    isLoading,
+    isError,
+    error,
   } = useIDPLeaders(filters.season)
-
-  // Extrai IDs de atletas únicos
-  const athleteIds = useMemo(() => {
-    return leadersData?.allAthleteIds || []
-  }, [leadersData])
-
-  // Busca detalhes de cada atleta
-  const athleteQueries = useIDPAthletes(athleteIds)
 
   // Busca jogadores do Sleeper para matching
   const { data: sleeperPlayers } = usePlayers()
-
-  // Verifica se ainda está carregando atletas
-  const isLoadingAthletes = athleteQueries.some((q) => q.isLoading)
-  const isErrorAthletes = athleteQueries.some((q) => q.isError)
-
-  // Constrói lista de jogadores
-  const players = useMemo(() => {
-    if (!leadersData || athleteQueries.length === 0) return []
-
-    const result: IDPPlayer[] = []
-
-    for (const query of athleteQueries) {
-      if (!query.data) continue
-
-      const athleteInfo = query.data
-      const espnPos = athleteInfo.espnPosition?.toUpperCase()
-
-      // Verifica se é uma posição defensiva
-      if (!POSITION_MAP[espnPos as keyof typeof POSITION_MAP]) {
-        continue
-      }
-
-      const leaderStats = combineLeaderStats(athleteInfo.id, leadersData)
-
-      const player = buildIDPPlayer(athleteInfo, leaderStats)
-
-      // Só adiciona se tiver alguma stat relevante
-      if (leaderStats.tackles > 0 || leaderStats.sacks > 0 || leaderStats.pd > 0) {
-        result.push(player)
-      }
-    }
-
-    return result
-  }, [leadersData, athleteQueries])
 
   // Enriquece com dados do Sleeper (badge "Já tenho")
   const enrichedPlayers = useMemo(() => {
@@ -162,9 +119,9 @@ export function useIDPSearch(options: UseIDPSearchOptions = {}): UseIDPSearchRes
   return {
     players: enrichedPlayers,
     filteredPlayers,
-    isLoading: isLoadingLeaders || isLoadingAthletes,
-    isError: isErrorLeaders || isErrorAthletes,
-    error: errorLeaders || null,
+    isLoading,
+    isError,
+    error: error || null,
 
     filters,
     setFilters,

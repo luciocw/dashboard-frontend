@@ -13,15 +13,27 @@ export type ESPNPosition =
   | 'CB' | 'S' | 'FS' | 'SS' | 'DB' // DB
 
 // Stats de um jogador IDP
+// Exibidas na UI: TKL, SCK, TFL, PRES (qbHits), PD, INT, FF
 export interface IDPStats {
+  // Stats principais (exibidas na UI)
   tackles: number
-  soloTackles: number
-  assistTackles: number
   sacks: number
-  tfl: number // stuffs na ESPN
-  forcedFumbles: number
+  tfl: number
+  qbHits: number          // PRES na UI
   passesDefended: number
   interceptions: number
+  forcedFumbles: number
+  // Stats adicionais (armazenadas)
+  soloTackles: number
+  assistTackles: number
+  tacklesWithAssist?: number
+  tflYards?: number
+  sackYards?: number
+  intYards?: number
+  defensiveTds?: number
+  fumbleRecoveryOwn?: number
+  fumbleRecoveryOpp?: number
+  safeties?: number
 }
 
 // Jogador IDP completo
@@ -54,71 +66,12 @@ export interface IDPFilters {
   showOnlyAvailable: boolean // Não mostrar jogadores que já tenho
 }
 
-// Resposta do endpoint de leaders ESPN
-export interface ESPNLeadersResponse {
-  leaders: {
-    categories: ESPNLeaderCategory[]
-  }
-}
-
-export interface ESPNLeaderCategory {
-  name: string
-  displayName: string
-  leaders: ESPNLeader[]
-}
-
-export interface ESPNLeader {
-  displayValue: string
-  value: number
-  athlete: {
-    $ref: string
-    id: string
-  }
-  team: {
-    $ref: string
-  }
-}
-
-// Resposta do endpoint de atleta ESPN
-export interface ESPNAthleteResponse {
-  id: string
-  displayName: string
-  firstName: string
-  lastName: string
-  jersey?: string
-  age?: number
-  experience?: {
-    years: number
-  }
-  position: {
-    id: string
-    name: string
-    abbreviation: string
-  }
-  team?: {
-    $ref: string
-  }
-  headshot?: {
-    href: string
-  }
-}
-
-// Resposta do endpoint de stats ESPN
-export interface ESPNStatsResponse {
-  splits: {
-    categories: ESPNStatsCategory[]
-  }
-}
-
-export interface ESPNStatsCategory {
-  name: string
-  stats: ESPNStat[]
-}
-
-export interface ESPNStat {
-  name: string
-  displayName: string
-  value: number
+// Resposta do backend Python (nflverse data)
+export interface StatsAPIResponse {
+  season: number
+  count: number
+  players: IDPPlayer[]
+  attribution: string
 }
 
 // Estado de loading/error

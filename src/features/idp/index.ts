@@ -10,9 +10,9 @@ export * from './types'
 export * from './constants'
 
 // Hooks
-export { useIDPLeaders, combineLeaderStats } from './hooks/useIDPLeaders'
-export { useIDPAthlete, useIDPAthletes, toFantasyPosition, buildIDPPlayer } from './hooks/useIDPAthlete'
+export { useIDPLeaders } from './hooks/useIDPLeaders'
 export { useIDPSearch, useIDPByPosition } from './hooks/useIDPSearch'
+export { useAvailableSeasons } from './hooks/useAvailableSeasons'
 
 // Utils
 export * from './utils/matching'

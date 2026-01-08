@@ -138,6 +138,7 @@ export const IDPTable = memo(function IDPTable({
                 <SortHeader column="tackles">TKL</SortHeader>
                 <SortHeader column="sacks">SCK</SortHeader>
                 <SortHeader column="tfl">TFL</SortHeader>
+                <SortHeader column="qbHits">PRES</SortHeader>
                 <SortHeader column="pd">PD</SortHeader>
                 <SortHeader column="int">INT</SortHeader>
                 <SortHeader column="ff">FF</SortHeader>
@@ -222,6 +223,9 @@ export const IDPTable = memo(function IDPTable({
                     </td>
                     <td className="px-3 py-3 text-sm text-slate-400">
                       {player.stats.tfl}
+                    </td>
+                    <td className="px-3 py-3 text-sm text-slate-400">
+                      {player.stats.qbHits || 0}
                     </td>
                     <td className="px-3 py-3 text-sm">
                       <StatCell value={player.stats.passesDefended} position={player.fantasyPosition} statType="pd" />

@@ -3,9 +3,10 @@
  * View principal do IDP Explorer - tab dentro de LeagueDetails
  */
 
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import { Shield, AlertCircle, Lock, Info } from 'lucide-react'
 import { useIDPSearch } from '../hooks/useIDPSearch'
+import { useAvailableSeasons } from '../hooks/useAvailableSeasons'
 import { IDPFilters } from './IDPFilters'
 import { IDPTable } from './IDPTable'
 import { useAppStore } from '@/store/useAppStore'
@@ -25,6 +26,11 @@ export const IDPExplorerView = memo(function IDPExplorerView({
   const hasScoring = hasIDPScoring(scoringSettings)
   const scoringDesc = getIDPScoringDescription(scoringSettings)
 
+  // Busca temporadas disponíveis do backend
+  const { data: seasonsData } = useAvailableSeasons()
+  const availableSeasons = seasonsData?.seasons || [2024, 2023, 2022, 2021, 2020]
+  const latestSeason = seasonsData?.latest || 2024
+
   const {
     filteredPlayers,
     isLoading,
@@ -39,9 +45,17 @@ export const IDPExplorerView = memo(function IDPExplorerView({
     totalCount,
     filteredCount,
   } = useIDPSearch({
+    season: String(latestSeason),
     myRosterPlayerIds,
     scoringSettings,
   })
+
+  // Atualiza para a temporada mais recente quando disponível
+  useEffect(() => {
+    if (latestSeason && filters.season !== String(latestSeason)) {
+      updateFilter('season', String(latestSeason))
+    }
+  }, [latestSeason])
 
   // Gate de premium
   if (!isPremiumUser) {
@@ -129,6 +143,7 @@ export const IDPExplorerView = memo(function IDPExplorerView({
             onReset={resetFilters}
             totalCount={totalCount}
             filteredCount={filteredCount}
+            availableSeasons={availableSeasons}
           />
         </div>
 

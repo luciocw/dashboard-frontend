@@ -6,7 +6,7 @@
 import { memo } from 'react'
 import { RotateCcw } from 'lucide-react'
 import type { IDPFilters as IDPFiltersType, FantasyPosition } from '../types'
-import { AVAILABLE_SEASONS, FILTER_SUGGESTIONS, IDP_POSITION_BG } from '../constants'
+import { FILTER_SUGGESTIONS, IDP_POSITION_BG } from '../constants'
 
 interface IDPFiltersProps {
   filters: IDPFiltersType
@@ -14,7 +14,10 @@ interface IDPFiltersProps {
   onReset: () => void
   totalCount: number
   filteredCount: number
+  availableSeasons?: number[]
 }
+
+const DEFAULT_SEASONS = [2024, 2023, 2022, 2021, 2020]
 
 export const IDPFilters = memo(function IDPFilters({
   filters,
@@ -22,8 +25,10 @@ export const IDPFilters = memo(function IDPFilters({
   onReset,
   totalCount,
   filteredCount,
+  availableSeasons = DEFAULT_SEASONS,
 }: IDPFiltersProps) {
   const positions: FantasyPosition[] = ['DL', 'LB', 'DB']
+  const seasons = availableSeasons.length > 0 ? availableSeasons : DEFAULT_SEASONS
 
   const togglePosition = (pos: FantasyPosition) => {
     const current = filters.positions
@@ -181,7 +186,7 @@ export const IDPFilters = memo(function IDPFilters({
             onChange={(e) => onFilterChange('season', e.target.value)}
             className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500"
           >
-            {AVAILABLE_SEASONS.map((season) => (
+            {seasons.map((season) => (
               <option key={season} value={season}>
                 {season}
               </option>
