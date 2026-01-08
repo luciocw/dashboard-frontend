@@ -209,16 +209,21 @@ export function hasIDPScoring(scoring: ScoringSettings | undefined): boolean {
  * Retorna um resumo do scoring IDP da liga
  */
 export function getIDPScoringDescription(scoring: ScoringSettings | undefined): string {
-  if (!scoring || !hasIDPScoring(scoring)) {
-    return 'Scoring padrão'
+  // Merge com defaults para mostrar valores reais
+  const s = {
+    ...DEFAULT_IDP_SCORING,
+    ...(scoring || {}),
   }
 
   const parts: string[] = []
 
-  if (scoring.tkl_solo) parts.push(`Solo ${scoring.tkl_solo}pt`)
-  if (scoring.tkl_ast) parts.push(`Ast ${scoring.tkl_ast}pt`)
-  if (scoring.sack) parts.push(`Sack ${scoring.sack}pt`)
-  if (scoring.int) parts.push(`INT ${scoring.int}pt`)
+  if (s.tkl_solo) parts.push(`Solo ${s.tkl_solo}`)
+  if (s.tkl_ast) parts.push(`Ast ${s.tkl_ast}`)
+  if (s.sack) parts.push(`Sack ${s.sack}`)
+  if (s.int) parts.push(`INT ${s.int}`)
 
-  return parts.join(' | ') || 'Scoring padrão'
+  const isDefault = !scoring || !hasIDPScoring(scoring)
+  const prefix = isDefault ? '(Default) ' : ''
+
+  return prefix + (parts.join(' | ') || 'N/A')
 }

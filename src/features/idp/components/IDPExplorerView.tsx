@@ -125,10 +125,10 @@ export const IDPExplorerView = memo(function IDPExplorerView({
         </div>
 
         {/* Scoring Info */}
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 border border-slate-700 rounded-lg">
-          <Info className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs text-slate-400">
-            {hasScoring ? scoringDesc : 'Sem scoring IDP configurado'}
+        <div className={`flex items-center gap-2 px-3 py-1.5 border rounded-lg ${hasScoring ? 'bg-cyan-500/10 border-cyan-500/30' : 'bg-slate-800/50 border-slate-700'}`}>
+          <Info className={`w-4 h-4 ${hasScoring ? 'text-cyan-400' : 'text-slate-500'}`} />
+          <span className={`text-xs ${hasScoring ? 'text-cyan-300' : 'text-slate-400'}`}>
+            {scoringDesc}
           </span>
         </div>
       </div>
