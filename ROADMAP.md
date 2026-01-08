@@ -1,6 +1,6 @@
 # 🏈 Dynasty Dashboard - Roadmap
 
-> Última atualização: 07/01/2026
+> Última atualização: 08/01/2026
 
 ---
 
@@ -97,9 +97,11 @@
 ## 📊 Métricas Atuais
 
 - **Testes:** 24 passando
-- **Build:** ~282 KB (gzip: ~86 KB)
-- **Lighthouse:** Pendente medição
-- **Cobertura:** Pendente
+- **Build:** ~357 KB (gzip: ~106 KB)
+- **TypeScript:** 0 erros, 0 `any`
+- **ESLint:** 0 erros, 0 warnings
+- **Cobertura:** ~4% (3 arquivos de teste)
+- **Acessibilidade:** ARIA labels + alt em imagens
 
 ---
 
