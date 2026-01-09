@@ -7,6 +7,11 @@
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
+    --primary: 189 94% 43%;
+    --primary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --radius: 0.75rem;
   }
 
   * {
@@ -14,6 +19,53 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism leve - performance friendly */
+  .glass {
+    @apply bg-slate-900/60 backdrop-blur-md border border-white/5;
+  }
+
+  .glass-strong {
+    @apply bg-slate-900/80 backdrop-blur-lg border border-white/10;
+  }
+
+  /* Premium badge shimmer */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Touch-friendly targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Safe area for mobile devices with notch */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
   }
 }
