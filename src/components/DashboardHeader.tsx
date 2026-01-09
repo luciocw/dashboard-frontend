@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronDown, LogOut, Scale, Home } from 'lucide-react'
+import { ChevronDown, LogOut, Scale, LayoutDashboard, Gem } from 'lucide-react'
 
 interface DashboardHeaderProps {
   username: string
@@ -22,8 +22,9 @@ export const DashboardHeader = memo(function DashboardHeader({
   onLogout,
 }: DashboardHeaderProps) {
   const location = useLocation()
-  const isHome = location.pathname === '/'
   const isTradeCalc = location.pathname === '/trade-calc'
+  const isFreeDash = location.pathname === '/'
+  const isLeagues = location.pathname === '/leagues'
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-700/40 bg-slate-900/80 backdrop-blur-xl">
@@ -40,17 +41,6 @@ export const DashboardHeader = memo(function DashboardHeader({
             {/* Navigation */}
             <nav className="hidden sm:flex items-center gap-1">
               <Link
-                to="/"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                  isHome
-                    ? 'bg-slate-800 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                }`}
-              >
-                <Home className="w-4 h-4" />
-                <span>Ligas</span>
-              </Link>
-              <Link
                 to="/trade-calc"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                   isTradeCalc
@@ -61,12 +51,23 @@ export const DashboardHeader = memo(function DashboardHeader({
                 <Scale className="w-4 h-4" />
                 <span>Trade Calc</span>
               </Link>
+              <Link
+                to="/"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  isFreeDash
+                    ? 'bg-emerald-600/20 text-emerald-400'
+                    : 'text-slate-400 hover:text-emerald-400 hover:bg-emerald-600/10'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>Free Dash</span>
+              </Link>
             </nav>
           </div>
 
-          {/* Right side controls */}
-          <div className="flex items-center gap-3 md:gap-4">
-            {/* Season Selector */}
+          {/* Center - Season Selector */}
+          <div className="hidden md:flex items-center">
+            <span className="text-sm text-slate-400 mr-2">Temporada:</span>
             <div className="relative">
               <select
                 value={selectedSeason}
@@ -81,6 +82,38 @@ export const DashboardHeader = memo(function DashboardHeader({
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
             </div>
+          </div>
+
+          {/* Right side controls */}
+          <div className="flex items-center gap-3 md:gap-4">
+            {/* Mobile Season Selector */}
+            <div className="relative md:hidden">
+              <select
+                value={selectedSeason}
+                onChange={(e) => onSeasonChange(e.target.value)}
+                className="appearance-none px-3 py-1.5 pr-7 bg-slate-800/50 border border-slate-700/60 rounded-lg text-sm font-medium text-white hover:bg-slate-800/80 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 cursor-pointer transition-all"
+              >
+                {availableSeasons.map((season) => (
+                  <option key={season} value={season}>
+                    {season}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+            </div>
+
+            {/* Ligas Premium */}
+            <Link
+              to="/leagues"
+              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                isLeagues
+                  ? 'bg-purple-600/20 text-purple-400'
+                  : 'text-slate-400 hover:text-purple-400 hover:bg-purple-600/10'
+              }`}
+            >
+              <Gem className="w-4 h-4" />
+              <span>Ligas</span>
+            </Link>
 
             {/* User Avatar and Name */}
             <div className="flex items-center gap-2 rounded-lg border border-slate-700/60 bg-slate-800/30 px-2 py-1.5 md:px-3 md:py-2">

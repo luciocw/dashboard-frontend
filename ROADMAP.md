@@ -1,6 +1,6 @@
 # 🏈 Dynasty Dashboard - Roadmap
 
-> Última atualização: 08/01/2026 (noite)
+> Última atualização: 09/01/2026
 
 ---
 
@@ -76,11 +76,19 @@
 - [x] Header atualizado com navegação (Ligas + Trade Calc)
 - [ ] **Pendente:** Integrar API externa para valores dinâmicos (KeepTradeCut, FantasyCalc)
 
+## ✅ FASE I - Free Dash (COMPLETA)
+- [x] Dashboard legacy hospedado em `/public/legacy/index.html`
+- [x] Nova rota `/` como landing page pública (FreeDash)
+- [x] Iframe fullscreen renderizando o dashboard legacy
+- [x] Header público consistente (Trade Calc, Free Dash, Ligas)
+- [x] Rota `/leagues` para área premium (com login Sleeper)
+- [x] Navegação sem necessidade de login para funcionalidades gratuitas
+
 ---
 
 ## 🔄 PRÓXIMAS FASES
 
-### FASE I - Mobile Optimization
+### FASE J - Mobile Optimization
 - [ ] Testes em dispositivos reais
 - [ ] Safe area support (notch)
 - [ ] Touch targets (44px mínimo)
@@ -105,7 +113,7 @@
 - [ ] Projeção multi-temporada (ajuda em trades)
 - [ ] Status waiver/time (mostrar se disponível)
 
-### FASE L - Expansão
+### FASE M - Expansão
 - [ ] App iOS (React Native ou PWA)
 - [ ] App Android
 - [ ] Internacionalização (PT, EN, ES)

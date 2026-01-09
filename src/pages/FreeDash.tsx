@@ -1,14 +1,13 @@
 /**
- * Trade Calculator Page
- * Página pública para calcular trades de dynasty
+ * Free Dash Page
+ * Landing page - renderiza o dashboard legacy via iframe
  */
 
 import { Link, useLocation } from 'react-router-dom'
 import { Scale, LayoutDashboard, Gem } from 'lucide-react'
-import { TradeCalculator } from '@/features/trade-calc'
 import { Footer } from '@/components/Footer'
 
-export function TradeCalculatorPage() {
+export function FreeDash() {
   const location = useLocation()
   const isFreeDash = location.pathname === '/'
   const isTradeCalc = location.pathname === '/trade-calc'
@@ -76,9 +75,16 @@ export function TradeCalculatorPage() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
-        <TradeCalculator />
+      {/* Iframe Container - fullscreen */}
+      <main className="flex-1 flex flex-col">
+        <iframe
+          src="/legacy/index.html"
+          title="Dynasty Dashboard Legacy"
+          className="flex-1 w-full border-0"
+          style={{
+            minHeight: 'calc(100vh - 57px - 73px)', // header (57px) + footer (73px approx)
+          }}
+        />
       </main>
 
       <Footer />
