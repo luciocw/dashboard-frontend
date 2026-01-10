@@ -1,15 +1,16 @@
-# 🏗️ Roadmap Dynasty Dashboard - Atualizado 04/01/2026
+# Roadmap Dynasty Dashboard - Atualizado 09/01/2026
 
-## **📊 STATUS GERAL DO PROJETO**
+## **STATUS GERAL DO PROJETO**
 ```
-███████████████████░░░░░░░░░ 65% Completo
+██████████████████████████░░░ 85% Completo
 
 ✅ Fase A: Fundação (100%)
-✅ Fase B: Modularização (100%)  
+✅ Fase B: Modularização (100%)
 ✅ Fase C: Navegação + Melhorias (100%)
-🔄 Fase D: Features Avançadas (0%)
-⏳ Fase E: Deploy (0%)
-⏳ Fase F: Mobile (0%)
+✅ Fase D: Migração Next.js + Premium UI (100%) ← NOVA
+🔄 Fase E: Features Avançadas (50%)
+⏳ Fase F: Deploy (0%)
+⏳ Fase G: Mobile Nativo (0%)
 ```
 
 ---
@@ -27,384 +28,242 @@
 - ✅ SSH configurado para GitHub
 - ✅ Build de produção funcionando (760KB)
 
-### **Commits:**
-```
-c49b9d2 - Backup completo Fase A e B
-[...2 commits iniciais]
-```
-
 ---
 
 ## **✅ FASE B: MODULARIZAÇÃO** *(COMPLETA - 04/01/2026)*
 
 ### **Entregáveis:**
-- ✅ Componentes específicos criados:
-  - Header.tsx
-  - Footer.tsx
-  - LeagueCard.tsx
-  - SearchForm.tsx
+- ✅ Componentes específicos criados (Header, Footer, LeagueCard, SearchForm)
 - ✅ Hooks customizados (useSleeperUser, useSleeperLeagues)
 - ✅ Sistema de cache com CacheManager.ts
 - ✅ Skeleton loading states
 - ✅ Responsividade mobile-first
 
-### **Estrutura Final:**
-```
-src/
-├── components/
-│   ├── ui/ (Button, Input, Card, Skeleton)
-│   ├── Header.tsx
-│   ├── Footer.tsx
-│   ├── LeagueCard.tsx
-│   └── SearchForm.tsx
-├── core/
-│   ├── api/sleeper.ts
-│   └── cache/CacheManager.ts
-├── hooks/
-│   └── useSleeperUser.ts
-├── store/
-│   └── useAppStore.ts
-└── App.tsx
-```
-
 ---
 
 ## **✅ FASE C: NAVEGAÇÃO + MELHORIAS** *(COMPLETA - 04/01/2026)*
 
-### **Melhorias Implementadas (Tech Lead Review):**
+### **Entregáveis:**
+- ✅ Tipagem centralizada (src/types/sleeper.ts)
+- ✅ Ano dinâmico NFL (utils/nfl.ts)
+- ✅ Error Boundary
+- ✅ Organização de páginas
+- ✅ React Router configurado
 
-#### **1. Tipagem Centralizada** ✅
-```typescript
-// src/types/sleeper.ts
-export interface SleeperUser { ... }
-export interface SleeperLeague { ... }
-export interface SleeperRoster { ... }
-```
-**Impacto:** Código type-safe, menos duplicação
+---
 
-#### **2. Ano Dinâmico da NFL** ✅
-```typescript
-// src/utils/nfl.ts
-getCurrentNFLSeason() → "2026"
-getAvailableSeasons() → ["2027", "2026", ...]
-```
-**Impacto:** Zero hardcode, sempre atualizado
+## **✅ FASE D: MIGRAÇÃO NEXT.JS + PREMIUM UI** *(COMPLETA - 09/01/2026)*
 
-#### **3. Error Boundary** ✅
-```typescript
-// src/components/ErrorBoundary.tsx
-- Captura erros React
-- Tela amigável de erro
-- Botão de retry
-```
-**Impacto:** UX resiliente, sem crashes
+### **D.1 - Migração Vite → Next.js 15**
+- ✅ App Router estruturado (`app/` folder)
+- ✅ React atualizado para v19
+- ✅ Tailwind CSS atualizado para v4
+- ✅ Zustand com fix de hidratação SSR
+- ✅ React Query provider configurado
+- ✅ Environment variables atualizadas (`NEXT_PUBLIC_*`)
+- ✅ TypeScript config atualizado
 
-#### **4. Organização de Páginas** ✅
-```
-src/pages/
-├── Home.tsx (lógica separada)
-└── LeagueDetails.tsx
-```
-**Impacto:** App.tsx simplificado (12 linhas)
+### **D.2 - Novo Design System (OKLCH)**
+- ✅ Sistema de cores OKLCH (perceptualmente uniforme)
+- ✅ Variáveis CSS para light/dark themes
+- ✅ Cor `--gold` para features premium
+- ✅ Glassmorphism effects (backdrop-blur, transparência)
 
-#### **5. React Router** ✅
-- BrowserRouter configurado
-- Navegação Home ↔ League Details
-- useNavigate() para transições
+### **D.3 - Layout Premium**
+- ✅ `MainLayout.tsx` - Wrapper com sidebar + content area
+- ✅ `Navigation.tsx` - Sidebar colapsável (desktop)
+- ✅ `BottomNav.tsx` - Navegação mobile com drop-shadow
+- ✅ Transições suaves de collapse/expand
+
+### **D.4 - Componentes Premium**
+- ✅ `StatCardPremium.tsx` - Cards de estatísticas com gradientes
+- ✅ `PlayerCardPremium.tsx` - Cards de jogador com status/trend
+- ✅ `MatchupCardPremium.tsx` - Visualização de matchup com win probability
+- ✅ Cores por posição (QB, RB, WR, TE, K, DEF)
+- ✅ Indicadores de tendência (up/down/neutral)
+
+### **D.5 - Páginas Atualizadas**
+- ✅ `/leagues` - Login + Dashboard com MainLayout
+- ✅ `/league/[id]` - Detalhes com MainLayout em todos estados
+- ✅ `/dashboard` - Demo page dos componentes premium
+- ✅ `/trade-calc` - Calculadora de trades
+- ✅ `/` - FreeDash (landing page pública)
+
+### **Estrutura Final Next.js:**
+```
+fantasy-frontend/
+├── app/
+│   ├── layout.tsx              # Root layout (providers)
+│   ├── globals.css             # OKLCH color system
+│   ├── page.tsx                # / → FreeDash
+│   ├── dashboard/page.tsx      # Demo premium
+│   ├── leagues/page.tsx        # Login + ligas
+│   ├── league/[id]/page.tsx    # Detalhes da liga
+│   └── trade-calc/page.tsx     # Calculadora
+├── components/
+│   ├── layout/                 # MainLayout, Navigation, BottomNav
+│   ├── pages/                  # Client components das páginas
+│   ├── premium/                # PremiumGate, UpgradeModal
+│   ├── providers/              # AppProviders (React Query)
+│   └── ui/                     # Componentes UI (originais + premium)
+├── features/                   # trade-calc, idp
+├── hooks/                      # 13 hooks customizados
+├── store/                      # Zustand (use-app-store.ts)
+├── lib/utils.ts                # cn() utility
+├── types/                      # Tipos TypeScript
+├── constants/                  # Configurações
+└── utils/                      # Funções utilitárias
+```
 
 ### **Commits desta fase:**
 ```
-2bb08e5 - Docs: Atualização do roadmap - Fases A e B concluídas
-[pendente] - feat: implementar melhorias Tech Lead
+90f9d87 - feat: migrate from Vite to Next.js 15 with premium UI
+d5ee085 - docs: add tech stack documentation
 ```
 
 ---
 
-## **🔄 FASE D: FEATURES AVANÇADAS** *(EM ABERTO)*
+## **🔄 FASE E: FEATURES AVANÇADAS** *(50% COMPLETO)*
 
-### **Prioridade Alta (Próximas 2 semanas):**
+### **Implementado:**
+- ✅ League Details com tabs (Roster, Matchups, Standings, Power, Trades, History, IDP)
+- ✅ Matchups da semana
+- ✅ Power Rankings com algoritmo
+- ✅ Trade History
+- ✅ IDP Explorer
+- ✅ Trade Calculator
 
-#### **D.1 - League Details Completo**
-```typescript
-// src/pages/LeagueDetails.tsx
-- [ ] Buscar rosters da liga
-- [ ] Exibir todos os jogadores
-- [ ] Agrupar por posição (QB, RB, WR, TE)
-- [ ] Mostrar IR/Taxi squad
-- [ ] Idade média do roster
-- [ ] Draft picks (Dynasty)
-```
-
-**API Endpoints necessários:**
-```
-GET /league/{league_id}/rosters
-GET /league/{league_id}/users
-GET /players/nfl (cache 24h)
-```
-
-#### **D.2 - Matchups da Semana**
-```typescript
-- [ ] Detectar semana atual NFL
-- [ ] Buscar matchups (GET /league/{id}/matchups/{week})
-- [ ] Exibir placar ao vivo
-- [ ] Indicador winning/losing
-- [ ] Projeções (se disponível)
-```
-
-#### **D.3 - Power Rankings**
-```typescript
-- [ ] Algoritmo de ranking (win%, pontos, matchups)
-- [ ] Ordenação customizável
-- [ ] Comparação vs média da liga
-```
-
-#### **D.4 - Trade History**
-```typescript
-- [ ] Buscar transações (GET /league/{id}/transactions/{week})
-- [ ] Filtrar apenas trades
-- [ ] Timeline visual
-- [ ] Assets trocados (players + picks)
-```
-
-### **Prioridade Média:**
-
-#### **D.5 - Trending Players**
-```
-GET /players/nfl/trending/add
-GET /players/nfl/trending/drop
-```
-
-#### **D.6 - Draft Capital (Dynasty)**
-```typescript
-- [ ] Contabilizar picks por ano
-- [ ] Comparar com média da liga
-- [ ] Status: "rich" vs "poor"
-```
-
-#### **D.7 - Bye Weeks Tracker**
-```typescript
-- [ ] Mapeamento times → bye weeks
-- [ ] Alertas de bye hell (4+ jogadores)
-- [ ] Visualização por semana
-```
+### **Pendente:**
+- [ ] Trending Players (API Sleeper)
+- [ ] Draft Capital visualization
+- [ ] Bye Weeks Tracker
+- [ ] Notificações push
 
 ---
 
-## **⏳ FASE E: DEPLOY & CI/CD** *(PENDENTE)*
+## **⏳ FASE F: DEPLOY & CI/CD** *(PENDENTE)*
 
-### **E.1 - Cloudflare Pages** (Estimativa: 2h)
+### **F.1 - Vercel Deploy** (Recomendado para Next.js)
 ```bash
-1. Conectar GitHub ao Cloudflare
-2. Configurar build:
-   - Framework: Vite
-   - Build command: npm run build
-   - Output: dist
-3. Deploy automático em cada push
+1. Conectar GitHub ao Vercel
+2. Build automático em cada push
+3. Preview deploys para PRs
 ```
 
-**Variáveis de ambiente:**
-```env
-# .env.production
-VITE_API_BASE_URL=https://api.sleeper.app/v1
-```
-
-### **E.2 - GitHub Actions** (Estimativa: 3h)
+### **F.2 - GitHub Actions**
 ```yaml
-# .github/workflows/ci.yml
 - Lint (ESLint)
 - Type-check (tsc)
 - Tests (Vitest)
 - Build
-- Deploy (Cloudflare)
+- Deploy
 ```
 
-### **E.3 - Domínio Custom** (Opcional)
+### **F.3 - Domínio Custom**
 ```
-dashboard.sleeperdynasty.com
-→ Cloudflare DNS
+dashboard.dynastyleague.com
+→ Vercel DNS ou Cloudflare
 → SSL automático
 ```
 
 ---
 
-## **⏳ FASE F: MOBILE & MONETIZAÇÃO** *(FUTURO)*
+## **⏳ FASE G: MOBILE NATIVO** *(FUTURO)*
 
-### **F.1 - React Native + Expo**
-- Compartilhar 70% do código (src/shared)
+### **G.1 - React Native + Expo**
+- Compartilhar lógica de negócio
 - Navigation: React Navigation
 - Push: Expo Notifications
-- Offline: SQLite
 
-### **F.2 - Tier PRO ($4.99/mês)**
-```typescript
-Features PRO:
-- [ ] Ligas ilimitadas (free: 3)
-- [ ] Trending players
-- [ ] Trade alerts
-- [ ] Export CSV/JSON
-- [ ] Sync cross-device
-```
-
-**Stack:**
-- Stripe Checkout
-- Supabase (user tiers)
-- RevenueCat (mobile)
+### **G.2 - Tier PRO ($4.99/mês)**
+- Ligas ilimitadas
+- Trending players
+- Trade alerts
+- Export CSV/JSON
+- Sync cross-device
 
 ---
 
-## **📈 MÉTRICAS DE PROGRESSO**
+## **STACK TECNOLÓGICO ATUAL**
+
+### **Frontend:**
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| TypeScript | 5.7.2 | Tipagem |
+| Next.js | 15.1.3 | App Router, SSR/SSG |
+| React | 19.0.0 | UI Library |
+| Tailwind CSS | 4.0.0 | Styling |
+| Zustand | 5.0.2 | State Management |
+| TanStack Query | 5.17.19 | Data Fetching |
+| Lucide React | 0.454.0 | Icons |
+
+### **Backend:**
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| Python | 3.x | API Backend |
+| FastAPI | ≥0.104.0 | REST API |
+| Cloudflare Workers | - | Edge Functions |
+
+### **APIs Externas:**
+- Sleeper API (ligas, rosters, usuários)
+- Tank01/RapidAPI (stats live)
+- nflverse (stats históricas)
+
+---
+
+## **MÉTRICAS DE PROGRESSO**
 
 ### **Código:**
 ```
-Arquivos TypeScript:      14
-Componentes React:        8
-Linhas de código:         ~1,200
-Bundle size (prod):       760KB
-Lighthouse score:         >90 (estimado)
+Arquivos TypeScript:      ~80
+Componentes React:        ~40
+Bundle size (prod):       ~150KB per route
+Build time:               ~35s
 ```
 
 ### **Funcionalidades:**
 ```
-✅ Busca de usuário
+✅ Login com Sleeper username
 ✅ Listagem de ligas
-✅ Navegação entre páginas
-✅ Seletor de ano dinâmico
-✅ Cache inteligente (4h)
-✅ Loading states
-✅ Error handling
+✅ Detalhes da liga (7 tabs)
+✅ Trade Calculator
+✅ IDP Explorer
+✅ Premium UI Layout
+✅ Sidebar colapsável
 ✅ Mobile responsive
-⏳ League details (0%)
-⏳ Matchups (0%)
-⏳ Trade history (0%)
-```
-
-### **Qualidade:**
-```
-✅ TypeScript strict mode
-✅ ESLint configurado
-✅ Prettier (recomendado adicionar)
-✅ Git conventional commits
-✅ README documentado
-⏳ Testes unitários (0%)
-⏳ E2E tests (0%)
+⏳ Trending players
+⏳ Deploy produção
 ```
 
 ---
 
-## **🎯 PRÓXIMAS AÇÕES IMEDIATAS**
+## **PRÓXIMAS AÇÕES**
 
-### **Semana 1 (05-12/01/2026):**
-1. **Implementar League Details completo**
-   - Rosters com jogadores
-   - Agrupamento por posição
-   - Draft picks (Dynasty)
-   
-2. **Deploy Cloudflare Pages**
-   - Conectar GitHub
-   - Configurar build
-   - Domínio online
+### **Imediato:**
+1. Deploy no Vercel
+2. Configurar domínio custom
+3. Testar em produção
 
-### **Semana 2 (13-19/01/2026):**
-3. **Matchups da semana**
-   - Detectar semana NFL
-   - Placar ao vivo
-   
-4. **Power Rankings**
-   - Algoritmo básico
-   - Ordenação
+### **Curto prazo:**
+4. Trending players
+5. Testes E2E
+6. Performance optimization
 
-### **Semana 3-4 (20/01-02/02/2026):**
-5. **Trade History**
-6. **Trending Players**
-7. **Testes E2E básicos**
+### **Médio prazo:**
+7. PWA (offline support)
+8. Push notifications
+9. Tier Premium
 
 ---
 
-## **🔧 STACK TECNOLÓGICO FINAL**
+## **CRÉDITOS**
 
-### **Frontend:**
-```json
-{
-  "core": "React 18 + TypeScript 5",
-  "build": "Vite 5",
-  "styling": "Tailwind CSS 3",
-  "state": "Zustand 4",
-  "data": "TanStack Query 5",
-  "routing": "React Router 6",
-  "ui": "Custom components + shadcn/ui (futuro)"
-}
-```
-
-### **Backend/Edge:**
-```json
-{
-  "api": "Sleeper API (RESTful)",
-  "proxy": "Cloudflare Workers (futuro)",
-  "cache": "Cloudflare CDN + localStorage",
-  "database": "Supabase (futuro - user tiers)",
-  "auth": "Supabase Auth (futuro)"
-}
-```
-
-### **DevOps:**
-```json
-{
-  "hosting": "Cloudflare Pages",
-  "ci_cd": "GitHub Actions",
-  "monitoring": "Sentry (futuro)",
-  "analytics": "Cloudflare Analytics"
-}
-```
+**Desenvolvido por:** Lucio
+**Assistido por:** Claude (Anthropic)
+**Data de Início:** 03/01/2026
+**Última Atualização:** 09/01/2026
+**Versão Atual:** v3.0.0
 
 ---
 
-## **💡 LIÇÕES APRENDIDAS**
-
-### **O que funcionou bem:**
-- ✅ Modularização desde o início
-- ✅ TypeScript strict evitou muitos bugs
-- ✅ TanStack Query simplificou data fetching
-- ✅ Zustand para estado global (simples e eficaz)
-- ✅ SSH para Git (nunca mais senha!)
-
-### **Desafios enfrentados:**
-- ⚠️ Git authentication (resolvido com SSH)
-- ⚠️ Tailwind não carregar (resolvido com index.css)
-- ⚠️ Types duplicados (resolvido com src/types)
-- ⚠️ Hardcoded values (resolvido com utils)
-
-### **Melhorias futuras:**
-- [ ] Adicionar Prettier
-- [ ] Configurar Husky (pre-commit hooks)
-- [ ] Adicionar testes unitários (Vitest)
-- [ ] Documentar componentes (Storybook?)
-- [ ] Adicionar changelog automático
-
----
-
-## **📚 DOCUMENTAÇÃO DE REFERÊNCIA**
-
-### **APIs:**
-- [Sleeper API Docs](https://docs.sleeper.com/)
-- [TanStack Query](https://tanstack.com/query/latest)
-- [React Router](https://reactrouter.com/)
-
-### **Roadmaps Originais:**
-- `roadmap-completo.md` (visão geral)
-- `roadmap-implementacao.md` (fases práticas)
-- `guia-implementacao-detalhado.md` (código passo a passo)
-
----
-
-## **👥 CRÉDITOS**
-
-**Desenvolvido por:** Lucio  
-**Programado por:** Claude (Anthropic)  
-**Data de Início:** 03/01/2026  
-**Última Atualização:** 04/01/2026  
-**Versão Atual:** v2.1.0
-
----
-
-**FIM DO ROADMAP ATUALIZADO**
-
+**FIM DO ROADMAP**
