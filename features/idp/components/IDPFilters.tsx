@@ -82,6 +82,7 @@ export const IDPFilters = memo(function IDPFilters({
           </span>
           <button
             onClick={onReset}
+            aria-label="Resetar filtros"
             className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
             title="Resetar filtros"
           >
@@ -101,13 +102,15 @@ export const IDPFilters = memo(function IDPFilters({
             Todas
           </button>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2" role="group" aria-label="Filtros de posição IDP">
           {positions.map((pos) => {
             const isSelected = filters.positions.includes(pos)
             return (
               <button
                 key={pos}
                 onClick={() => togglePosition(pos)}
+                aria-label={`Filtrar por ${pos}`}
+                aria-pressed={isSelected}
                 className={`
                   flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all
                   ${isSelected

@@ -67,6 +67,7 @@ export const PlayerSearchModal = memo(function PlayerSearchModal({
           </div>
           <button
             onClick={onClose}
+            aria-label="Fechar modal"
             className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
           >
             <X className="w-5 h-5" />
@@ -88,11 +89,13 @@ export const PlayerSearchModal = memo(function PlayerSearchModal({
           </div>
 
           {/* Position filters */}
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="flex flex-wrap gap-1.5 mt-3" role="group" aria-label="Filtros de posição">
             {POSITIONS.map((pos) => (
               <button
                 key={pos}
                 onClick={() => setPosition(pos)}
+                aria-label={`Filtrar por ${pos === 'ALL' ? 'todas as posições' : pos}`}
+                aria-pressed={position === pos}
                 className={`px-2.5 py-1 text-xs font-medium rounded transition ${
                   position === pos
                     ? 'bg-cyan-600 text-white'

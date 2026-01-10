@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, TrendingUp, Users, Calculator, Settings, Crown, ChevronLeft, ChevronRight, Zap, Trophy, LayoutDashboard } from 'lucide-react'
+import { Home, TrendingUp, Users, Calculator, Settings, Crown, ChevronLeft, ChevronRight, Trophy, LayoutDashboard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface NavigationProps {

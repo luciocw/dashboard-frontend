@@ -113,6 +113,7 @@ export const IDPPlayerCard = memo(function IDPPlayerCard({
           {/* Botão fechar */}
           <button
             onClick={onClose}
+            aria-label="Fechar detalhes do jogador"
             className="absolute top-3 left-3 p-1.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />

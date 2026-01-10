@@ -62,7 +62,6 @@ export const PlayerCard = memo(function PlayerCard({
   const scoringAdjustments = isLeagueAdjusted
     ? formatScoringAdjustments(leagueAdjustedData.scoring_adjustments)
     : ''
-  const multiplier = isLeagueAdjusted ? leagueAdjustedData.scoring_multiplier : 1
 
   if (compact) {
     return (

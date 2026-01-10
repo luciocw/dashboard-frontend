@@ -6,6 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { DYNASTY_PULSE_API_URL, CACHE_TIMES } from '@/constants'
+import { logger } from '@/lib/logger'
 
 /**
  * Dynasty window info for a player
@@ -86,7 +87,7 @@ async function fetchDynastyPulseValues(options: DynastyPulseOptions = {}): Promi
     const res = await fetch(endpoint)
 
     if (!res.ok) {
-      console.warn(`Dynasty Pulse API error: ${res.status}`)
+      logger.warn(`Dynasty Pulse API error: ${res.status}`)
       return {}
     }
 
@@ -99,8 +100,8 @@ async function fetchDynastyPulseValues(options: DynastyPulseOptions = {}): Promi
     }
 
     return valuesMap
-  } catch (error) {
-    console.warn('Dynasty Pulse API unavailable, using fallback values')
+  } catch {
+    logger.warn('Dynasty Pulse API unavailable, using fallback values')
     return {}
   }
 }
@@ -211,12 +212,12 @@ async function fetchLeagueInfo(leagueId: string): Promise<LeagueInfo | null> {
   try {
     const res = await fetch(endpoint)
     if (!res.ok) {
-      console.warn(`Failed to fetch league info: ${res.status}`)
+      logger.warn(`Failed to fetch league info: ${res.status}`)
       return null
     }
     return res.json()
   } catch (error) {
-    console.warn('Failed to fetch league info:', error)
+    logger.warn('Failed to fetch league info:', error)
     return null
   }
 }
@@ -233,7 +234,7 @@ async function fetchLeagueAdjustedValues(
   try {
     const res = await fetch(endpoint)
     if (!res.ok) {
-      console.warn(`Failed to fetch league-adjusted values: ${res.status}`)
+      logger.warn(`Failed to fetch league-adjusted values: ${res.status}`)
       return {}
     }
 
@@ -247,7 +248,7 @@ async function fetchLeagueAdjustedValues(
 
     return valuesMap
   } catch (error) {
-    console.warn('Failed to fetch league-adjusted values:', error)
+    logger.warn('Failed to fetch league-adjusted values:', error)
     return {}
   }
 }
@@ -413,7 +414,7 @@ async function fetchMultiSeasonValues(options: MultiSeasonOptions = {}): Promise
     const res = await fetch(endpoint)
 
     if (!res.ok) {
-      console.warn(`Dynasty Pulse multi-season API error: ${res.status}`)
+      logger.warn(`Dynasty Pulse multi-season API error: ${res.status}`)
       return {}
     }
 
@@ -426,8 +427,8 @@ async function fetchMultiSeasonValues(options: MultiSeasonOptions = {}): Promise
     }
 
     return valuesMap
-  } catch (error) {
-    console.warn('Dynasty Pulse multi-season API unavailable')
+  } catch {
+    logger.warn('Dynasty Pulse multi-season API unavailable')
     return {}
   }
 }
