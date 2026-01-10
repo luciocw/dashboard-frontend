@@ -182,3 +182,55 @@ def get_available_seasons() -> list[int]:
     Usa nflverse como fonte canônica (Tank01 não tem dados históricos)
     """
     return get_available_seasons_nflverse()
+
+
+# ============================================
+# Historical Stats (Force nflverse)
+# ============================================
+# Tank01 has issues with historical seasons (returns stale data)
+# nflverse is the reliable source for historical stats
+
+def get_historical_offensive_stats(season: int) -> StatsResult:
+    """
+    Fetches historical offensive stats using nflverse directly.
+    Use this for multi-season queries where accurate historical data is needed.
+    """
+    try:
+        players = get_offensive_stats_nflverse(season)
+        cache_key = "nflverse_player_stats"
+        cache_path = get_cache_path(cache_key, season)
+        age = get_cache_age_seconds(cache_path)
+        cached = age >= 0 and age < 86400
+
+        return StatsResult(
+            players=players,
+            source="nflverse",
+            cached=cached,
+            cache_age_seconds=max(0, age)
+        )
+    except Exception as e:
+        print(f"[historical] nflverse offense failed: {e}")
+        return StatsResult(players=[], source="none", error=str(e))
+
+
+def get_historical_defensive_stats(season: int) -> StatsResult:
+    """
+    Fetches historical defensive stats using nflverse directly.
+    Use this for multi-season queries where accurate historical data is needed.
+    """
+    try:
+        players = get_defensive_stats_nflverse(season)
+        cache_key = "nflverse_player_stats_def"
+        cache_path = get_cache_path(cache_key, season)
+        age = get_cache_age_seconds(cache_path)
+        cached = age >= 0 and age < 86400
+
+        return StatsResult(
+            players=players,
+            source="nflverse",
+            cached=cached,
+            cache_age_seconds=max(0, age)
+        )
+    except Exception as e:
+        print(f"[historical] nflverse defense failed: {e}")
+        return StatsResult(players=[], source="none", error=str(e))

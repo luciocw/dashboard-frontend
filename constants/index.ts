@@ -2,6 +2,7 @@
 export const API_URL = process.env.NEXT_PUBLIC_SLEEPER_API_URL || 'https://api.sleeper.app/v1'
 export const SLEEPER_CDN = process.env.NEXT_PUBLIC_SLEEPER_CDN_URL || 'https://sleepercdn.com'
 export const IDP_API_URL = process.env.NEXT_PUBLIC_IDP_API_URL || 'https://nfl-stats-api.luciocw.workers.dev'
+export const DYNASTY_PULSE_API_URL = process.env.NEXT_PUBLIC_DYNASTY_PULSE_API_URL || 'http://localhost:8000'
 
 // Cache times (em ms)
 export const CACHE_TIMES = {
@@ -11,6 +12,8 @@ export const CACHE_TIMES = {
   ROSTERS: 1000 * 60 * 60 * 2,     // 2 horas
   PLAYERS: 1000 * 60 * 60 * 24,    // 24 horas
   PLAYERS_GC: 1000 * 60 * 60 * 24 * 7, // 7 dias
+  DYNASTY_PULSE: 1000 * 60 * 60 * 1,   // 1 hora
+  DYNASTY_PULSE_GC: 1000 * 60 * 60 * 4, // 4 horas
 }
 
 // Cores por posição
