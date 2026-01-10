@@ -54,7 +54,7 @@ export const useAppStore = create<AppState>()(
         }),
     }),
     {
-      name: 'dynasty-dashboard-storage',
+      name: 'fantasy-intel-storage',
       partialize: (state) => ({
         currentUser: state.currentUser,
         selectedSeason: state.selectedSeason,

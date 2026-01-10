@@ -22,18 +22,18 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    href: '/trade-calc',
-    label: 'Trade Calc',
-    icon: Scale,
-    activeClass: 'bg-cyan-600/20 text-cyan-400',
-    hoverClass: 'hover:text-cyan-400 hover:bg-cyan-600/10',
-  },
-  {
     href: '/',
     label: 'Free Dash',
     icon: LayoutDashboard,
     activeClass: 'bg-emerald-600/20 text-emerald-400',
     hoverClass: 'hover:text-emerald-400 hover:bg-emerald-600/10',
+  },
+  {
+    href: '/trade-calc',
+    label: 'Trade Calc',
+    icon: Scale,
+    activeClass: 'bg-cyan-600/20 text-cyan-400',
+    hoverClass: 'hover:text-cyan-400 hover:bg-cyan-600/10',
   },
 ]
 
@@ -50,7 +50,7 @@ export const PublicHeader = memo(function PublicHeader() {
             <Link href="/">
               <h1 className="text-lg sm:text-xl font-bold tracking-tight">
                 <span className="bg-gradient-to-r from-primary via-blue-500 to-primary bg-clip-text text-transparent">
-                  Dynasty Dashboard
+                  Fantasy Intel
                 </span>
               </h1>
             </Link>

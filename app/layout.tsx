@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Dynasty Dashboard - Fantasy Football',
-  description: 'Visualize todas suas ligas Sleeper com analytics premium',
+  title: 'Fantasy Intel - Fantasy Football Analytics',
+  description: 'Analytics avançadas para suas ligas Sleeper. Trade calculator, power rankings e mais.',
   icons: {
     icon: '/favicon.svg',
   },

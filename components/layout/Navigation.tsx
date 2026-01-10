@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, TrendingUp, Users, Calculator, Settings, Crown, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, TrendingUp, Users, Calculator, Settings, Crown, ChevronLeft, ChevronRight, Zap, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface NavigationProps {
@@ -11,10 +11,11 @@ interface NavigationProps {
 }
 
 const navItems = [
-  { href: '/leagues', label: 'Dashboard', icon: Home },
-  { href: '/players', label: 'Players', icon: Users },
+  { href: '/', label: 'Free Dash', icon: Zap },
+  { href: '/leagues', label: 'Minhas Ligas', icon: Trophy },
+  { href: '/trade-calc', label: 'Trade Calc', icon: Calculator },
   { href: '/rankings', label: 'Rankings', icon: TrendingUp },
-  { href: '/trade-calc', label: 'Trade Analyzer', icon: Calculator, premium: true },
+  { href: '/players', label: 'Players', icon: Users, premium: true },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -32,7 +33,7 @@ export function Navigation({ isCollapsed, onToggle }: NavigationProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          {!isCollapsed && <span className="font-bold text-xl">Dynasty Pro</span>}
+          {!isCollapsed && <span className="font-bold text-xl">Fantasy Intel</span>}
         </div>
         <button
           onClick={onToggle}
@@ -47,7 +48,9 @@ export function Navigation({ isCollapsed, onToggle }: NavigationProps) {
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+          const isActive = item.href === '/'
+            ? pathname === '/'
+            : pathname === item.href || pathname.startsWith(item.href + '/')
 
           return (
             <Link

@@ -1,4 +1,4 @@
-# Roadmap Dynasty Dashboard - Atualizado 09/01/2026
+# Roadmap Fantasy Intel - Atualizado 09/01/2026
 
 ## **STATUS GERAL DO PROJETO**
 ```
@@ -7,10 +7,13 @@
 ✅ Fase A: Fundação (100%)
 ✅ Fase B: Modularização (100%)
 ✅ Fase C: Navegação + Melhorias (100%)
-✅ Fase D: Migração Next.js + Premium UI (100%) ← NOVA
-🔄 Fase E: Features Avançadas (50%)
-⏳ Fase F: Deploy (0%)
-⏳ Fase G: Mobile Nativo (0%)
+✅ Fase D: Migração Next.js + Premium UI (100%)
+✅ Fase E: Rebranding Fantasy Intel (100%) ← NOVA
+🔄 Fase F: Features Avançadas (50%)
+⏳ Fase G: Internacionalização - i18n (0%)
+⏳ Fase H: Identidade Visual (0%)
+⏳ Fase I: Deploy (0%)
+⏳ Fase J: Mobile Nativo (0%)
 ```
 
 ---
@@ -237,22 +240,109 @@ Build time:               ~35s
 
 ---
 
+---
+
+## **✅ FASE E: REBRANDING FANTASY INTEL** *(COMPLETA - 09/01/2026)*
+
+### **E.1 - Novo Nome**
+- ✅ Pesquisa de nomes disponíveis
+- ✅ Decisão: **Fantasy Intel** (transmite analytics/AI, não exclui Redraft/Keeper)
+- ✅ Atualização de todas as referências no código
+
+### **E.2 - Arquivos Atualizados**
+- ✅ `package.json` → `fantasy-intel`
+- ✅ `app/layout.tsx` → metadata atualizada
+- ✅ `PublicHeader.tsx`, `Navigation.tsx`, `Footer.tsx`
+- ✅ `DashboardHeader.tsx`, `leagues-content.tsx`
+- ✅ `store/use-app-store.ts` → storage key
+- ✅ `STACK-TECH.md`
+
+---
+
+## **⏳ FASE G: INTERNACIONALIZAÇÃO (i18n)** *(PENDENTE)*
+
+### **G.1 - Mercados Alvo**
+| Prioridade | Idioma | Mercados | Motivo |
+|------------|--------|----------|--------|
+| 1 | Inglês | UK, Irlanda, Austrália, EUA | Maior mercado NFL |
+| 2 | Português | Brasil | Já temos, jogos NFL em SP/Rio |
+| 3 | Alemão | Alemanha | 2º maior EU, jogos em Berlim/Munique |
+| 4 | Espanhol | Espanha, México | Jogos em Madrid, México City |
+
+### **G.2 - Implementação Técnica**
+```
+fantasy-intel/
+├── messages/
+│   ├── en.json      # English (default)
+│   ├── pt-BR.json   # Português Brasil
+│   ├── de.json      # Deutsch
+│   └── es.json      # Español
+├── app/
+│   └── [locale]/    # Dynamic locale routing
+│       ├── page.tsx
+│       └── ...
+└── lib/
+    └── i18n.ts      # next-intl config
+```
+
+### **G.3 - Tarefas**
+- [ ] Instalar `next-intl`
+- [ ] Configurar middleware de locale
+- [ ] Criar arquivos de mensagens (en, pt-BR)
+- [ ] Extrair strings hardcoded para i18n
+- [ ] Adicionar seletor de idioma no header
+- [ ] Traduzir para alemão (de)
+- [ ] Traduzir para espanhol (es)
+
+---
+
+## **⏳ FASE H: IDENTIDADE VISUAL** *(PENDENTE)*
+
+### **H.1 - Logo**
+- [ ] Conceito: "Intel" + Football + Analytics
+- [ ] Variações: Logo completo, ícone, favicon
+- [ ] Formatos: SVG, PNG (múltiplas resoluções)
+- [ ] Dark/Light mode variants
+
+### **H.2 - Cores da Marca**
+| Elemento | Cor Atual | Notas |
+|----------|-----------|-------|
+| Primary | Indigo (#6366f1) | Manter ou ajustar |
+| Accent | Blue (#3b82f6) | Gradientes |
+| Gold | Premium features | Manter |
+| Success | Emerald | Trending up |
+| Danger | Rose | Trending down |
+
+### **H.3 - Assets**
+- [ ] Favicon.svg atualizado
+- [ ] OG Image (Open Graph)
+- [ ] Apple Touch Icon
+- [ ] Splash screens (PWA)
+
+### **H.4 - Ferramentas Sugeridas**
+- Figma para design
+- DALL-E/Midjourney para conceitos
+- SVG manual para versão final
+
+---
+
 ## **PRÓXIMAS AÇÕES**
 
 ### **Imediato:**
-1. Deploy no Vercel
-2. Configurar domínio custom
-3. Testar em produção
+1. Configurar i18n (next-intl)
+2. Criar logo/favicon
+3. Deploy no Vercel
 
 ### **Curto prazo:**
-4. Trending players
+4. Tradução inglês completa
 5. Testes E2E
-6. Performance optimization
+6. Domínio custom (fantasyintel.com?)
 
 ### **Médio prazo:**
-7. PWA (offline support)
-8. Push notifications
-9. Tier Premium
+7. Traduções alemão/espanhol
+8. PWA (offline support)
+9. Push notifications
+10. Tier Premium
 
 ---
 

@@ -1,4 +1,4 @@
-# Stack Tecnológico - Dynasty Dashboard
+# Stack Tecnológico - Fantasy Intel
 
 ## Frontend (Next.js App)
 

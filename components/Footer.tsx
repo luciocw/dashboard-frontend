@@ -8,7 +8,7 @@ export const Footer = memo(function Footer() {
       <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <span className="text-lg">🏈</span>
-          <span>Dynasty Dashboard</span>
+          <span>Fantasy Intel</span>
         </div>
 
         <a

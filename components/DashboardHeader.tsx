@@ -37,7 +37,7 @@ export const DashboardHeader = memo(function DashboardHeader({
           <div className="flex items-center gap-6">
             <h1 className="text-xl font-bold tracking-tight md:text-2xl">
               <span className="bg-gradient-to-r from-primary via-blue-500 to-primary bg-clip-text text-transparent">
-                Dynasty Dashboard
+                Fantasy Intel
               </span>
             </h1>
 
