@@ -8,7 +8,7 @@
 import { memo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Scale, Gem } from 'lucide-react'
+import { LayoutDashboard, Scale, Gem, Home } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface NavItem {
@@ -21,6 +21,12 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     href: '/',
+    label: 'Início',
+    icon: Home,
+    activeColor: 'text-primary',
+  },
+  {
+    href: '/free-dash',
     label: 'Free Dash',
     icon: LayoutDashboard,
     activeColor: 'text-emerald-400',

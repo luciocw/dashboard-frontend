@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, TrendingUp, Users, Calculator, Settings, Crown, ChevronLeft, ChevronRight, Zap, Trophy } from 'lucide-react'
+import { Home, TrendingUp, Users, Calculator, Settings, Crown, ChevronLeft, ChevronRight, Zap, Trophy, LayoutDashboard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface NavigationProps {
@@ -11,7 +11,8 @@ interface NavigationProps {
 }
 
 const navItems = [
-  { href: '/', label: 'Free Dash', icon: Zap },
+  { href: '/', label: 'Início', icon: Home },
+  { href: '/free-dash', label: 'Free Dash', icon: LayoutDashboard },
   { href: '/leagues', label: 'Minhas Ligas', icon: Trophy },
   { href: '/trade-calc', label: 'Trade Calc', icon: Calculator },
   { href: '/rankings', label: 'Rankings', icon: TrendingUp },

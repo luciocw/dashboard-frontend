@@ -1,5 +1,5 @@
-import { FreeDashContent } from '@/components/pages/free-dash-content'
+import { LandingContent } from '@/components/pages/landing-content'
 
 export default function HomePage() {
-  return <FreeDashContent />
+  return <LandingContent />
 }

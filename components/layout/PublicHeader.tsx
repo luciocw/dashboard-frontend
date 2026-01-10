@@ -8,7 +8,7 @@
 import { memo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Scale, LayoutDashboard, Gem, Crown } from 'lucide-react'
+import { Scale, LayoutDashboard, Gem, Crown, Home } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { UpgradeModal } from '@/components/premium'
 
@@ -23,6 +23,13 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     href: '/',
+    label: 'Início',
+    icon: Home,
+    activeClass: 'bg-primary/20 text-primary',
+    hoverClass: 'hover:text-primary hover:bg-primary/10',
+  },
+  {
+    href: '/free-dash',
     label: 'Free Dash',
     icon: LayoutDashboard,
     activeClass: 'bg-emerald-600/20 text-emerald-400',

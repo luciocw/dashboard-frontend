@@ -1,8 +1,8 @@
 'use client'
 
 /**
- * Free Dash Page Content
- * Landing page pública com trending players e features
+ * Landing Page Content
+ * Página inicial do Fantasy Intel com trending players e features
  */
 
 import Link from 'next/link'
@@ -217,7 +217,7 @@ function FeaturesSection() {
   )
 }
 
-export function FreeDashContent() {
+export function LandingContent() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <PublicHeader />
