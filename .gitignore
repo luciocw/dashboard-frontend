@@ -36,3 +36,4 @@ pnpm-debug.log*
 Thumbs.db
 backend/.env
 backend/cache_data/
+.next/
