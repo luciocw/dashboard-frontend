@@ -1,354 +1,388 @@
-# Auditoria Completa - Dynasty Dashboard
+# 🔍 Fantasy Intel - Auditoria Completa
 
-**Data da Auditoria:** 08/01/2026
-**Ultima Atualizacao:** 08/01/2026
-**Versao do Projeto:** 2.0.0
-
----
-
-## Status das Correcoes
-
-| Item | Status | Commit |
-|------|--------|--------|
-| TODOs PRE-LAUNCH (isPremiumUser) | ✅ Corrigido | `9c8a8b1` |
-| URL localhost hardcoded | ✅ Corrigido | `9c8a8b1` |
-| ESLint sem configuracao | ✅ Corrigido | `9c8a8b1` |
-| Tipos `any` (7 ocorrencias) | ✅ Corrigido | `9c8a8b1` |
-| URL API duplicada | ✅ Corrigido | `9c8a8b1` |
-| zod nao utilizado | ✅ Removido | `99ee1dd` |
-| memo em Header | ✅ Corrigido | `21f28f3` |
-| TODO flow de upgrade | ✅ Corrigido | `21f28f3` |
-| Imagens alt="" vazio (7) | ✅ Corrigido | `815dda9` |
-| Cobertura de testes (~4%) | ⏸️ Pendente | - |
-| Refatorar DesignSystem.tsx | ⏸️ Pendente (opcional) | - |
-| Dependencias desatualizadas | ⏸️ Pendente (arriscado) | - |
+> **Data:** 10/01/2026
+> **Versão:** 3.0.0
+> **Branch:** main
 
 ---
 
 ## 1. Estrutura do Projeto
 
-### Arvore de Diretorios
+### Árvore de Diretórios
 
 ```
-.
-├── .claude/
-├── backend/
-│   ├── cache_data/
-│   └── sources/
-├── dist/
-│   └── assets/
-├── docs/
-├── legacy/
-├── public/
-├── src/
-│   ├── components/
-│   │   └── ui/
-│   ├── constants/
-│   ├── features/
-│   │   ├── idp/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   └── utils/
-│   │   └── leagues/
-│   ├── hooks/
-│   ├── pages/
-│   ├── store/
-│   ├── test/
-│   ├── types/
-│   └── utils/
-└── .wrangler/
+Fantasy-Frontend/
+├── app/                    # Next.js App Router (7 páginas)
+│   ├── page.tsx           # Landing page
+│   ├── layout.tsx         # Root layout
+│   ├── dashboard/         # Dashboard autenticado
+│   ├── free-dash/         # Dashboard gratuito
+│   ├── leagues/           # Lista de ligas
+│   ├── league/[id]/       # Detalhes da liga
+│   └── trade-calc/        # Trade Calculator
+├── backend/               # Python FastAPI (13 arquivos)
+│   ├── main.py            # API principal (707 linhas)
+│   ├── dynasty_pulse/     # Engine de valores (6 arquivos)
+│   │   ├── __init__.py
+│   │   ├── vorp.py        # VORP calculation
+│   │   ├── aging.py       # Aging curves
+│   │   ├── values.py      # Value generator
+│   │   ├── scoring_adjust.py  # League adjustments
+│   │   └── multi_season.py    # Multi-season aggregation
+│   ├── sources/           # Fontes de dados
+│   │   ├── nflverse.py    # Dados históricos (455 linhas)
+│   │   └── tank01.py      # Dados live (346 linhas)
+│   └── cache_data/        # Cache local (19 JSONs)
+├── components/            # Componentes React (49 arquivos)
+│   ├── layout/            # Layout (5)
+│   ├── pages/             # Conteúdo de páginas (6)
+│   ├── premium/           # Features premium (4)
+│   ├── providers/         # Context providers (1)
+│   └── ui/                # Componentes UI (13)
+├── features/              # Módulos de features
+│   ├── idp/               # IDP Explorer (11 arquivos)
+│   └── trade-calc/        # Trade Calculator (10 arquivos)
+├── hooks/                 # Custom hooks (15 arquivos)
+├── utils/                 # Utilitários (10 arquivos)
+├── constants/             # Constantes (1 arquivo)
+├── store/                 # Zustand store (1 arquivo)
+├── types/                 # TypeScript types (1 arquivo)
+├── workers/               # Cloudflare Workers
+│   └── nfl-stats-api/     # API de stats NFL
+├── docs/                  # Documentação (5 arquivos)
+└── public/                # Assets públicos
 ```
 
 ### Contagem de Arquivos por Tipo
 
-| Extensao | Quantidade |
-|----------|------------|
-| .tsx     | 38         |
-| .ts      | 39         |
-| .md      | 12         |
-| .json    | 12         |
-| .py      | 7          |
-| .js      | 3          |
-| .css     | 1          |
-| .html    | 1          |
-
-**Total de linhas de codigo TypeScript/TSX:** ~7.605 linhas
+| Tipo | Quantidade |
+|------|------------|
+| `.tsx` | 65 |
+| `.ts` | 51 |
+| `.json` | 25 |
+| `.md` | 16 |
+| `.py` | 13 |
+| `.css` | 2 |
+| `.js` | 1 |
+| **TOTAL** | **173** |
 
 ---
 
-## 2. Analise de Codigo
+## 2. Análise de Código
 
-### Arquivos com mais de 300 linhas (candidatos a refatoracao)
+### Arquivos com Mais de 300 Linhas (Candidatos a Refatoração)
 
-| Arquivo | Linhas | Status |
-|---------|--------|--------|
-| `src/components/DesignSystem.tsx` | 407 | ⏸️ Pendente (opcional) |
-| `src/components/RosterView.tsx` | 314 | ⏸️ Analisado - nao vale refatorar |
-| `src/pages/Home.tsx` | 305 | ⏸️ Analisado - nao vale refatorar |
+| Linhas | Arquivo | Recomendação |
+|--------|---------|--------------|
+| 707 | `backend/main.py` | ⚠️ Dividir em routers |
+| 476 | `hooks/useDynastyPulse.ts` | ⚠️ Separar hooks |
+| 455 | `backend/sources/nflverse.py` | OK - complexidade necessária |
+| 407 | `components/DesignSystem.tsx` | OK - referência/docs |
+| 359 | `workers/nfl-stats-api/src/sources/tank01.ts` | OK |
+| 349 | `components/pages/leagues-content.tsx` | ⚠️ Extrair subcomponentes |
+| 346 | `backend/sources/tank01.py` | OK |
+| 330 | `backend/dynasty_pulse/scoring_adjust.py` | OK |
+| 314 | `components/RosterView.tsx` | ⚠️ Considerar dividir |
+| 306 | `backend/dynasty_pulse/values.py` | OK |
+| 304 | `backend/dynasty_pulse/multi_season.py` | OK |
 
-### Tipos TypeScript incompletos ou com 'any'
+### Imports Não Utilizados
 
-| Arquivo | Status |
-|---------|--------|
-| `src/hooks/useUserTitles.ts` | ✅ Corrigido - usa `BracketGame` |
-| `src/hooks/useLeagueHistory.ts` | ✅ Corrigido - usa `BracketGame` |
-| `src/components/LeagueCard.tsx` | ✅ Corrigido - usa `DraftPick` |
-| `src/components/TradesView.tsx` | ✅ Corrigido - usa `PlayersMap` |
+✅ **Nenhum import não utilizado detectado**
 
-### Novas interfaces criadas em `src/types/sleeper.ts`
+### Funções/Componentes Potencialmente Não Utilizados
 
-- `BracketGame` - jogos de playoff bracket
-- `DraftPick` - picks de draft
-- `SleeperPlayer` - dados basicos de jogador
+| Componente | Arquivo | Status |
+|------------|---------|--------|
+| `DesignSystem` | `components/DesignSystem.tsx` | Referência/docs - OK |
+| `Header` | `components/Header.tsx` | Legacy - considerar remover |
+
+### Tipos TypeScript com 'any'
+
+✅ **Nenhum tipo `any` encontrado no código fonte**
 
 ---
 
-## 3. Dependencias
+## 3. Dependências
 
-### Lista de Dependencias do package.json
+### Dependencies (package.json)
 
-#### Dependencias de Producao
+| Pacote | Versão | Uso |
+|--------|--------|-----|
+| `@tanstack/react-query` | ^5.17.19 | Data fetching & cache |
+| `clsx` | ^2.1.1 | Classnames |
+| `lucide-react` | ^0.454.0 | Ícones |
+| `next` | ^15.1.3 | Framework |
+| `react` | ^19.0.0 | UI Library |
+| `react-dom` | ^19.0.0 | React DOM |
+| `tailwind-merge` | ^3.0.1 | Tailwind utils |
+| `zustand` | ^5.0.2 | State management |
 
-| Pacote | Versao |
+### DevDependencies
+
+| Pacote | Versão |
 |--------|--------|
-| @tanstack/react-query | ^5.17.19 |
-| clsx | ^2.1.1 |
-| lucide-react | ^0.562.0 |
-| react | ^18.2.0 |
-| react-dom | ^18.2.0 |
-| react-router-dom | ^7.11.0 |
-| tailwind-merge | ^3.4.0 |
-| zustand | ^4.4.7 |
+| `@tailwindcss/postcss` | ^4.0.0 |
+| `@types/node` | ^22.10.2 |
+| `@types/react` | ^19.0.2 |
+| `@types/react-dom` | ^19.0.2 |
+| `postcss` | ^8.4.49 |
+| `tailwindcss` | ^4.0.0 |
+| `typescript` | ^5.7.2 |
 
-> **Nota:** `zod` foi removido pois nao estava sendo utilizado.
+### Dependências Desatualizadas
 
-### Dependencias desatualizadas (pendente)
+| Pacote | Atual | Última | Prioridade |
+|--------|-------|--------|------------|
+| `next` | 15.5.9 | 16.1.1 | ⚠️ Major update |
+| `lucide-react` | 0.454.0 | 0.562.0 | Baixa |
+| `@types/node` | 22.19.5 | 25.0.5 | Baixa |
 
-| Pacote | Versao Atual | Ultima Versao | Breaking Changes |
-|--------|--------------|---------------|------------------|
-| react | 18.3.1 | 19.2.3 | **MAJOR** |
-| react-dom | 18.3.1 | 19.2.3 | **MAJOR** |
-| tailwindcss | 3.4.19 | 4.1.18 | **MAJOR** |
-| vite | 5.4.21 | 7.3.1 | **MAJOR** |
-| vitest | 1.6.1 | 4.0.16 | **MAJOR** |
-| zustand | 4.5.7 | 5.0.9 | **MAJOR** |
+### Dependências Não Utilizadas
 
-> **Recomendacao:** Atualizar com cuidado. React 18→19 tem breaking changes significativos.
+✅ **Nenhuma dependência não utilizada detectada**
+
+### Dependências Faltando
+
+| Pacote | Motivo |
+|--------|--------|
+| `vitest` | Arquivos de teste importam mas não está instalado |
 
 ---
 
 ## 4. Erros e Warnings
 
-### Resultado do `npm run type-check`
+### TypeScript (`npm run type-check`)
 
 ```
-✅ Passou sem erros
+❌ 3 erros encontrados:
+
+utils/league.test.ts(1,38): error TS2307: Cannot find module 'vitest'
+utils/roster.test.ts(1,38): error TS2307: Cannot find module 'vitest'
+utils/validation.test.ts(1,38): error TS2307: Cannot find module 'vitest'
 ```
 
-### Resultado do `npm run lint`
+**Solução:** `npm install -D vitest`
+
+### ESLint (`npm run lint`)
+
+⚠️ `next lint` deprecated no Next.js 16 - necessário configurar ESLint manualmente
+
+### Build (`npm run build`)
 
 ```
-✅ Passou sem erros (0 warnings)
-```
+✅ Build passa sem erros
 
-> **Nota:** ESLint agora configurado em `.eslintrc.cjs`
+Route (app)                    Size      First Load JS
+┌ ○ /                         3.75 kB   131 kB
+├ ○ /dashboard                5.13 kB   124 kB
+├ ○ /free-dash                3.9 kB    131 kB
+├ ƒ /league/[id]              19.8 kB   147 kB
+├ ○ /leagues                  9.28 kB   136 kB
+└ ○ /trade-calc               8.91 kB   136 kB
 
-### Resultado do `npm test`
-
-```
-✅ 24 testes passando
-
- ✓ src/utils/validation.test.ts  (10 tests)
- ✓ src/utils/roster.test.ts      (5 tests)
- ✓ src/utils/league.test.ts      (9 tests)
-```
-
-### Erros de build
-
-```
-✅ Build bem-sucedido
-
-vite v5.4.21 building for production...
-✓ 1823 modules transformed
-✓ built in ~5s
-
-Tamanho do bundle:
-- index.html: 0.57 kB (gzip: 0.34 kB)
-- index.css: 42.96 kB (gzip: 7.40 kB)
-- index.js: 357.37 kB (gzip: 106.28 kB)
+Total First Load JS: ~102 kB shared
 ```
 
 ---
 
 ## 5. Performance
 
-### Componentes com memo() implementado
+### Componentes com Memoização
 
-O projeto utiliza `React.memo()` na maioria dos componentes:
+✅ **40 arquivos** usando `memo`, `useMemo` ou `useCallback`
 
-- `DraftPickBadge`, `MatchupCard`, `PowerRankingsView`, `HeroSection`
-- `IDPFilters`, `IDPTable`, `IDPPlayerCard`, `IDPExplorerView`
-- `DashboardHeader`, `LeagueCard`, `RosterView`, `PlayerRow`
-- `OfflineBanner`, `ChampionsHistory`, `PlayerCard`, `MatchupsView`
-- `TradesView`, `TradeCard`, `Badge`, `DesignSystem`
-- `Footer`, `SkeletonCard`, `PowerRankings`, `StatCard`
-- `SkeletonTable`, `ErrorCard`, `TitlesModal`, `StandingsTable`
-- `Header` ✅ (adicionado)
+### Cache de API
 
-### Chamadas de API e Cache
+| Hook | Cache Strategy | Stale Time |
+|------|----------------|------------|
+| `useDynastyPulse` | TanStack Query | 30min |
+| `useLeagueAdjustedValues` | TanStack Query | 30min |
+| `useMultiSeasonValues` | TanStack Query | 30min |
+| `useAllUserLeagues` | TanStack Query | default |
+| `useMyRoster` | TanStack Query | default |
 
-O projeto utiliza `@tanstack/react-query` para gerenciamento de cache.
+### Potenciais Re-renders Desnecessários
 
-### URLs de API
-
-| Variavel | Valor Default | Configuravel |
-|----------|---------------|--------------|
-| `API_URL` | `https://api.sleeper.app/v1` | ✅ `VITE_SLEEPER_API_URL` |
-| `SLEEPER_CDN` | `https://sleepercdn.com` | ✅ `VITE_SLEEPER_CDN_URL` |
-| `IDP_API_URL` | `https://api.dynastydashboard.com` | ✅ `VITE_IDP_API_URL` |
+| Componente | Issue | Recomendação |
+|------------|-------|--------------|
+| `leagues-content.tsx` | 349 linhas, muitos estados | Dividir em subcomponentes |
+| `RosterView.tsx` | 314 linhas | Extrair lógica para hooks |
 
 ---
 
-## 6. Seguranca
+## 6. Segurança
 
-### Chaves de API expostas
+### Chaves de API
 
-```
-✅ Nenhuma chave de API ou secret exposta no codigo
-```
+| Item | Status |
+|------|--------|
+| `backend/.env` | ✅ No `.gitignore` - não rastreado |
+| RapidAPI Key | ✅ Não exposta no repositório |
+| Sleeper API | ✅ API pública (sem key) |
 
-### Dados sensiveis em codigo
+### URLs Hardcoded
 
-```
-✅ Nenhum dado sensivel hardcoded encontrado
-```
+| URL | Arquivo | Status |
+|-----|---------|--------|
+| `https://api.sleeper.app/v1` | `constants/index.ts` | ✅ Com fallback env |
+| `https://sleepercdn.com` | `constants/index.ts` | ✅ Com fallback env |
+| `https://nfl-stats-api.luciocw.workers.dev` | `constants/index.ts` | ✅ Com fallback env |
+| `http://localhost:8000` | `constants/index.ts` | ✅ Com fallback env |
+| `https://a.espncdn.com` | `features/idp/constants.ts` | ⚠️ Hardcoded (CDN público) |
+| `https://buymeacoffee.com/luciocw` | `Footer.tsx`, `UpgradeModal.tsx` | ✅ Link intencional |
 
-### URLs hardcoded
+### Dados Sensíveis
 
-```
-✅ Corrigido - todas as URLs agora sao configuraveis via variaveis de ambiente
-```
+✅ **Nenhum dado sensível no código fonte**
 
 ---
 
 ## 7. Acessibilidade
 
-### Componentes com aria-labels implementados
+### Imagens sem Alt
 
-| Arquivo | aria-labels |
-|---------|-------------|
-| `src/pages/Home.tsx` | `aria-label="Username do Sleeper"`, `aria-label="Lista de ligas"`, `role="alert"`, `role="list"` |
-| `src/pages/LeagueDetails.tsx` | `aria-label="Voltar para lista de ligas"`, `role="tablist"`, `role="tab"` |
-| `src/components/LeagueCard.tsx` | `role="listitem"` |
-| `src/components/DashboardHeader.tsx` | `aria-label="Sair"` |
-| `src/components/OfflineBanner.tsx` | `role="alert"` |
-| `src/components/MatchupsView.tsx` | `aria-label="Semana anterior"`, `aria-label="Proxima semana"` |
+✅ **Todas as imagens têm atributo `alt`**
 
-### Imagens com alt
+### Componentes sem Aria-labels
 
-| Arquivo | Status |
-|---------|--------|
-| `src/components/PowerRankingsView.tsx` | ✅ `alt={team.owner?.display_name}` |
-| `src/components/LeagueCard.tsx` | ✅ `alt={league.name}` |
-| `src/components/ChampionsHistory.tsx` | ✅ `alt={champion.ownerName}` |
-| `src/components/TradesView.tsx` | ✅ `alt={getOwnerName(...)}` |
-| `src/components/TitlesModal.tsx` | ✅ `alt={title.leagueName}` |
-| `src/pages/LeagueDetails.tsx` | ✅ `alt={data.league.name}` |
+| Componente | Elemento | Ação Requerida |
+|------------|----------|----------------|
+| `PlayerSearchModal.tsx` | Botão fechar | Adicionar `aria-label="Fechar"` |
+| `PlayerSearchModal.tsx` | Botões de posição | Adicionar `aria-label` |
+| `IDPFilters.tsx` | Botão reset | Adicionar `aria-label` |
+| `IDPFilters.tsx` | Toggles de posição | Adicionar `aria-label` |
+| `IDPPlayerCard.tsx` | Botão fechar | Adicionar `aria-label` |
+
+### Contraste de Cores
+
+⚠️ Não verificado automaticamente - recomenda-se teste manual com ferramentas como axe-core
 
 ---
 
 ## 8. Cobertura de Testes
 
-### Arquivos de teste existentes
+### Arquivos de Teste Existentes (3)
 
-| Arquivo | Testes | Status |
-|---------|--------|--------|
-| `src/utils/validation.test.ts` | 10 | ✅ Passando |
-| `src/utils/roster.test.ts` | 5 | ✅ Passando |
-| `src/utils/league.test.ts` | 9 | ✅ Passando |
+| Arquivo | Cobertura |
+|---------|-----------|
+| `utils/league.test.ts` | Funções de liga |
+| `utils/roster.test.ts` | Funções de roster |
+| `utils/validation.test.ts` | Validações |
 
-**Total:** 24 testes passando
+### Componentes sem Testes (65)
 
-### Cobertura
+**Componentes críticos sem teste:**
 
-**Cobertura estimada:** ~4% dos arquivos possuem testes
+| Categoria | Componentes |
+|-----------|-------------|
+| Trade Calculator | `TradeCalculator.tsx`, `TradeSide.tsx`, `TradeResult.tsx` |
+| IDP | `IDPExplorerView.tsx`, `IDPTable.tsx`, `IDPFilters.tsx` |
+| Core | `RosterView.tsx`, `LeagueCard.tsx`, `MatchupCard.tsx` |
+| Premium | `PremiumGate.tsx`, `UpgradeModal.tsx` |
 
-> **Recomendacao:** Adicionar testes incrementalmente para hooks e componentes criticos.
+### Hooks sem Testes (15)
+
+| Hook | Criticidade |
+|------|-------------|
+| `useDynastyPulse.ts` | 🔴 Alta |
+| `useTradeCalculator.ts` | 🔴 Alta |
+| `usePlayerSearch.ts` | 🟡 Média |
+| `useAuth.ts` | 🟡 Média |
+| Outros (11) | 🟢 Baixa |
 
 ---
 
 ## 9. TODOs e FIXMEs
 
-| Arquivo | Conteudo | Status |
-|---------|----------|--------|
-| `src/store/useAppStore.ts` | TODOs PRE-LAUNCH | ✅ Corrigido |
-| `src/features/idp/components/IDPExplorerView.tsx` | TODO flow de upgrade | ✅ Corrigido (link para buymeacoffee) |
+### TODOs Encontrados (2)
+
+| Arquivo | Linha | Comentário |
+|---------|-------|------------|
+| `components/premium/UpgradeModal.tsx` | 33 | `// TODO: Integrar com Stripe/pagamento` |
+| `components/layout/Navigation.tsx` | 25 | `// TODO: Hook into auth context` |
+
+### FIXMEs Encontrados
+
+✅ **Nenhum FIXME encontrado**
+
+### Console Statements (Remover em Produção)
+
+| Arquivo | Tipo | Quantidade |
+|---------|------|------------|
+| `hooks/useDynastyPulse.ts` | `console.warn` | 6 |
+| `components/ErrorBoundary.tsx` | `console.error` | 1 |
+| `workers/nfl-stats-api/src/index.ts` | `console.error` | 4 |
+
+**Total:** 11 console statements
 
 ---
 
-## 10. Recomendacoes
+## 10. Recomendações
 
-### Prioridade Alta (bugs/seguranca)
+### 🔴 Prioridade Alta (Bugs/Segurança)
 
-| # | Problema | Status |
-|---|----------|--------|
-| 1 | TODOs PRE-LAUNCH | ✅ Corrigido |
-| 2 | URL localhost em producao | ✅ Corrigido |
-| 3 | ESLint sem configuracao | ✅ Corrigido |
+| # | Item | Ação | Esforço |
+|---|------|------|---------|
+| 1 | Vitest não instalado | `npm install -D vitest @testing-library/react` | 5min |
+| 2 | ESLint deprecated | Configurar ESLint manualmente | 30min |
+| 3 | Console statements | Criar logger condicional | 1h |
 
-### Prioridade Media (performance/qualidade)
+### 🟡 Prioridade Média (Performance/Qualidade)
 
-| # | Problema | Status |
-|---|----------|--------|
-| 1 | Tipos `any` | ✅ Corrigido |
-| 2 | URL API duplicada | ✅ Corrigido |
-| 3 | Cobertura de testes | ⏸️ Pendente |
-| 4 | Imagens alt vazio | ✅ Corrigido |
-| 5 | DesignSystem.tsx muito grande | ⏸️ Pendente (opcional) |
+| # | Item | Ação | Esforço |
+|---|------|------|---------|
+| 1 | `backend/main.py` (707 linhas) | Dividir em routers: `/dynasty_pulse`, `/stats`, `/cache` | 2h |
+| 2 | `useDynastyPulse.ts` (476 linhas) | Separar: `useDynastyPulse`, `useLeagueAdjusted`, `useMultiSeason` | 1h |
+| 3 | `leagues-content.tsx` (349 linhas) | Extrair: `LeaguesList`, `LeagueFilters`, `LeagueStats` | 1h |
+| 4 | Aria-labels faltando | Adicionar em 5 componentes | 30min |
+| 5 | Next.js 15 → 16 | Avaliar breaking changes e upgrade | 4h |
 
-### Prioridade Baixa (melhorias)
+### 🟢 Prioridade Baixa (Melhorias)
 
-| # | Problema | Status |
-|---|----------|--------|
-| 1 | Dependencias desatualizadas | ⏸️ Pendente (arriscado) |
-| 2 | Remover `zod` | ✅ Removido |
-| 3 | Adicionar memo em Header | ✅ Corrigido |
+| # | Item | Ação | Esforço |
+|---|------|------|---------|
+| 1 | Cobertura de testes | Adicionar testes para hooks críticos | 8h |
+| 2 | `Header.tsx` não usado | Remover ou consolidar | 15min |
+| 3 | Dependências minor | Atualizar lucide-react, @types/node | 15min |
+| 4 | Documentação inline | Adicionar JSDoc em hooks públicos | 2h |
 
 ---
 
-## Resumo Executivo
+## 📊 Resumo Executivo
 
-| Metrica | Valor | Status |
+| Métrica | Valor | Status |
 |---------|-------|--------|
-| Linhas de codigo | ~7.600 | ✅ OK |
-| Arquivos TypeScript/TSX | 77 | ✅ OK |
-| Erros de TypeScript | 0 | ✅ OK |
-| Erros de Build | 0 | ✅ OK |
-| Erros de ESLint | 0 | ✅ OK |
-| Usos de `any` | 0 | ✅ Corrigido |
-| Testes | 24 passando | ✅ OK |
-| Cobertura de testes | ~4% | ⚠️ Baixa |
-| Issues de acessibilidade | 0 | ✅ Corrigido |
-| TODOs criticos | 0 | ✅ Corrigido |
-| Dependencias desatualizadas | 13 major | ⚠️ Monitorar |
+| **Arquivos Fonte** | 173 | - |
+| **Linhas TypeScript/TSX** | ~8.000 | - |
+| **Linhas Python** | ~3.000 | - |
+| **Build** | ✅ Passa | 🟢 |
+| **TypeScript** | 3 erros (vitest) | 🟡 |
+| **ESLint** | Deprecated | 🟡 |
+| **Segurança** | Sem exposições | 🟢 |
+| **Acessibilidade** | 5 issues | 🟡 |
+| **Testes** | 3 arquivos (0% componentes) | 🔴 |
+| **TODOs** | 2 | 🟢 |
+| **Console Statements** | 11 | 🟡 |
+| **Memoização** | 40 arquivos | 🟢 |
 
 ---
 
-## Arquivos Criados/Modificados
+## Changelog
 
-### Novos arquivos
+### 10/01/2026
+- Migração Vite → Next.js 15
+- Implementação Dynasty Pulse Engine
+- Adição de 6 arquivos Python para cálculo de valores
+- Novo hook `useDynastyPulse.ts` (476 linhas)
+- Total de arquivos: 113 → 173
 
-- `.env.example` - Template de variaveis de ambiente
-- `.eslintrc.cjs` - Configuracao do ESLint
-- `src/vite-env.d.ts` - Tipos para variaveis de ambiente Vite
-
-### Interfaces adicionadas em `src/types/sleeper.ts`
-
-- `BracketGame`
-- `DraftPick`
-- `SleeperPlayer`
+### 08/01/2026
+- Auditoria inicial
+- Correção de tipos `any`
+- Configuração ESLint
+- Correção de imagens sem alt
 
 ---
 
-*Auditoria gerada em 08/01/2026*
-*Ultima atualizacao: 08/01/2026*
+*Auditoria gerada em 10/01/2026*
