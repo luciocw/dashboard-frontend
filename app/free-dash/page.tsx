@@ -1,5 +1,5 @@
-import { FreeDashLegacyContent } from '@/components/pages/free-dash-legacy-content'
+import { FreeDashContent } from '@/components/pages/free-dash-content'
 
 export default function FreeDashPage() {
-  return <FreeDashLegacyContent />
+  return <FreeDashContent />
 }
