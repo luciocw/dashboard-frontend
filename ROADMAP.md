@@ -1,6 +1,6 @@
 # 🏈 Dynasty Dashboard - Roadmap
 
-> Última atualização: 09/01/2026
+> Última atualização: 10/01/2026
 
 ---
 
@@ -74,7 +74,7 @@
 - [x] Valores fixos 0-100 baseados em rankings dynasty
 - [x] Resultado com vencedor, diferença e análise
 - [x] Header atualizado com navegação (Ligas + Trade Calc)
-- [ ] **Pendente:** Integrar API externa para valores dinâmicos (KeepTradeCut, FantasyCalc)
+- [x] Valores dinâmicos via Dynasty Pulse API (substituiu hardcoded)
 
 ## ✅ FASE I - Free Dash (COMPLETA)
 - [x] Dashboard legacy hospedado em `/public/legacy/index.html`
@@ -84,36 +84,77 @@
 - [x] Rota `/leagues` para área premium (com login Sleeper)
 - [x] Navegação sem necessidade de login para funcionalidades gratuitas
 
+## ✅ FASE J - Dynasty Pulse Engine (COMPLETA)
+Motor proprietário de cálculo de valores para o Trade Calculator.
+
+### Backend (`backend/dynasty_pulse/`)
+- [x] VORP (Value Over Replacement Player) por posição
+- [x] Replacement levels calibrados (12-team league)
+- [x] Scarcity multipliers (RB > WR, etc)
+- [x] Aging curves por posição (peak, decline rates)
+- [x] Suporte completo IDP (DL, LB, DB)
+- [x] Dynasty window (peak_years_left, recommendation)
+- [x] Multi-season aggregation (weighted average últimos 3 anos)
+- [x] Trend detection (rising/declining players)
+- [x] Fonte histórica: nflverse (dados precisos por temporada)
+
+### Endpoints Dynasty Pulse
+- [x] `GET /api/dynasty-pulse/values` - valores de todos jogadores
+- [x] `GET /api/dynasty-pulse/values/multi-season` - agregado multi-ano com trends
+- [x] `GET /api/dynasty-pulse/player/{id}` - breakdown individual
+- [x] `GET /api/dynasty-pulse/picks` - valores de draft picks
+- [x] `GET /api/dynasty-pulse/health` - status do engine
+
+### Premium: League-Adjusted Values
+- [x] `GET /api/dynasty-pulse/league/{id}/values` - valores ajustados por liga
+- [x] `GET /api/dynasty-pulse/league/{id}/info` - info da liga
+- [x] Detecção automática Superflex (boost QBs)
+- [x] Detecção automática TEP (boost TEs)
+- [x] Ajustes por scoring: PPR, 6pt Pass TD, IDP scoring
+- [x] Multipliers por posição baseados em scoring_settings
+
+### Frontend
+- [x] Hook `useDynastyPulse()` com fallback para valores hardcoded
+- [x] Hook `useMultiSeasonValues()` para análise de trends
+- [x] PlayerCard mostra tier (elite/star/starter/depth)
+- [x] PlayerCard mostra recommendation (BUY/HOLD/SELL)
+- [x] Badge premium (Zap icon) para valores league-adjusted
+
+### Escala de Valores
+- **Interno:** 0-10000
+- **Display:** 0-100
+- **Tiers:** elite (8+), star (5-8), starter (2-5), depth (0-2), replacement (<0)
+
 ---
 
 ## 🔄 PRÓXIMAS FASES
 
-### FASE J - Mobile Optimization
+### FASE K - Mobile Optimization
 - [ ] Testes em dispositivos reais
 - [ ] Safe area support (notch)
 - [ ] Touch targets (44px mínimo)
 - [ ] Swipe gestures
 - [ ] PWA (Progressive Web App)
 
-### FASE J - Features Avançadas FREE
+### FASE L - Features Avançadas FREE
 - [ ] Waiver Wire / Free Agents
 - [ ] Injury Report (lesões dos jogadores)
 - [ ] Projeções da semana
 - [ ] Notificações de matchup
-- [ ] Trade Calculator com valores dinâmicos (API externa)
+- [ ] Dynasty Pulse Phase 3: XGBoost ML predictions
 
-### FASE K - Premium ($4.99/mês)
+### FASE M - Premium ($4.99/mês)
 - [ ] Ver TODOS os rosters (não só o seu)
 - [ ] Comparar rosters lado a lado
-- [ ] Trade Analyzer (análise avançada)
+- [ ] Trade Analyzer (análise avançada com Dynasty Pulse)
 - [ ] Alertas de lesões
 - [ ] Export avançado (CSV, PDF)
 - [ ] Start/Sit advice
 - [ ] Alvos (expandir IDP para todos jogadores: QB, RB, WR, TE, K)
-- [ ] Projeção multi-temporada (ajuda em trades)
+- [ ] League-adjusted values (já implementado, falta UI premium)
 - [ ] Status waiver/time (mostrar se disponível)
 
-### FASE M - Expansão
+### FASE N - Expansão
 - [ ] App iOS (React Native ou PWA)
 - [ ] App Android
 - [ ] Internacionalização (PT, EN, ES)
